@@ -9,6 +9,12 @@ public sealed class Player : Component
 	[Property] private CameraComponent Camera { get; set; }
 	[RequireComponent] private CharacterController Controller { get; set; }
 
+	private int GrabTimerHandle;
+	private readonly float SpringStrength = 150f; 
+	private readonly float DampingStrength = 15f;
+	private Angles CameraRotation;
+	private FHeldObjectData HeldObjectData;
+	
 	private readonly struct FHeldObjectData
 	{
 		private readonly GameObject Object;
@@ -25,11 +31,12 @@ public sealed class Player : Component
 		public GameObject GetObject() { return Object; }
 		public Rigidbody GetRigidBody() { return RigidBody; }
 	}
-	private int GrabTimerHandle;
-	private readonly float SpringStrength = 150f; 
-	private readonly float DampingStrength = 15f;
-	private Angles CameraRotation;
-	private FHeldObjectData HeldObjectData;
+
+	protected override void OnStart()
+	{
+		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
+		base.OnStart();
+	}
 
 	protected override void OnUpdate()
 	{

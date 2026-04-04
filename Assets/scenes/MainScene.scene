@@ -147,7 +147,7 @@
           "BodyMass": 500,
           "BodyRadius": 16,
           "BrakePower": 1,
-          "CameraOffset": "256,0,12",
+          "CameraOffset": "0,0,0",
           "ColliderObject": {
             "_type": "gameobject",
             "go": "d5464d91-c162-4254-a746-cc92a5679450"
@@ -157,13 +157,13 @@
           "DuckedSpeed": 70,
           "EnableFootstepSounds": true,
           "EnablePressing": true,
-          "EyeDistanceFromTop": 8,
+          "EyeDistanceFromTop": 0,
           "FootstepMixer": {
             "Name": "unknown",
             "Id": "00000000-0000-0000-0000-000000000000"
           },
           "FootstepVolume": 1,
-          "HideBodyInFirstPerson": true,
+          "HideBodyInFirstPerson": false,
           "JumpSpeed": 300,
           "LookSensitivity": 1,
           "OnComponentDestroy": null,
@@ -182,12 +182,12 @@
           "RunSpeed": 320,
           "ShowColliderComponents": false,
           "ShowRigidbodyComponent": false,
-          "ThirdPerson": true,
+          "ThirdPerson": false,
           "ToggleCameraModeButton": "view",
           "UseAnimatorControls": true,
           "UseButton": "use",
           "UseCameraControls": true,
-          "UseFovFromPreferences": true,
+          "UseFovFromPreferences": false,
           "UseInputControls": true,
           "UseLookControls": true,
           "WalkSpeed": 110
@@ -275,7 +275,7 @@
           "__version": 2,
           "Flags": 0,
           "Name": "Camera",
-          "Position": "10.64476,0,0",
+          "Position": "10,0,-4.806442",
           "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
           "Tags": "maincamera",
@@ -524,7 +524,7 @@
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "bffbfeb0-1b45-434d-a854-96b21bc56172"
+          "$blob": "219acc76-dd65-4746-95ce-909bd53f158b"
         }
       }
     }
