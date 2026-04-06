@@ -7,11 +7,15 @@ public sealed class GameManager : Component
 	
 	private TimerManager TimerManager;
 	private CollectibleCubeManager CollectibleCubeManager;
+	private UiManager UiManager;
 	protected override void OnStart()
 	{
 		base.OnStart();
-		TimerManager = new TimerManager(Scene);
-		CollectibleCubeManager = new CollectibleCubeManager(Scene, CollectibleCubePrefab);
+		TimerManager = Scene.GetSystem<TimerManager>();
+		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
+		CollectibleCubeManager.Init( CollectibleCubePrefab );
+		UiManager = Scene.GetSystem<UiManager>();
+		UiManager.OnStart();
 	}
 	protected override void OnUpdate()
 	{

@@ -1,0 +1,35 @@
+@using Sandbox;
+@using Sandbox.Enums
+@using Sandbox.Managers
+@inherits PanelComponent
+
+<root>
+	<div class="Info">
+		<p>AH MY NIGGA</p>
+	</div>
+</root>
+
+@code
+{
+	EventManager EventManager;
+	protected override void OnStart()
+	{
+		EventManager = Scene.GetSystem<EventManager>();
+		EventManager.OnUiStateChange += UiStateChanged;
+		Enabled = false;
+	}
+	protected override void OnDestroy()
+	{
+		EventManager.OnUiStateChange -= UiStateChanged;
+	}
+	protected override int BuildHash()
+	{
+		return System.HashCode.Combine("");
+	}
+
+	private void UiStateChanged( EUi InUi, bool RenderState )
+	{
+		if ( InUi != EUi.UpgradesMenu ) return;
+		Enabled = RenderState;
+	}
+}

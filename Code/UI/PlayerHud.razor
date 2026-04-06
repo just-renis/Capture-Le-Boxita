@@ -1,0 +1,30 @@
+@using Sandbox;
+@using Sandbox.Managers
+@inherits PanelComponent
+
+<root>
+	<div class = "Info">
+		<p>@Text</p>
+	</div>
+</root>
+
+@code
+{
+	string Text = "Hello";
+	protected override void OnStart()
+	{
+		Scene.GetSystem<EventManager>().OnPlayerClickStateChange += HandleClickStateChange;
+	}
+	protected override void OnDestroy()
+	{
+		Scene.GetSystem<EventManager>().OnPlayerClickStateChange -= HandleClickStateChange;
+	}
+	void HandleClickStateChange(bool MouseClickState)
+	{
+		Text = MouseClickState ? "Clicked!" : "NIGGA HEIL HITLER";
+	}
+	protected override int BuildHash()
+	{
+		return System.HashCode.Combine(Text);
+	}
+}

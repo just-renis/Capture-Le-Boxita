@@ -1,5 +1,5 @@
+using Sandbox.Enums;
 using Sandbox.Managers;
-
 namespace Sandbox.Player;
 
 public sealed class Player : Component
@@ -14,6 +14,8 @@ public sealed class Player : Component
 	private readonly float DampingStrength = 15f;
 	private Angles CameraRotation;
 	private FHeldObjectData HeldObjectData;
+	private EventManager EventManager;
+	private UiManager UiManager;
 	
 	private readonly struct FHeldObjectData
 	{
@@ -34,19 +36,22 @@ public sealed class Player : Component
 
 	protected override void OnStart()
 	{
-		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
 		base.OnStart();
+		SetupManagers();
+		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
 	}
 
 	protected override void OnUpdate()
 	{
 		ProcessInput();
 	}
+	
 	private void ProcessInput()
 	{
 		ProcessMouseInput();
 		ProcessKeyboardInput();
 	}
+	
 	private void ProcessCameraLook()
 	{
 		Vector2 MouseInput = Input.MouseDelta;
@@ -55,7 +60,8 @@ public sealed class Player : Component
 		CameraRotation.pitch = CameraRotation.pitch.Clamp( -89f, 89f );
 		Camera.LocalRotation = Rotation.From(CameraRotation);
 	}
-	private void ProcessKeyboardInput()
+	
+	private void ProcessMovementInput()
 	{
 		Vector3 CameraForward = Camera.WorldRotation.Forward;
 		Vector3 CameraRight = Camera.WorldRotation.Right;
@@ -73,12 +79,22 @@ public sealed class Player : Component
 		Controller.ApplyFriction( 5.0f );
 		Controller.Move();
 	}
+	
+	private void ProcessKeyboardInput()
+	{
+		ProcessMovementInput();
+		if (Input.Pressed("OpenUpgrades"))
+		{
+			UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
+		}
+	}
+	
 	private void ProcessMouseInput()
 	{
 		ProcessCameraLook();
 		if (Input.Pressed("Attack1"))
 		{
-			Log.Info("CLICK");
+			EventManager.TriggerPlayerClickState(true);
 			Vector3 Start = Camera.WorldPosition;
 			Vector3 End = Start + Camera.WorldRotation.Forward * 1000f;
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
@@ -89,15 +105,16 @@ public sealed class Player : Component
 		}
 		else if (Input.Released("Attack1"))
 		{
-			Log.Info("RELEASED HANDLE");
+			EventManager.TriggerPlayerClickState(false);
 			TimerManager.ClearTimer(GrabTimerHandle);
 		}
 	}
+	
 	private void SetupGrabbedObjectTimer()
 	{
-		Log.Info("SetupGrabbedObjectTimer");
 		GrabTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(1 / 60f, true, ProcessGrabbedObjectLogic);
 	}
+	
 	private void ProcessGrabbedObjectLogic()
 	{
 		if (!HeldObjectData.GetRigidBody().IsValid()) return;
@@ -106,5 +123,11 @@ public sealed class Player : Component
 		Vector3 Force = Displacement * SpringStrength - HeldObjectData.GetRigidBody().Velocity * DampingStrength;
 		HeldObjectData.GetRigidBody().ApplyForce(Force * HeldObjectData.GetRigidBody().PhysicsBody.Mass);
 		HeldObjectData.GetRigidBody().AngularVelocity = Vector3.Zero;
+	}
+
+	private void SetupManagers()
+	{
+		EventManager = Scene.GetSystem<EventManager>();
+		UiManager = Scene.GetSystem<UiManager>();
 	}
 }

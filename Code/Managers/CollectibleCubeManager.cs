@@ -6,10 +6,11 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 {
 	private float SpawnTimer;
 	private readonly float SpawnTime = 2f;
-	private readonly GameObject CollectibleCubePrefab;
-	public CollectibleCubeManager(Scene Scene, GameObject InPrefab) : this(Scene)
+	private GameObject CollectibleCubePrefab;
+
+	public void Init(GameObject InCollectibleCubePrefab)
 	{
-		CollectibleCubePrefab = InPrefab;
+		CollectibleCubePrefab = InCollectibleCubePrefab;
 	}
 	public void OnUpdate()
 	{
