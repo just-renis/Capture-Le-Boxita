@@ -94,6 +94,7 @@ public sealed class Player : Component
 		ProcessCameraLook();
 		if (Input.Pressed("Attack1"))
 		{
+			Sound.Play( "Banger", GameObject.WorldPosition);
 			EventManager.TriggerPlayerClickState(true);
 			Vector3 Start = Camera.WorldPosition;
 			Vector3 End = Start + Camera.WorldRotation.Forward * 1000f;
@@ -105,6 +106,11 @@ public sealed class Player : Component
 		}
 		else if (Input.Released("Attack1"))
 		{
+			if ( HeldObjectData.GetObject() != null )
+			{
+				Scene.GetSystem<PoolingManager>().ReturnObjectToPool( EPoolObject.CollectibleCube, HeldObjectData.GetObject() );
+				HeldObjectData = default;
+			}
 			EventManager.TriggerPlayerClickState(false);
 			TimerManager.ClearTimer(GrabTimerHandle);
 		}

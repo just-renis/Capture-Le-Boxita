@@ -34,17 +34,12 @@ public sealed class TimerManager(Scene Scene) : GameObjectSystem(Scene)
 	public int AddTimer(float InStartTime, bool InIsLooping, Action InTimerCallback)
 	{
 		TIMERS.Add(++NEXT_ID, new Timer(NEXT_ID, InStartTime, InIsLooping, InTimerCallback));
-		Log.Info($"ID: {NEXT_ID}");
 		return NEXT_ID;
 	}
 	public static void ClearTimer(int InId) { TIMERS.Remove(InId); }
 	public void OnUpdate()
 	{
-		foreach (KeyValuePair<int, Timer> TimerObject in TIMERS)
-		{
-			Log.Info(TIMERS.Count);
-			TimerObject.Value.IncrementTimer(Time.Delta);
-		}
+		foreach (KeyValuePair<int, Timer> TimerObject in TIMERS) TimerObject.Value.IncrementTimer(Time.Delta);
 	}
 	public void OnDestroy()
 	{

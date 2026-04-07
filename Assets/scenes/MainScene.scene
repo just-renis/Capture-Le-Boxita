@@ -482,19 +482,21 @@
       "Components": [
         {
           "__type": "Sandbox.Managers.GameManager",
-          "__guid": "8cc91493-b7e0-445c-8726-0807f9244108",
+          "__guid": "dfe13fd5-bd32-4a37-a206-4dde1af3f521",
           "__enabled": true,
           "Flags": 0,
-          "CollectibleCubePrefab": {
-            "_type": "gameobject",
-            "prefab": "prefabs/cube.prefab"
-          },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Prefabs": {
+            "CollectibleCube": {
+              "_type": "gameobject",
+              "prefab": "prefabs/collectiblecube.prefab"
+            }
+          }
         }
       ],
       "Children": []
@@ -580,13 +582,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "f0d139a6-788e-412f-961d-cc2de599da50"
+          "$blob": "6f0b6db8-4433-4b0d-a828-013f2ebc8b57"
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },
