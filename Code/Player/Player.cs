@@ -37,12 +37,16 @@ public sealed class Player : Component
 	protected override void OnStart()
 	{
 		base.OnStart();
+		if ( Camera == null || IsProxy ) return;
+		Camera.Enabled = true;
+		Log.Info(  "Player starting..." );
 		SetupManagers();
 		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
 	}
 
 	protected override void OnUpdate()
 	{
+		if ( IsProxy ) return;
 		ProcessInput();
 	}
 	
@@ -94,7 +98,6 @@ public sealed class Player : Component
 		ProcessCameraLook();
 		if (Input.Pressed("Attack1"))
 		{
-			Sound.Play( "Banger", GameObject.WorldPosition);
 			EventManager.TriggerPlayerClickState(true);
 			Vector3 Start = Camera.WorldPosition;
 			Vector3 End = Start + Camera.WorldRotation.Forward * 1000f;

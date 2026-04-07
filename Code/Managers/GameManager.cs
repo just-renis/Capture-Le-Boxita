@@ -15,6 +15,7 @@ public sealed class GameManager : Component
 		base.OnStart();
 		TimerManager = Scene.GetSystem<TimerManager>();
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
+		CollectibleCubeManager.Init();
 		UiManager = Scene.GetSystem<UiManager>();
 		UiManager.OnStart();
 		PoolingManager = Scene.GetSystem<PoolingManager>();

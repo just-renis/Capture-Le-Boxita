@@ -3,7 +3,7 @@
     "__guid": "31e9ff72-845f-4a0a-9ff5-d951bb07c897",
     "__version": 2,
     "Flags": 0,
-    "Name": "Player",
+    "Name": "player",
     "Position": "0,0,0",
     "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
@@ -112,7 +112,7 @@
         "DeaccelerationTime": 0,
         "DuckedHeight": 36,
         "DuckedSpeed": 70,
-        "EnableFootstepSounds": true,
+        "EnableFootstepSounds": false,
         "EnablePressing": true,
         "EyeDistanceFromTop": 0,
         "FootstepMixer": {
@@ -232,7 +232,7 @@
         "__version": 2,
         "Flags": 0,
         "Name": "Camera",
-        "Position": "10,0,-4.806442",
+        "Position": "10,-110.8379,70.63636",
         "Rotation": "0,0,0,1",
         "Scale": "1,1,1",
         "Tags": "maincamera",
@@ -347,7 +347,27 @@
         ],
         "Children": []
       }
-    ]
+    ],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": false,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": "",
+        "CustomBounds": false
+      }
+    },
+    "__variables": []
   },
   "ResourceVersion": 2,
   "ShowInMenu": false,
