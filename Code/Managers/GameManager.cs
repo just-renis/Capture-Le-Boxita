@@ -1,10 +1,11 @@
+using Sandbox.Data;
 using Sandbox.Enums;
 namespace Sandbox.Managers;
 
 public sealed class GameManager : Component
 {
 	[Property] 
-	Dictionary<EPoolObject, GameObject> Prefabs { get; set; }
+	NetDictionary<EPoolObject, ObjectPoolData> Prefabs { get; set; }
 	
 	private TimerManager TimerManager;
 	private CollectibleCubeManager CollectibleCubeManager;
@@ -15,11 +16,14 @@ public sealed class GameManager : Component
 		base.OnStart();
 		TimerManager = Scene.GetSystem<TimerManager>();
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
-		CollectibleCubeManager.Init();
 		UiManager = Scene.GetSystem<UiManager>();
 		UiManager.OnStart();
 		PoolingManager = Scene.GetSystem<PoolingManager>();
-		PoolingManager.Init( Prefabs );
+		//if (Network.OwnerId == GameObject.Id) // <-- only host initializes shared systems
+		//{
+			CollectibleCubeManager.Init();
+			PoolingManager.Init(Prefabs);
+		//}
 	}
 	protected override void OnUpdate()
 	{

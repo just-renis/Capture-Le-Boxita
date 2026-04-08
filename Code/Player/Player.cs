@@ -1,3 +1,4 @@
+using System;
 using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Player;
@@ -6,16 +7,18 @@ public sealed class Player : Component
 {
 	[Property] private float Speed { get; set; } = 100f;
 	[Property] private float Sensitivity { get; set; } = 0.2f;
-	[Property] private CameraComponent Camera { get; set; }
+	[Property] private float CameraDistance { get; set; } = 200f;
+	[Property] private float CameraHeight { get; set; } = 50f;
 	[RequireComponent] private CharacterController Controller { get; set; }
 
 	private int GrabTimerHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
-	private Angles CameraRotation;
+	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
 	private EventManager EventManager;
 	private UiManager UiManager;
+	private CameraComponent Camera;
 	
 	private readonly struct FHeldObjectData
 	{
@@ -37,16 +40,15 @@ public sealed class Player : Component
 	protected override void OnStart()
 	{
 		base.OnStart();
-		if ( Camera == null || IsProxy ) return;
-		Camera.Enabled = true;
-		Log.Info(  "Player starting..." );
+		if (IsProxy) return;
+		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
 		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
 	}
 
 	protected override void OnUpdate()
 	{
-		if ( IsProxy ) return;
+		if (IsProxy || Camera == null) return;
 		ProcessInput();
 	}
 	
@@ -59,25 +61,32 @@ public sealed class Player : Component
 	private void ProcessCameraLook()
 	{
 		Vector2 MouseInput = Input.MouseDelta;
-		CameraRotation.yaw -= MouseInput.x * Sensitivity;
-		CameraRotation.pitch += MouseInput.y * Sensitivity;
-		CameraRotation.pitch = CameraRotation.pitch.Clamp( -89f, 89f );
-		Camera.LocalRotation = Rotation.From(CameraRotation);
+		CurrentCameraRotation.yaw -= MouseInput.x * Sensitivity;
+		CurrentCameraRotation.pitch += MouseInput.y * Sensitivity;
+		CurrentCameraRotation.pitch = CurrentCameraRotation.pitch.Clamp(-40f, 60f);
+		Rotation NextCameraRotation = Rotation.From(CurrentCameraRotation);
+		Vector3 PlayerPosition = WorldPosition + Vector3.Up * CameraHeight;
+		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
+		Camera.WorldPosition = PlayerPosition + CameraOffset;
+		Camera.WorldRotation = NextCameraRotation;
+		WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
 	}
 	
 	private void ProcessMovementInput()
 	{
-		Vector3 CameraForward = Camera.WorldRotation.Forward;
-		Vector3 CameraRight = Camera.WorldRotation.Right;
+		Vector3 Forward = WorldRotation.Forward;
+		Vector3 Right = WorldRotation.Right;
 
-		CameraForward = new Vector3(CameraForward.x, CameraForward.y, 0).Normal;
-		CameraRight = new Vector3(CameraRight.x, CameraRight.y, 0).Normal;
-		
+		Forward = new Vector3(Forward.x, Forward.y, 0).Normal;
+		Right = new Vector3(Right.x, Right.y, 0).Normal;
+
 		Vector3 MovementVelocity = Vector3.Zero;
-		if (Input.Down("Forward")) MovementVelocity += CameraForward * Speed * Time.Delta;
-		if (Input.Down("Backward")) MovementVelocity -= CameraForward * Speed * Time.Delta;
-		if (Input.Down("Left")) MovementVelocity -= CameraRight * Speed * Time.Delta;
-		if (Input.Down("Right")) MovementVelocity += CameraRight * Speed * Time.Delta;
+
+		if (Input.Down("Forward")) MovementVelocity += Forward;
+		if (Input.Down("Backward")) MovementVelocity -= Forward;
+		if (Input.Down("Left")) MovementVelocity -= Right;
+		if (Input.Down("Right")) MovementVelocity += Right;
+
 		MovementVelocity = MovementVelocity.Normal * Speed;
 		Controller.Accelerate(MovementVelocity);
 		Controller.ApplyFriction( 5.0f );

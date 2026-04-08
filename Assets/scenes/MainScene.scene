@@ -143,8 +143,11 @@
           "OnComponentUpdate": null,
           "Prefabs": {
             "CollectibleCube": {
-              "_type": "gameobject",
-              "prefab": "prefabs/collectiblecube.prefab"
+              "Prefab": {
+                "_type": "gameobject",
+                "prefab": "prefabs/collectiblecube.prefab"
+              },
+              "MaxAmountActive": 5
             }
           }
         }
@@ -271,6 +274,54 @@
       "OwnerTransfer": 1,
       "Components": [],
       "Children": []
+    },
+    {
+      "__guid": "32193b73-c2c2-456f-afae-7af05b753be6",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Camera",
+      "Position": "-550.3601,-241.0495,51.15025",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "maincamera",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.CameraComponent",
+          "__guid": "2d5e6755-ce4e-4756-9d0f-4001cc8dc877",
+          "__enabled": true,
+          "Flags": 0,
+          "BackgroundColor": "0.33333,0.46275,0.52157,1",
+          "ClearFlags": "All",
+          "EnablePostProcessing": true,
+          "FieldOfView": 60,
+          "FovAxis": "Horizontal",
+          "IsMainCamera": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Orthographic": false,
+          "OrthographicHeight": 1204,
+          "PostProcessAnchor": null,
+          "Priority": 1,
+          "RenderExcludeTags": "",
+          "RenderTags": "",
+          "RenderTexture": null,
+          "TargetEye": "None",
+          "Viewport": "0,0,1,1",
+          "ZFar": 10000,
+          "ZNear": 10
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
@@ -294,7 +345,7 @@
     "GameObjectSystems": {
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "08e99e1d-2cec-4bf3-8d05-2d5ffda64750"
+          "$blob": "70ef3fba-7e52-4910-83a5-ea6a400ba786"
         }
       },
       "Sandbox.MovieMaker.MovieRecorderSystem": {

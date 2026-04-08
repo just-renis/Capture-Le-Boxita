@@ -1,17 +1,11 @@
+using Sandbox.Data;
 using Sandbox.Enums;
 namespace Sandbox.Managers;
 
 public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 {
-	private class ObjectPoolData( GameObject InPrefab, int InMaxAmountActive )
-	{
-		public readonly Stack<GameObject> Objects = new();
-		public readonly GameObject Prefab = InPrefab;
-		public readonly int MaxAmountActive = InMaxAmountActive;
-		public int ActiveCount;
-	}
-	
-	private Dictionary<EPoolObject, ObjectPoolData> Pool;
+	[Sync]
+	private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
 
 	public bool CanSpawnObject( EPoolObject InObjectName )
 	{
@@ -35,11 +29,7 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		return PoolObject;
 	}
 
-	public void Init( Dictionary<EPoolObject, GameObject> InPrefabs )
-	{
-		Pool = new Dictionary<EPoolObject, ObjectPoolData>();
-		foreach (KeyValuePair<EPoolObject, GameObject> Data in InPrefabs) Pool.Add(Data.Key, new ObjectPoolData(Data.Value, 50));
-	}
+	public void Init( NetDictionary<EPoolObject, ObjectPoolData> InPrefabs ) { Pool = InPrefabs; }
 	public void ReturnObjectToPool(EPoolObject InObjectName, GameObject InGameObject)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
