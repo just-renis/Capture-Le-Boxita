@@ -15,25 +15,25 @@ public sealed class GameManager : Component
 	{
 		base.OnStart();
 		TimerManager = Scene.GetSystem<TimerManager>();
-		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
 		UiManager = Scene.GetSystem<UiManager>();
 		UiManager.OnStart();
-		PoolingManager = Scene.GetSystem<PoolingManager>();
-		//if (Network.OwnerId == GameObject.Id) // <-- only host initializes shared systems
-		//{
+		if (Networking.IsHost)
+		{
+			CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
 			CollectibleCubeManager.Init();
+			PoolingManager = Scene.GetSystem<PoolingManager>();
 			PoolingManager.Init(Prefabs);
-		//}
+		}
 	}
 	protected override void OnUpdate()
 	{
 		TimerManager.OnUpdate();
-		CollectibleCubeManager.OnUpdate();
+		if (Networking.IsHost) CollectibleCubeManager.OnUpdate();
 	}
 	protected override void OnDestroy()
 	{
 		TimerManager.OnDestroy();
-		CollectibleCubeManager.OnDestroy();
+		if (Networking.IsHost) CollectibleCubeManager.OnDestroy();
 		base.OnDestroy();
 	}
 }

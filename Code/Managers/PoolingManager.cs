@@ -37,5 +37,12 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		PoolData.Objects.Push(InGameObject);
 		PoolData.ActiveCount--;
 	}
-	private void AllocatePoolObject(EPoolObject InObjectName) { Pool[InObjectName].Objects.Push(Pool[InObjectName].Prefab.Clone()); }
+
+	private void AllocatePoolObject( EPoolObject InObjectName )
+	{
+		GameObject PooledObject = Pool[InObjectName].Prefab.Clone();
+		Pool[InObjectName].Objects.Push(PooledObject);
+		PooledObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
+		PooledObject.NetworkSpawn();
+	}
 }

@@ -147,7 +147,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 5
+              "MaxAmountActive": 25
             }
           }
         }
@@ -343,13 +343,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "70ef3fba-7e52-4910-83a5-ea6a400ba786"
-        }
-      },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "bede8171-2711-4af7-af56-2f6e5f8c81a1"
+        }
       }
     }
   },

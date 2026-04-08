@@ -113,6 +113,7 @@ public sealed class Player : Component
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
 			DebugOverlay.Line(Start, End, Color.Red, 2.0f);
 			if (!Trace.Hit) return;
+			Trace.GameObject.Network.TakeOwnership();
 			HeldObjectData = new FHeldObjectData(Trace.GameObject, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
@@ -120,7 +121,7 @@ public sealed class Player : Component
 		{
 			if ( HeldObjectData.GetObject() != null )
 			{
-				Scene.GetSystem<PoolingManager>().ReturnObjectToPool( EPoolObject.CollectibleCube, HeldObjectData.GetObject() );
+				RequestReturnToPoolObject(EPoolObject.CollectibleCube, HeldObjectData.GetObject());
 				HeldObjectData = default;
 			}
 			EventManager.TriggerPlayerClickState(false);
@@ -147,5 +148,12 @@ public sealed class Player : Component
 	{
 		EventManager = Scene.GetSystem<EventManager>();
 		UiManager = Scene.GetSystem<UiManager>();
+	}
+	[Rpc.Broadcast]
+	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
+	{
+		if ( !Networking.IsHost ) return;
+		InPoolObject.Network.TakeOwnership();
+		Scene.GetSystem<PoolingManager>().ReturnObjectToPool( InPoolObjectName, InPoolObject );
 	}
 }
