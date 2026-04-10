@@ -14,6 +14,8 @@ public sealed class Player : Component
 	private int GrabTimerHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
+	private readonly float GrabDistance = 800f;
+	private readonly float ThrowForce = 2000f;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
 	private EventManager EventManager;
@@ -105,13 +107,29 @@ public sealed class Player : Component
 	private void ProcessMouseInput()
 	{
 		ProcessCameraLook();
+		ProcessMouseRightClickInput();
+		ProcessMouseLeftClickInput();
+	}
+	private void ProcessMouseRightClickInput()
+	{
+		GameObject HeldObject = HeldObjectData.GetObject();
+		if ( HeldObject == null || !Input.Pressed( "Attack2" ) ) return;
+		Rigidbody Rigidbody = HeldObjectData.GetRigidBody();
+		if ( Rigidbody == null ) return;
+		Vector3 ThrowDir = Camera.WorldRotation.Forward;
+		Rigidbody.Velocity = ThrowDir * ThrowForce;
+		ClearHeldObjectData();
+	}
+	private void ProcessMouseLeftClickInput()
+	{
 		if (Input.Pressed("Attack1"))
 		{
 			EventManager.TriggerPlayerClickState(true);
-			Vector3 Start = Camera.WorldPosition;
-			Vector3 End = Start + Camera.WorldRotation.Forward * 1000f;
+			Ray Ray = Camera.ScreenPixelToRay( new Vector2( Screen.Width / 2, Screen.Height / 2 ) );
+			Vector3 Start = Ray.Position;
+			Vector3 End = Start + Ray.Forward * GrabDistance;
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
-			DebugOverlay.Line(Start, End, Color.Red, 2.0f);
+			DebugOverlay.Line(Start, End, Color.Red, 2f);
 			if (!Trace.Hit) return;
 			Trace.GameObject.Network.TakeOwnership();
 			HeldObjectData = new FHeldObjectData(Trace.GameObject, Trace.Distance);
@@ -119,16 +137,10 @@ public sealed class Player : Component
 		}
 		else if (Input.Released("Attack1"))
 		{
-			if ( HeldObjectData.GetObject() != null )
-			{
-				RequestReturnToPoolObject(EPoolObject.CollectibleCube, HeldObjectData.GetObject());
-				HeldObjectData = default;
-			}
 			EventManager.TriggerPlayerClickState(false);
-			TimerManager.ClearTimer(GrabTimerHandle);
+			ClearHeldObjectData();
 		}
 	}
-	
 	private void SetupGrabbedObjectTimer()
 	{
 		GrabTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(1 / 60f, true, ProcessGrabbedObjectLogic);
@@ -136,6 +148,13 @@ public sealed class Player : Component
 	
 	private void ProcessGrabbedObjectLogic()
 	{
+		GameObject HeldObject = HeldObjectData.GetObject();
+		if ( HeldObject == null) return;
+		if ( !HeldObject.Network.IsOwner )
+		{
+			ClearHeldObjectData();
+			return;
+		}
 		if (!HeldObjectData.GetRigidBody().IsValid()) return;
 		Vector3 TargetPosition = Camera.WorldPosition + Camera.WorldRotation.Forward * HeldObjectData.GetHoldDistance();
 		Vector3 Displacement = TargetPosition - HeldObjectData.GetObject().WorldPosition;
@@ -149,6 +168,13 @@ public sealed class Player : Component
 		EventManager = Scene.GetSystem<EventManager>();
 		UiManager = Scene.GetSystem<UiManager>();
 	}
+
+	private void ClearHeldObjectData()
+	{
+		HeldObjectData = default;
+		TimerManager.ClearTimer(GrabTimerHandle);
+	}
+
 	[Rpc.Broadcast]
 	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
 	{

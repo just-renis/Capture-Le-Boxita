@@ -1,11 +1,11 @@
+using System;
 using Sandbox.Data;
 using Sandbox.Enums;
 namespace Sandbox.Managers;
 
 public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 {
-	[Sync]
-	private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
+	[Sync] private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
 
 	public bool CanSpawnObject( EPoolObject InObjectName )
 	{
@@ -14,14 +14,10 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 	}
 	public GameObject SpawnObjectFromPool( EPoolObject InObjectName, Vector3 InLocation, Rotation InRotation = default )
 	{
-		GameObject PoolObject;
 		ObjectPoolData PoolData = Pool[InObjectName];
-		if (!PoolData.Objects.Any())
-		{
-			AllocatePoolObject(InObjectName);
-			PoolObject = PoolData.Objects.Pop();
-		}
-		else PoolObject = PoolData.Objects.Pop();
+		if (!PoolData.Objects.Any()) AllocatePoolObject(InObjectName);
+		Guid ObjectId = PoolData.Objects.Pop();
+		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectId);
 		PoolObject.LocalPosition = InLocation;
 		PoolObject.LocalRotation = InRotation;
 		PoolObject.Enabled = true;
@@ -34,14 +30,14 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		InGameObject.Enabled = false;
-		PoolData.Objects.Push(InGameObject);
+		PoolData.Objects.Push(InGameObject.Id);
 		PoolData.ActiveCount--;
 	}
 
 	private void AllocatePoolObject( EPoolObject InObjectName )
 	{
 		GameObject PooledObject = Pool[InObjectName].Prefab.Clone();
-		Pool[InObjectName].Objects.Push(PooledObject);
+		Pool[InObjectName].Objects.Push(PooledObject.Id);
 		PooledObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
 		PooledObject.NetworkSpawn();
 	}

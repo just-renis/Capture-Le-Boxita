@@ -4,8 +4,7 @@ namespace Sandbox.Managers;
 
 public sealed class GameManager : Component
 {
-	[Property] 
-	NetDictionary<EPoolObject, ObjectPoolData> Prefabs { get; set; }
+	[Property] NetDictionary<EPoolObject, ObjectPoolData> Prefabs { get; set; }
 	
 	private TimerManager TimerManager;
 	private CollectibleCubeManager CollectibleCubeManager;
@@ -17,14 +16,12 @@ public sealed class GameManager : Component
 		TimerManager = Scene.GetSystem<TimerManager>();
 		UiManager = Scene.GetSystem<UiManager>();
 		UiManager.OnStart();
-		if (Networking.IsHost)
-		{
-			CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
-			CollectibleCubeManager.Init();
-			PoolingManager = Scene.GetSystem<PoolingManager>();
-			PoolingManager.Init(Prefabs);
-		}
+		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
+		CollectibleCubeManager.Init();
+		PoolingManager = Scene.GetSystem<PoolingManager>();
+		if (Networking.IsHost) PoolingManager.Init(Prefabs);
 	}
+	
 	protected override void OnUpdate()
 	{
 		TimerManager.OnUpdate();

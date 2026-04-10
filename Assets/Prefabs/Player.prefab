@@ -76,7 +76,7 @@
         "OnComponentUpdate": null,
         "Radius": 16,
         "StepHeight": 18,
-        "UseCollisionRules": false
+        "UseCollisionRules": true
       },
       {
         "__type": "Sandbox.PlayerController",

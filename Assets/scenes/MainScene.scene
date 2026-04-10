@@ -147,7 +147,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 25
+              "MaxAmountActive": 5
             }
           }
         }
@@ -348,7 +348,7 @@
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "bede8171-2711-4af7-af56-2f6e5f8c81a1"
+          "$blob": "106e27d4-4fbf-4fae-89d6-748f65f05a5c"
         }
       }
     }
