@@ -56,7 +56,7 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "Sensitivity": 0.2,
-        "Speed": 100
+        "Speed": 600
       },
       {
         "__type": "Sandbox.CharacterController",

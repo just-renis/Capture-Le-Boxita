@@ -1,4 +1,3 @@
-using System;
 using Sandbox.Enums;
 namespace Sandbox.Managers;
 
@@ -18,11 +17,11 @@ public sealed class UiManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		bool NewRenderState = !UiStates[InUi];
 		UiStates[InUi] = NewRenderState;
-		EventManager.TriggerUiStateChange( InUi, NewRenderState );
+		EventManager.TriggerUiStateChange(InUi, NewRenderState);
 	}
 	public void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
 		UiStates[InUi] = RenderState;
-		EventManager.TriggerUiStateChange( InUi, RenderState );
+		EventManager.TriggerUiStateChange(InUi, RenderState);
 	}
 }

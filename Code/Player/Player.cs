@@ -1,21 +1,23 @@
-using System;
 using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Player;
 
-public sealed class Player : Component
+public sealed class Player : Component, Component.INetworkListener
 {
-	[Property] private float Speed { get; set; } = 100f;
+	[Property] private float Speed { get; set; } = 600f;
 	[Property] private float Sensitivity { get; set; } = 0.2f;
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[RequireComponent] private CharacterController Controller { get; set; }
 
 	private int GrabTimerHandle;
+	private int LocationSenderTimerHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
 	private readonly float ThrowForce = 2000f;
+	private readonly float MovementFriction = 5f;
+	private readonly float SendPlayerLocationInterval = 0.5f;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
 	private EventManager EventManager;
@@ -45,6 +47,7 @@ public sealed class Player : Component
 		if (IsProxy) return;
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
+		LocationSenderTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(SendPlayerLocationInterval, true, SendPlayerLocation);
 		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
 	}
 
@@ -53,7 +56,7 @@ public sealed class Player : Component
 		if (IsProxy || Camera == null) return;
 		ProcessInput();
 	}
-	
+
 	private void ProcessInput()
 	{
 		ProcessMouseInput();
@@ -89,15 +92,15 @@ public sealed class Player : Component
 		if (Input.Down("Left")) MovementVelocity -= Right;
 		if (Input.Down("Right")) MovementVelocity += Right;
 
-		MovementVelocity = MovementVelocity.Normal * Speed;
-		Controller.Accelerate(MovementVelocity);
-		Controller.ApplyFriction( 5.0f );
+		Controller.ApplyFriction(MovementFriction);
+		Controller.Accelerate(MovementVelocity.Normal * (MovementVelocity.Length > 0 ? Speed : 0));
 		Controller.Move();
 	}
 	
 	private void ProcessKeyboardInput()
 	{
 		ProcessMovementInput();
+		ProcessCameraLook();
 		if (Input.Pressed("OpenUpgrades"))
 		{
 			UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
@@ -106,16 +109,15 @@ public sealed class Player : Component
 	
 	private void ProcessMouseInput()
 	{
-		ProcessCameraLook();
 		ProcessMouseRightClickInput();
 		ProcessMouseLeftClickInput();
 	}
 	private void ProcessMouseRightClickInput()
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
-		if ( HeldObject == null || !Input.Pressed( "Attack2" ) ) return;
+		if (HeldObject == null || !Input.Pressed("Attack2")) return;
 		Rigidbody Rigidbody = HeldObjectData.GetRigidBody();
-		if ( Rigidbody == null ) return;
+		if (Rigidbody == null) return;
 		Vector3 ThrowDir = Camera.WorldRotation.Forward;
 		Rigidbody.Velocity = ThrowDir * ThrowForce;
 		ClearHeldObjectData();
@@ -124,8 +126,8 @@ public sealed class Player : Component
 	{
 		if (Input.Pressed("Attack1"))
 		{
-			EventManager.TriggerPlayerClickState(true);
-			Ray Ray = Camera.ScreenPixelToRay( new Vector2( Screen.Width / 2, Screen.Height / 2 ) );
+			EventManager.TriggerPlayerClickState(1f);
+			Ray Ray = Camera.ScreenPixelToRay(new Vector2(Screen.Width / 2, Screen.Height / 2));
 			Vector3 Start = Ray.Position;
 			Vector3 End = Start + Ray.Forward * GrabDistance;
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
@@ -137,7 +139,7 @@ public sealed class Player : Component
 		}
 		else if (Input.Released("Attack1"))
 		{
-			EventManager.TriggerPlayerClickState(false);
+			EventManager.TriggerPlayerClickState(5f);
 			ClearHeldObjectData();
 		}
 	}
@@ -149,8 +151,8 @@ public sealed class Player : Component
 	private void ProcessGrabbedObjectLogic()
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
-		if ( HeldObject == null) return;
-		if ( !HeldObject.Network.IsOwner )
+		if (HeldObject == null) return;
+		if (!HeldObject.Network.IsOwner)
 		{
 			ClearHeldObjectData();
 			return;
@@ -171,15 +173,28 @@ public sealed class Player : Component
 
 	private void ClearHeldObjectData()
 	{
+		if (HeldObjectData.GetObject() != null) HeldObjectData.GetObject().Network.DropOwnership();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
+	}
+
+	private void SendPlayerLocation() { EventManager.TriggerPlayerLocationSend(GameObject.WorldPosition); }
+
+	public void OnConnected( Connection channel )
+	{
+		Log.Info(channel.Id);
+	}
+
+	public void OnDisconnected( Connection channel )
+	{
+		Log.Info(channel.Id);
 	}
 
 	[Rpc.Broadcast]
 	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
 	{
-		if ( !Networking.IsHost ) return;
+		if (!Networking.IsHost) return;
 		InPoolObject.Network.TakeOwnership();
-		Scene.GetSystem<PoolingManager>().ReturnObjectToPool( InPoolObjectName, InPoolObject );
+		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(InPoolObjectName, InPoolObject);
 	}
 }

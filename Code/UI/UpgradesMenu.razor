@@ -27,9 +27,9 @@
 		return System.HashCode.Combine("");
 	}
 
-	private void UiStateChanged( EUi InUi, bool RenderState )
+	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
-		if ( InUi != EUi.UpgradesMenu ) return;
+		if (InUi != EUi.UpgradesMenu) return;
 		Enabled = RenderState;
 	}
 }

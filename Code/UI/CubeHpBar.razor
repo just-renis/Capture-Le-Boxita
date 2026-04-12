@@ -1,0 +1,22 @@
+@inherits PanelComponent
+@namespace Sandbox.UI
+
+<root>
+	<div class="HealthBarFrame">
+		<div class="HealthBarBackground">
+			<div class="Inner">
+				<div class="Fill" style="width: @(CurrentHp / MaxHp * 100f)%"></div>
+			</div>
+		</div>
+	</div>
+</root>
+
+@code
+{
+	private float CurrentHp;
+	private float MaxHp;
+
+	public void SetMaxHp(float InMaxHp) { MaxHp = InMaxHp; }
+	public void SetCurrentHp(float InCurrentHp) { CurrentHp = InCurrentHp; }
+	protected override int BuildHash() => System.HashCode.Combine(CurrentHp);
+}

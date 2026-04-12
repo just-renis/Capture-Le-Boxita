@@ -7,12 +7,12 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	[Sync] private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
 
-	public bool CanSpawnObject( EPoolObject InObjectName )
+	public bool CanSpawnObject(EPoolObject InObjectName)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		return PoolData.ActiveCount < PoolData.MaxAmountActive;
 	}
-	public GameObject SpawnObjectFromPool( EPoolObject InObjectName, Vector3 InLocation, Rotation InRotation = default )
+	public GameObject SpawnObjectFromPool(EPoolObject InObjectName, Vector3 InLocation, Rotation InRotation = default)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		if (!PoolData.Objects.Any()) AllocatePoolObject(InObjectName);
@@ -25,7 +25,7 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		return PoolObject;
 	}
 
-	public void Init( NetDictionary<EPoolObject, ObjectPoolData> InPrefabs ) { Pool = InPrefabs; }
+	public void Init(NetDictionary<EPoolObject, ObjectPoolData> InPrefabs) { Pool = InPrefabs; }
 	public void ReturnObjectToPool(EPoolObject InObjectName, GameObject InGameObject)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
@@ -34,11 +34,12 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		PoolData.ActiveCount--;
 	}
 
-	private void AllocatePoolObject( EPoolObject InObjectName )
+	private void AllocatePoolObject(EPoolObject InObjectName)
 	{
 		GameObject PooledObject = Pool[InObjectName].Prefab.Clone();
 		Pool[InObjectName].Objects.Push(PooledObject.Id);
 		PooledObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
 		PooledObject.NetworkSpawn();
+		PooledObject.Network.DropOwnership();
 	}
 }

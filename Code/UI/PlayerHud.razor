@@ -19,9 +19,9 @@
 	{
 		Scene.GetSystem<EventManager>().OnPlayerClickStateChange -= HandleClickStateChange;
 	}
-	void HandleClickStateChange(bool MouseClickState)
+	void HandleClickStateChange(float MouseClickState)
 	{
-		Text = MouseClickState ? "Clicked!" : "Released";
+		Text = MouseClickState == 1f ? "Clicked!" : "Released";
 	}
 	protected override int BuildHash()
 	{

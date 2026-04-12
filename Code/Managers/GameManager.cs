@@ -30,7 +30,6 @@ public sealed class GameManager : Component
 	protected override void OnDestroy()
 	{
 		TimerManager.OnDestroy();
-		if (Networking.IsHost) CollectibleCubeManager.OnDestroy();
 		base.OnDestroy();
 	}
 }
