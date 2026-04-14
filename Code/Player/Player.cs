@@ -24,6 +24,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private UiManager UiManager;
 	private CameraComponent Camera;
 	
+	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
 	{
 		private readonly GameObject Object;
@@ -40,7 +41,7 @@ public sealed class Player : Component, Component.INetworkListener
 		public GameObject GetObject() { return Object; }
 		public Rigidbody GetRigidBody() { return RigidBody; }
 	}
-
+	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
 		base.OnStart();
@@ -50,19 +51,24 @@ public sealed class Player : Component, Component.INetworkListener
 		LocationSenderTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(SendPlayerLocationInterval, true, SendPlayerLocation);
 		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
 	}
-
 	protected override void OnUpdate()
 	{
 		if (IsProxy || Camera == null) return;
 		ProcessInput();
 	}
 
+	protected override void OnDestroy()
+	{
+		ClearHeldObjectData();
+		base.OnDestroy();
+	}
+
+	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void ProcessInput()
 	{
 		ProcessMouseInput();
 		ProcessKeyboardInput();
 	}
-	
 	private void ProcessCameraLook()
 	{
 		Vector2 MouseInput = Input.MouseDelta;
@@ -76,7 +82,6 @@ public sealed class Player : Component, Component.INetworkListener
 		Camera.WorldRotation = NextCameraRotation;
 		WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
 	}
-	
 	private void ProcessMovementInput()
 	{
 		Vector3 Forward = WorldRotation.Forward;
@@ -96,7 +101,6 @@ public sealed class Player : Component, Component.INetworkListener
 		Controller.Accelerate(MovementVelocity.Normal * (MovementVelocity.Length > 0 ? Speed : 0));
 		Controller.Move();
 	}
-	
 	private void ProcessKeyboardInput()
 	{
 		ProcessMovementInput();
@@ -106,7 +110,6 @@ public sealed class Player : Component, Component.INetworkListener
 			UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
 		}
 	}
-	
 	private void ProcessMouseInput()
 	{
 		ProcessMouseRightClickInput();
@@ -133,8 +136,9 @@ public sealed class Player : Component, Component.INetworkListener
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
 			DebugOverlay.Line(Start, End, Color.Red, 2f);
 			if (!Trace.Hit) return;
-			Trace.GameObject.Network.TakeOwnership();
-			HeldObjectData = new FHeldObjectData(Trace.GameObject, Trace.Distance);
+			GameObject GrabbedObject = Trace.GameObject;
+			GrabbedObject.Network.TakeOwnership();
+			HeldObjectData = new FHeldObjectData(GrabbedObject, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
 		else if (Input.Released("Attack1"))
@@ -147,7 +151,6 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		GrabTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(1 / 60f, true, ProcessGrabbedObjectLogic);
 	}
-	
 	private void ProcessGrabbedObjectLogic()
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
@@ -164,32 +167,28 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectData.GetRigidBody().ApplyForce(Force * HeldObjectData.GetRigidBody().PhysicsBody.Mass);
 		HeldObjectData.GetRigidBody().AngularVelocity = Vector3.Zero;
 	}
-
 	private void SetupManagers()
 	{
 		EventManager = Scene.GetSystem<EventManager>();
 		UiManager = Scene.GetSystem<UiManager>();
 	}
-
 	private void ClearHeldObjectData()
 	{
 		if (HeldObjectData.GetObject() != null) HeldObjectData.GetObject().Network.DropOwnership();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
-
 	private void SendPlayerLocation() { EventManager.TriggerPlayerLocationSend(GameObject.WorldPosition); }
-
-	public void OnConnected( Connection channel )
+	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	public void OnConnected(Connection channel)
 	{
 		Log.Info(channel.Id);
 	}
-
-	public void OnDisconnected( Connection channel )
+	public void OnDisconnected(Connection channel)
 	{
 		Log.Info(channel.Id);
 	}
-
+	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
 	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
 	{

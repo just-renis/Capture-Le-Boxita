@@ -19,7 +19,8 @@ public sealed class GameManager : Component
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
 		CollectibleCubeManager.Init();
 		PoolingManager = Scene.GetSystem<PoolingManager>();
-		if (Networking.IsHost) PoolingManager.Init(Prefabs);
+		if (!Networking.IsHost) return;
+		PoolingManager.Init(Prefabs);
 	}
 	
 	protected override void OnUpdate()
