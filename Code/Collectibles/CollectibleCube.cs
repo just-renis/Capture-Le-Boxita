@@ -17,9 +17,8 @@ public sealed class CollectibleCube : Component
 	{
 		base.OnStart();
 		EventManager = Scene.GetSystem<EventManager>();
-		EventManager.OnPlayerClickStateChange += ReceiveDamage;
 		EventManager.OnPlayerLocationSend += CheckIfNeedToChangeRenderState;
-		InitUiTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(0.1f, true, TryInitUi);
+		InitUiTimerHandle = TimerManager.AddTimer(0.1f, true, TryInitUi);
 	}
 
 	protected override void OnUpdate()

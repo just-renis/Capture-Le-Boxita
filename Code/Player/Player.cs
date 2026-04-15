@@ -1,3 +1,4 @@
+using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Player;
@@ -8,7 +9,7 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float Sensitivity { get; set; } = 0.2f;
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
-	[RequireComponent] private CharacterController Controller { get; set; }
+	[Property] private Sword Sword { get; set; }
 
 	private int GrabTimerHandle;
 	private int LocationSenderTimerHandle;
@@ -23,6 +24,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private EventManager EventManager;
 	private UiManager UiManager;
 	private CameraComponent Camera;
+	private CharacterController Controller;
 	
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
@@ -48,8 +50,8 @@ public sealed class Player : Component, Component.INetworkListener
 		if (IsProxy) return;
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
-		LocationSenderTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(SendPlayerLocationInterval, true, SendPlayerLocation);
-		if (Components.TryGet(out PlayerController OutPlayerController)) OutPlayerController.UseCameraControls = false;
+		LocationSenderTimerHandle = TimerManager.AddTimer(SendPlayerLocationInterval, true, SendPlayerLocation);
+		Controller = GetComponent<CharacterController>();
 	}
 	protected override void OnUpdate()
 	{
@@ -117,19 +119,8 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void ProcessMouseRightClickInput()
 	{
-		GameObject HeldObject = HeldObjectData.GetObject();
-		if (HeldObject == null || !Input.Pressed("Attack2")) return;
-		Rigidbody Rigidbody = HeldObjectData.GetRigidBody();
-		if (Rigidbody == null) return;
-		Vector3 ThrowDir = Camera.WorldRotation.Forward;
-		Rigidbody.Velocity = ThrowDir * ThrowForce;
-		ClearHeldObjectData();
-	}
-	private void ProcessMouseLeftClickInput()
-	{
-		if (Input.Pressed("Attack1"))
+		if (Input.Pressed("Attack2"))
 		{
-			EventManager.TriggerPlayerClickState(1f);
 			Ray Ray = Camera.ScreenPixelToRay(new Vector2(Screen.Width / 2, Screen.Height / 2));
 			Vector3 Start = Ray.Position;
 			Vector3 End = Start + Ray.Forward * GrabDistance;
@@ -141,15 +132,27 @@ public sealed class Player : Component, Component.INetworkListener
 			HeldObjectData = new FHeldObjectData(GrabbedObject, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
-		else if (Input.Released("Attack1"))
+		else if (Input.Released("Attack2")) ClearHeldObjectData();
+	}
+	private void ProcessMouseLeftClickInput()
+	{
+		if (!Input.Pressed("Attack1")) return;
+		if (HeldObjectData.GetObject() == null)
 		{
-			EventManager.TriggerPlayerClickState(5f);
+			Sword.Attack();
+		}
+		else
+		{
+			Rigidbody Rigidbody = HeldObjectData.GetRigidBody();
+			if (Rigidbody == null) return;
+			Vector3 ThrowDir = Camera.WorldRotation.Forward;
+			Rigidbody.Velocity = ThrowDir * ThrowForce;
 			ClearHeldObjectData();
 		}
 	}
 	private void SetupGrabbedObjectTimer()
 	{
-		GrabTimerHandle = Scene.GetSystem<TimerManager>().AddTimer(1 / 60f, true, ProcessGrabbedObjectLogic);
+		GrabTimerHandle = TimerManager.AddTimer(1f / 60f, true, ProcessGrabbedObjectLogic);
 	}
 	private void ProcessGrabbedObjectLogic()
 	{
@@ -182,11 +185,13 @@ public sealed class Player : Component, Component.INetworkListener
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void OnConnected(Connection channel)
 	{
-		Log.Info(channel.Id);
+		EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), true);
+		Log.Info("CONNECTED: " + channel.Id);
 	}
 	public void OnDisconnected(Connection channel)
 	{
-		Log.Info(channel.Id);
+	//	EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), false);
+		Log.Info("DISCONNECTED: " + channel.Id);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]

@@ -31,17 +31,17 @@ public sealed class TimerManager(Scene Scene) : GameObjectSystem(Scene)
 	private static readonly Dictionary<int, Timer> TIMERS = new();
 	private static int NEXT_ID;
 	
-	public int AddTimer(float InInterval, bool InIsLooping, Action InTimerCallback)
+	public static int AddTimer(float InInterval, bool InIsLooping, Action InTimerCallback)
 	{
 		TIMERS.Add(++NEXT_ID, new Timer(NEXT_ID, InInterval, InIsLooping, InTimerCallback));
 		return NEXT_ID;
 	}
 	public static void ClearTimer(int InId) { TIMERS.Remove(InId); }
-	public void OnUpdate()
+	public static void OnUpdate()
 	{
-		foreach (KeyValuePair<int, Timer> TimerObject in TIMERS) TimerObject.Value.IncrementTimer(Time.Delta);
+		foreach (KeyValuePair<int, Timer> TimerObject in TIMERS.ToArray()) TimerObject.Value.IncrementTimer(Time.Delta);
 	}
-	public void OnDestroy()
+	public static void OnDestroy()
 	{
 		NEXT_ID = 0;
 		TIMERS.Clear();

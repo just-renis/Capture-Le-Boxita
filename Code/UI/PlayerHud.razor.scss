@@ -1,17 +1,37 @@
 PlayerHud
 {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-    font-family: Poppins;
-  > .info
-  {
     position: absolute;
-    bottom: 32px;
-    left: 32px;
-    font-size: 32px;
-    font-weight: bold;
-  }
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-family: Poppins;
+    > .Leaderboard
+    {
+        position: absolute;
+        top: 32px;
+        right: 32px;
+        font-size: 32px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+        min-width: 200px;
+  
+        > .Entry
+        {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+    
+            > .Name
+            {
+               color: white;
+            }
+    
+            > .Money
+            {
+                color: gold;
+                font-weight: bold;
+            }
+        }
+    }
 }

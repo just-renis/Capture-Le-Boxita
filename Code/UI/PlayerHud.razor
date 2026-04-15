@@ -1,30 +1,38 @@
 @using Sandbox;
+@using Sandbox.Data
 @using Sandbox.Managers
 @inherits PanelComponent
 
 <root>
-	<div class = "Info" >
-		<p>@Text</p>
+	<div class = "Leaderboard" >
+		@foreach (LeaderboardEntry Entry in Players)
+		{
+			<div class = "Entry">
+				<span class = "Name">@Entry.Name</span>
+				<span class = "Money">@Entry.Money</span>
+			</div>
+		}
 	</div>
 </root>
 
 @code
 {
-	string Text = "Hello";
+	List<LeaderboardEntry> Players = new();
 	protected override void OnStart()
 	{
-		Scene.GetSystem<EventManager>().OnPlayerClickStateChange += HandleClickStateChange;
+		Scene.GetSystem<EventManager>().OnPlayerConnectionChanged += HandleClickStateChange;
 	}
 	protected override void OnDestroy()
 	{
-		Scene.GetSystem<EventManager>().OnPlayerClickStateChange -= HandleClickStateChange;
+		Scene.GetSystem<EventManager>().OnPlayerConnectionChanged -= HandleClickStateChange;
 	}
-	void HandleClickStateChange(float MouseClickState)
+	void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
-		Text = MouseClickState == 1f ? "Clicked!" : "Released";
+		if (InConnected) Players.Add(InLeaderboardEntry);
+		else Players.Remove(InLeaderboardEntry);
 	}
 	protected override int BuildHash()
 	{
-		return System.HashCode.Combine(Text);
+		return System.HashCode.Combine(Players);
 	}
 }

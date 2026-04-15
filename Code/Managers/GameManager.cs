@@ -6,14 +6,12 @@ public sealed class GameManager : Component
 {
 	[Property] NetDictionary<EPoolObject, ObjectPoolData> Prefabs { get; set; }
 	
-	private TimerManager TimerManager;
 	private CollectibleCubeManager CollectibleCubeManager;
 	private UiManager UiManager;
 	private PoolingManager PoolingManager;
 	protected override void OnStart()
 	{
 		base.OnStart();
-		TimerManager = Scene.GetSystem<TimerManager>();
 		UiManager = Scene.GetSystem<UiManager>();
 		UiManager.OnStart();
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();

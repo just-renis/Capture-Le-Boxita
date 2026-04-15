@@ -1,16 +1,17 @@
 ﻿using System;
+using Sandbox.Data;
 using Sandbox.Enums;
 namespace Sandbox.Managers;
 
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
-	public event Action<float> OnPlayerClickStateChange;
+	public event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
 	public event Action<Vector3> OnPlayerLocationSend;
 	public event Action<EUi, bool> OnUiStateChange;
 	
-	public void TriggerPlayerClickState(float MouseClickState)
+	public void TriggerPlayerConnectionChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
-		OnPlayerClickStateChange?.Invoke(MouseClickState);
+		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
 	}
 	public void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
