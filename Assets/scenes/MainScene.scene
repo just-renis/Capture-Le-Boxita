@@ -67,7 +67,7 @@
           "CreateAttachments": false,
           "LodOverride": null,
           "MaterialGroup": null,
-          "MaterialOverride": null,
+          "MaterialOverride": "materials/bowiegrass.vmat",
           "Materials": null,
           "Model": "models/dev/box.vmdl",
           "OnComponentDestroy": null,
@@ -90,7 +90,7 @@
           "__guid": "1f1784f2-eb56-4253-ab50-b01ea8b318b1",
           "__enabled": true,
           "Flags": 0,
-          "Center": "0,0,0",
+          "Center": "0,0.001735687,0",
           "ColliderFlags": 0,
           "Elasticity": null,
           "Friction": null,
@@ -106,7 +106,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "50,50,50",
+          "Scale": "50,50.00347,50",
           "Static": false,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -147,7 +147,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 5
+              "MaxAmountActive": 0
             }
           }
         }
@@ -276,59 +276,11 @@
       "Children": []
     },
     {
-      "__guid": "32193b73-c2c2-456f-afae-7af05b753be6",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "Camera",
-      "Position": "-550.3601,-241.0495,51.15025",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "maincamera",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "Sandbox.CameraComponent",
-          "__guid": "2d5e6755-ce4e-4756-9d0f-4001cc8dc877",
-          "__enabled": true,
-          "Flags": 0,
-          "BackgroundColor": "0.33333,0.46275,0.52157,1",
-          "ClearFlags": "All",
-          "EnablePostProcessing": true,
-          "FieldOfView": 60,
-          "FovAxis": "Horizontal",
-          "IsMainCamera": true,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "Orthographic": false,
-          "OrthographicHeight": 1204,
-          "PostProcessAnchor": null,
-          "Priority": 1,
-          "RenderExcludeTags": "",
-          "RenderTags": "",
-          "RenderTexture": null,
-          "TargetEye": "None",
-          "Viewport": "0,0,1,1",
-          "ZFar": 10000,
-          "ZNear": 10
-        }
-      ],
-      "Children": []
-    },
-    {
-      "__guid": "37e60aef-0c73-41be-bea0-1917082ec518",
+      "__guid": "08091973-4df6-42f6-a4bd-8aa45b5c9abe",
       "__version": 2,
       "Flags": 0,
       "Name": "sword",
-      "Position": "860.7142,-299.7357,54.55886",
+      "Position": "-1552.786,91.45703,54.55886",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -341,14 +293,14 @@
       "Components": [
         {
           "__type": "Sandbox.ModelRenderer",
-          "__guid": "1f758d86-ad11-48e6-b06a-beeea2870dd2",
+          "__guid": "ec6e24fb-77a7-4a56-9d34-cbb85c2c116b",
           "__enabled": true,
           "Flags": 0,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
           "LodOverride": null,
           "MaterialGroup": null,
-          "MaterialOverride": null,
+          "MaterialOverride": "models/sword.vmat",
           "Materials": null,
           "Model": "models/sword.vmdl",
           "OnComponentDestroy": null,
@@ -394,7 +346,7 @@
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "5c1abef2-b2a6-4ac3-b12c-abe6838c21f1"
+          "$blob": "c2e7008f-f29f-42ca-bd0a-a43f48391807"
         }
       }
     }
@@ -402,6 +354,8 @@
   "ResourceVersion": 3,
   "Title": null,
   "Description": null,
-  "__references": [],
+  "__references": [
+    "semxy.bowiegrass#24045"
+  ],
   "__version": 3
 }
