@@ -5,19 +5,19 @@ namespace Sandbox.Managers;
 
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
-	public event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
-	public event Action<Vector3> OnPlayerLocationSend;
-	public event Action<EUi, bool> OnUiStateChange;
+	public static event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
+	public static event Action<Vector3> OnPlayerLocationSend;
+	public static event Action<EUi, bool> OnUiStateChange;
 	
-	public void TriggerPlayerConnectionChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
+	public static void TriggerPlayerConnectionChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
 		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
 	}
-	public void TriggerUiStateChange(EUi InUi, bool RenderState)
+	public static void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
 		OnUiStateChange?.Invoke(InUi, RenderState);
 	}
-	public void TriggerPlayerLocationSend(Vector3 InPlayerLocation)
+	public static void TriggerPlayerLocationSend(Vector3 InPlayerLocation)
 	{
 		OnPlayerLocationSend?.Invoke(InPlayerLocation);
 	}

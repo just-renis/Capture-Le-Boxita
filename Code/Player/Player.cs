@@ -21,7 +21,6 @@ public sealed class Player : Component, Component.INetworkListener
 	private readonly float SendPlayerLocationInterval = 0.5f;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
-	private EventManager EventManager;
 	private UiManager UiManager;
 	private CameraComponent Camera;
 	private CharacterController Controller;
@@ -52,6 +51,7 @@ public sealed class Player : Component, Component.INetworkListener
 		SetupManagers();
 		LocationSenderTimerHandle = TimerManager.AddTimer(SendPlayerLocationInterval, true, SendPlayerLocation);
 		Controller = GetComponent<CharacterController>();
+		Controller.BoundingBox.AddBBox(new BBox(new Vector3( -5f, -5f, -50f / 2f ), new Vector3( 5f, 5f, 50f / 2 )));
 	}
 	protected override void OnUpdate()
 	{
@@ -64,7 +64,6 @@ public sealed class Player : Component, Component.INetworkListener
 		ClearHeldObjectData();
 		base.OnDestroy();
 	}
-
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void ProcessInput()
 	{
@@ -172,7 +171,6 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void SetupManagers()
 	{
-		EventManager = Scene.GetSystem<EventManager>();
 		UiManager = Scene.GetSystem<UiManager>();
 	}
 	private void ClearHeldObjectData()

@@ -20,11 +20,11 @@
 	List<LeaderboardEntry> Players = new();
 	protected override void OnStart()
 	{
-		Scene.GetSystem<EventManager>().OnPlayerConnectionChanged += HandleClickStateChange;
+		EventManager.OnPlayerConnectionChanged += HandleClickStateChange;
 	}
 	protected override void OnDestroy()
 	{
-		Scene.GetSystem<EventManager>().OnPlayerConnectionChanged -= HandleClickStateChange;
+		EventManager.OnPlayerConnectionChanged -= HandleClickStateChange;
 	}
 	void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{

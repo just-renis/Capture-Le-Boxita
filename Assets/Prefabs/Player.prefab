@@ -7,7 +7,7 @@
     "Position": "0,0,0",
     "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
-    "Tags": "",
+    "Tags": "player",
     "Enabled": true,
     "NetworkMode": 2,
     "NetworkFlags": 0,
@@ -96,7 +96,7 @@
         "__enabled": true,
         "Flags": 0,
         "AngularDamping": 0,
-        "EnableImpactDamage": true,
+        "EnableImpactDamage": false,
         "EnhancedCcd": false,
         "Gravity": true,
         "GravityScale": 1,
@@ -130,9 +130,9 @@
         "__enabled": true,
         "Flags": 0,
         "Acceleration": 10,
-        "Bounciness": 0.3,
+        "Bounciness": 0,
         "GroundAngle": 45,
-        "Height": 64,
+        "Height": 50,
         "IgnoreLayers": "",
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
@@ -140,7 +140,7 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "Radius": 16,
+        "Radius": 25,
         "StepHeight": 18,
         "UseCollisionRules": false
       }
@@ -249,22 +249,6 @@
                 "Type": "Component",
                 "IdValue": "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb"
               }
-            },
-            {
-              "Id": {
-                "Type": "Component",
-                "IdValue": "f20ae9d0-81d0-49a6-ad16-dd078e2c5a69"
-              },
-              "NewParent": {
-                "Type": "GameObject",
-                "IdValue": "48a4fbaa-6e36-4b5c-bc7e-8946814bc7ea"
-              },
-              "NewContainerProperty": "Components",
-              "IsNewContainerArray": true,
-              "NewPreviousElement": {
-                "Type": "Component",
-                "IdValue": "911fddae-888d-4d8a-94c0-0eb15d919703"
-              }
             }
           ]
         },
@@ -272,7 +256,8 @@
           "48a4fbaa-6e36-4b5c-bc7e-8946814bc7ea": "385fa3ef-b5b1-48f9-923a-947567ba22aa",
           "6e501d54-e05c-4196-a583-563594a2e517": "dafa80c1-1c6e-4099-b0a9-fc8a5e305eaa",
           "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb": "aa6ef62d-fece-4223-a702-587672172ddd",
-          "f20ae9d0-81d0-49a6-ad16-dd078e2c5a69": "87925964-ebd1-45f2-9142-3a2fda10898b"
+          "568a1886-ef74-4cb4-9801-3b9f5b9686d4": "fe6a1833-536a-41d9-b777-54e2ca2a9d9c",
+          "422a5cd5-3929-4a2f-83a0-cce9885b19ec": "351660d2-cd00-4c08-a719-2311b4071ae2"
         }
       }
     ],
@@ -292,6 +277,7 @@
         "AgentMaxSlope": 40,
         "ExcludedBodies": "",
         "IncludedBodies": "",
+        "DeferGeneration": false,
         "CustomBounds": false
       }
     },

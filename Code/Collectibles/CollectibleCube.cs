@@ -9,24 +9,20 @@ public sealed class CollectibleCube : Component
 	private int InitUiTimerHandle;
 	private readonly float DistanceCull = 80000f;
 	private readonly float HpBarOffset = 50f;
-	private EventManager EventManager;
 	private WorldPanel HpBarUi;
 	private CubeHpBar HpBar;
 	
 	protected override void OnStart()
 	{
 		base.OnStart();
-		EventManager = Scene.GetSystem<EventManager>();
 		EventManager.OnPlayerLocationSend += CheckIfNeedToChangeRenderState;
 		InitUiTimerHandle = TimerManager.AddTimer(0.1f, true, TryInitUi);
 	}
-
 	protected override void OnUpdate()
 	{
 		base.OnUpdate();
 		HpBarUi?.WorldPosition = GameObject.WorldPosition + Vector3.Up * HpBarOffset;
 	}
-
 	protected override void OnDestroy()
 	{
 		EventManager.OnPlayerLocationSend -= CheckIfNeedToChangeRenderState;
@@ -37,7 +33,6 @@ public sealed class CollectibleCube : Component
 	{
 		HpBarUi?.Enabled = InPlayerPosition.DistanceSquared(GameObject.WorldPosition) < DistanceCull;
 	}
-
 	private void TryInitUi()
 	{
 		HpBarUi ??= GameObject.GetComponentInChildren<WorldPanel>(true);
