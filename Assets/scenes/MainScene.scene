@@ -91,7 +91,7 @@
           "__enabled": true,
           "Flags": 0,
           "Center": "0,0.00173568702,0",
-          "ColliderFlags": 0,
+          "ColliderFlags": "IgnoreTraces, IgnoreMass",
           "Elasticity": null,
           "Friction": null,
           "IsTrigger": false,
@@ -147,7 +147,14 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 5
+              "MaxAmountActive": 15
+            },
+            "AlienShip": {
+              "Prefab": {
+                "_type": "gameobject",
+                "prefab": "prefabs/alienship.prefab"
+              },
+              "MaxAmountActive": 10
             }
           }
         }
@@ -322,52 +329,6 @@
         }
       ],
       "Children": []
-    },
-    {
-      "__guid": "8b932e8f-651a-4f4e-a9e6-eeb706078920",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "hole",
-      "Position": "263.611298,215.210098,-429.198669",
-      "Rotation": "-1,0,-0,-4.37113883E-08",
-      "Scale": "5,5,5",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "81b1806e-99fb-4410-ba6a-e02c61dce281",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": null,
-          "Materials": null,
-          "Model": "models/hole/hole.vmdl",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "Off",
-          "Tint": "0,0,0,1"
-        }
-      ],
-      "Children": []
     }
   ],
   "SceneProperties": {
@@ -390,11 +351,6 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "140119b5-4102-4203-b00e-8413936f1581"
-        }
-      },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       }

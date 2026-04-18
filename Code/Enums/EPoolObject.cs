@@ -2,5 +2,6 @@
 
 public enum EPoolObject
 {
-	CollectibleCube
+	CollectibleCube,
+	AlienShip
 }

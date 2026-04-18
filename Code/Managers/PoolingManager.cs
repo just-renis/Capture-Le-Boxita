@@ -15,7 +15,7 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 	public GameObject SpawnObjectFromPool(EPoolObject InObjectName, Vector3 InLocation, Rotation InRotation = default)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
-		if (!PoolData.Objects.Any()) AllocatePoolObject(InObjectName);
+		if (PoolData.Objects.Count == 0) AllocatePoolObject(InObjectName);
 		Guid ObjectId = PoolData.Objects.Pop();
 		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectId);
 		PoolObject.LocalPosition = InLocation;

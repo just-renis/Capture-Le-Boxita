@@ -4,8 +4,10 @@ namespace Sandbox.Managers;
 
 public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene)
 {
-	private float SpawnTimer;
-	private readonly float SpawnTime = 2f;
+	private float CubeSpawnTimer;
+	private const float CubeSpawnTime = 2f;
+	private float AlienShipSpawnTimer;
+	private const float AlienShipSpawnTime = 2f;
 	private PoolingManager PoolingManager;
 	
 	public void Init()
@@ -14,12 +16,24 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 	}
 	public void OnUpdate()
 	{
+		HandleCubeSpawning();
+		HandleAlienShipSpawning();
+	}
+
+	private void HandleCubeSpawning()
+	{
 		if (!PoolingManager.CanSpawnObject(EPoolObject.CollectibleCube)) return;
-		SpawnTimer += Time.Delta;
-		if (SpawnTimer >= SpawnTime)
-		{
-			SpawnTimer = 0f;
-			PoolingManager.SpawnObjectFromPool(EPoolObject.CollectibleCube, new Vector3(Random.Shared.Float(100f, 500f), Random.Shared.Float(100f, 500f), Random.Shared.Float(0f, 300f)));
-		}
+		CubeSpawnTimer += Time.Delta;
+		if (CubeSpawnTimer < CubeSpawnTime) return;
+		CubeSpawnTimer = 0f;
+		PoolingManager.SpawnObjectFromPool(EPoolObject.CollectibleCube, new Vector3(Random.Shared.Float(100f, 500f), Random.Shared.Float(100f, 500f), Random.Shared.Float(250f, 300f)));
+	}
+	private void HandleAlienShipSpawning()
+	{
+		if (!PoolingManager.CanSpawnObject(EPoolObject.AlienShip)) return;
+		AlienShipSpawnTimer += Time.Delta;
+		if (AlienShipSpawnTimer < AlienShipSpawnTime) return;
+		AlienShipSpawnTimer = 0f;
+		PoolingManager.SpawnObjectFromPool(EPoolObject.AlienShip, new Vector3(Random.Shared.Float(-200f, 200f), Random.Shared.Float(-200f, 200f), 500f));
 	}
 }

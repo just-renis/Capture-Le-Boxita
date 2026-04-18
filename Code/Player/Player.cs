@@ -36,6 +36,7 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			Object = InObject;
 			HoldDistance = InHoldDistance;
+			Object.Tags.Add("beamaffected");
 			if (Object.Components.TryGet(out Rigidbody OutRigidBody)) { RigidBody = OutRigidBody; }
 		}
 		public float GetHoldDistance() { return HoldDistance; }
@@ -58,10 +59,9 @@ public sealed class Player : Component, Component.INetworkListener
 		if (IsProxy || Camera == null) return;
 		ProcessInput();
 	}
-
 	protected override void OnDestroy()
 	{
-		ClearHeldObjectData();
+		ClearHeldObjectData(false);
 		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -131,7 +131,7 @@ public sealed class Player : Component, Component.INetworkListener
 			HeldObjectData = new FHeldObjectData(GrabbedObject, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
-		else if (Input.Released("Attack2")) ClearHeldObjectData();
+		else if (Input.Released("Attack2")) ClearHeldObjectData(false);
 	}
 	private void ProcessMouseLeftClickInput()
 	{
@@ -146,7 +146,7 @@ public sealed class Player : Component, Component.INetworkListener
 			if (Rigidbody == null) return;
 			Vector3 ThrowDir = Camera.WorldRotation.Forward;
 			Rigidbody.Velocity = ThrowDir * ThrowForce;
-			ClearHeldObjectData();
+			ClearHeldObjectData(true);
 		}
 	}
 	private void SetupGrabbedObjectTimer()
@@ -159,7 +159,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (HeldObject == null) return;
 		if (!HeldObject.Network.IsOwner)
 		{
-			ClearHeldObjectData();
+			ClearHeldObjectData(true);
 			return;
 		}
 		if (!HeldObjectData.GetRigidBody().IsValid()) return;
@@ -173,9 +173,14 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		UiManager = Scene.GetSystem<UiManager>();
 	}
-	private void ClearHeldObjectData()
+	private void ClearHeldObjectData(bool IsBeamAffectable)
 	{
-		if (HeldObjectData.GetObject() != null) HeldObjectData.GetObject().Network.DropOwnership();
+		GameObject HeldObject = HeldObjectData.GetObject();
+		if (HeldObject != null)
+		{
+			if (!IsBeamAffectable) HeldObject.Tags.Remove("beamaffected");
+			HeldObject.Network.DropOwnership();
+		}
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
@@ -192,11 +197,4 @@ public sealed class Player : Component, Component.INetworkListener
 		Log.Info("DISCONNECTED: " + channel.Id);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
-	[Rpc.Broadcast]
-	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
-	{
-		if (!Networking.IsHost) return;
-		InPoolObject.Network.TakeOwnership();
-		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(InPoolObjectName, InPoolObject);
-	}
 }
