@@ -34,4 +34,12 @@ PlayerHud
             }
         }
     }
+    > .Money
+    {
+      position: absolute;
+      top: 32px;
+      Left: 32px;
+      font-size: 32px;
+      font-weight: bolder;
+    }
 }

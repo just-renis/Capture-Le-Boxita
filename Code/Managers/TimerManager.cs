@@ -31,8 +31,13 @@ public sealed class TimerManager(Scene Scene) : GameObjectSystem(Scene)
 	private static readonly Dictionary<int, Timer> TIMERS = new();
 	private static int NEXT_ID;
 	
-	public static int AddTimer(float InInterval, bool InIsLooping, Action InTimerCallback)
+	public static int AddTimer(int TimerHandle, float InInterval, bool InIsLooping, Action InTimerCallback)
 	{
+		if (TIMERS.ContainsKey(TimerHandle))
+		{
+			TIMERS[TimerHandle] = new Timer(TimerHandle, InInterval, InIsLooping, InTimerCallback);
+			return TimerHandle;
+		}
 		TIMERS.Add(++NEXT_ID, new Timer(NEXT_ID, InInterval, InIsLooping, InTimerCallback));
 		return NEXT_ID;
 	}

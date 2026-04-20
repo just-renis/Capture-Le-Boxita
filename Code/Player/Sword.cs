@@ -21,7 +21,7 @@ public sealed class Sword : Component
 		if (IsInAttackMode) return;
 		HitObjects.Clear();
 		IsInAttackMode = true;
-		ProcessAttackHandle = TimerManager.AddTimer(0.025f, true, ProcessAttackForward);
+		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackForward);
 	}
 	private void ProcessAttackForward()
 	{
@@ -34,7 +34,7 @@ public sealed class Sword : Component
 		if (++ProcessAttackTimes <= 18) return;
 		ProcessAttackTimes = 0;
 		TimerManager.ClearTimer(ProcessAttackHandle);
-		ProcessAttackHandle = TimerManager.AddTimer(0.025f, true, ProcessAttackBackward);
+		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackBackward);
 	}
 	private void ProcessAttackBackward()
 	{

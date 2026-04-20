@@ -1,18 +1,21 @@
 using System;
-using Sandbox.Enums;
+using Sandbox.Components;
+using Sandbox.Interfaces;
 using Sandbox.Managers;
 namespace Sandbox.AI;
 
-public sealed class AlienShip : Component
+public sealed class AlienShip : Component, IPoolObject
 {
 	private int MoveHandle;
-	private int BeamUpdateHandle;
+	private int CheckIsInAirObjectsHandle;
 	private const float MoveSpeed = 50f;
 	private float ChangeDirectionTimer;
 	private Vector2 Direction;
 	private BoxCollider Collider;
 	private CapsuleCollider BeamCollider;
-	private HashSet<Rigidbody> InsideBeamPhysicalObjects = [];
+	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
+
+	public void Init() { }
 	
 	protected override void OnStart()
 	{
@@ -20,22 +23,18 @@ public sealed class AlienShip : Component
 		ChangeDirection();
 		Collider = GetComponent<BoxCollider>();
 		BeamCollider = GetComponentInChildren<CapsuleCollider>();
-		BeamCollider.OnTriggerEnter += BeamEntered;
-		BeamCollider.OnTriggerExit += BeamExited;
+		BeamCollider?.OnTriggerEnter += BeamEntered;
+		BeamCollider?.OnTriggerExit += BeamExit;
 		Collider.OnTriggerEnter += ChangeToOppositeDirection;
-		MoveHandle = TimerManager.AddTimer(0.05f, true, Move);
-		BeamUpdateHandle = TimerManager.AddTimer(0.05f, true, BeamUpdate);
+		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
+		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
 	}
 	protected override void OnDestroy()
 	{
 		Collider?.OnTriggerEnter -= ChangeToOppositeDirection;
-		if (BeamCollider.IsValid())
-		{
-			BeamCollider.OnTriggerEnter -= BeamEntered;
-			BeamCollider.OnTriggerExit -= BeamExited;
-		}
+		BeamCollider?.OnTriggerEnter -= BeamEntered;
+		BeamCollider?.OnTriggerExit -= BeamExit;
 		TimerManager.ClearTimer(MoveHandle);
-		TimerManager.ClearTimer(BeamUpdateHandle);
 		base.OnDestroy();
 	}
 
@@ -44,6 +43,15 @@ public sealed class AlienShip : Component
 		ChangeDirectionTimer -= 0.05f;
 		if (ChangeDirectionTimer <= 0f) ChangeDirection();
 		WorldPosition += new Vector3(Direction * MoveSpeed * 0.05f);
+	}
+	private void CheckIsInAirObjects()
+	{
+		List<PullableComponent> ToRemove = InsideBeamObjects.Where(Pullable => Pullable.IsInAir()).ToList();
+		foreach (PullableComponent Pullable in ToRemove)
+		{
+			Pullable.SetIsPulled(true);
+			InsideBeamObjects.Remove(Pullable);
+		}
 	}
 	private void ChangeDirection()
 	{
@@ -54,43 +62,24 @@ public sealed class AlienShip : Component
 	}
 	private void ChangeToOppositeDirection(Collider InCollider)
 	{
-		if (InCollider.Tags.Contains("beamaffected"))
-		{
-			if (InCollider.Tags.Contains("collectible")) RequestReturnToPoolObject(EPoolObject.CollectibleCube, InCollider.GameObject.Root);
-			else Log.Info("LMAO");
-		}
-		else
-		{
-			Direction *= -1;
-			ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
-		}
+		Direction *= -1;
+		ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
 	}
 	private void BeamEntered(Collider InCollider)
 	{
-		if (!InCollider.Tags.Contains("beamaffected") || !InsideBeamPhysicalObjects.Add(InCollider.GameObject.Root.GetComponent<Rigidbody>())) return;
-		//Log.Info("ENTERED: " + InCollider.GameObject.Root);
-	}
-	private void BeamExited(Collider InCollider)
-	{
-		if (!InCollider.Tags.Contains("beamaffected") || !InsideBeamPhysicalObjects.Contains(InCollider.GameObject.Root.GetComponent<Rigidbody>())) return;
-		//Log.Info("EXITED: " + InCollider.GameObject.Root);
-		InsideBeamPhysicalObjects.Remove(InCollider.GameObject.Root.GetComponent<Rigidbody>());
-	}
-	private void BeamUpdate()
-	{
-		foreach (Rigidbody Body in InsideBeamPhysicalObjects.Where(Body => Body.IsValid()))
+		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
+		if (Pullable == null) return;
+		if (!Pullable.IsInAir())
 		{
-			Body.Velocity = Vector3.Up * 500f;
+			InsideBeamObjects.Add(Pullable);
+			return;
 		}
+		Pullable.SetIsPulled(true);
 	}
-	[Rpc.Broadcast]
-	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
+	private void BeamExit(Collider InCollider)
 	{
-		if (!Networking.IsHost) return;
-		InPoolObject.Network.TakeOwnership();
-		Rigidbody Body = InPoolObject.Root.GetComponent<Rigidbody>();
-		Body.Velocity = 0f;
-		InsideBeamPhysicalObjects.Remove(Body);
-		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(InPoolObjectName, InPoolObject);
+		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
+		InsideBeamObjects.Remove(Pullable);
+		Pullable?.SetIsPulled(false);
 	}
 }

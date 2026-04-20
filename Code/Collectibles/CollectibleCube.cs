@@ -1,51 +1,40 @@
+using Sandbox.Components;
+using Sandbox.Enums;
+using Sandbox.Interfaces;
 using Sandbox.Managers;
-using Sandbox.UI;
 namespace Sandbox.Collectibles;
 
-public sealed class CollectibleCube : Component
+public sealed class CollectibleCube : Component, IPoolObject
 {
-	[Property] private float MaxHp = 100f;
-	[Property, Sync] private float CurrentHp { get; set; } = 100f;
-	private int InitUiTimerHandle;
-	private readonly float DistanceCull = 80000f;
-	private readonly float HpBarOffset = 50f;
-	private WorldPanel HpBarUi;
-	private CubeHpBar HpBar;
+	private int OutOfBoundsHandle;
+	private PullableComponent PullComp;
+	private Rigidbody Rigidbody;
+	
+	public void Init()
+	{
+		OutOfBoundsHandle = TimerManager.AddTimer(OutOfBoundsHandle, 0.2f, true, CheckOutOfBounds);
+	}
 	
 	protected override void OnStart()
 	{
 		base.OnStart();
-		EventManager.OnPlayerLocationSend += CheckIfNeedToChangeRenderState;
-		InitUiTimerHandle = TimerManager.AddTimer(0.1f, true, TryInitUi);
-	}
-	protected override void OnUpdate()
-	{
-		base.OnUpdate();
-		HpBarUi?.WorldPosition = GameObject.WorldPosition + Vector3.Up * HpBarOffset;
-	}
-	protected override void OnDestroy()
-	{
-		EventManager.OnPlayerLocationSend -= CheckIfNeedToChangeRenderState;
-		base.OnDestroy();
+		PullComp = GetComponent<PullableComponent>();
+		Rigidbody = GetComponent<Rigidbody>();
 	}
 
-	private void CheckIfNeedToChangeRenderState(Vector3 InPlayerPosition)
+	private void CheckOutOfBounds()
 	{
-		HpBarUi?.Enabled = InPlayerPosition.DistanceSquared(GameObject.WorldPosition) < DistanceCull;
-	}
-	private void TryInitUi()
-	{
-		HpBarUi ??= GameObject.GetComponentInChildren<WorldPanel>(true);
-		if (HpBarUi != null && HpBar == null) HpBar = HpBarUi.GetComponentInChildren<CubeHpBar>(true);
-		if (HpBar == null) return;
-		HpBar.SetMaxHp(MaxHp);
-		HpBar.SetCurrentHp(CurrentHp);
-		TimerManager.ClearTimer(InitUiTimerHandle);
+		if (GameObject.WorldPosition.z < 500f || !PullComp.GetIsPulled()) return;
+		TimerManager.ClearTimer(OutOfBoundsHandle);
+		RequestReturnToPoolObject(EPoolObject.CollectibleCube, GameObject);
 	}
 	[Rpc.Broadcast]
-	private void ReceiveDamage(float InDamage)
+	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
 	{
-		CurrentHp -= InDamage;
-		HpBar?.SetCurrentHp(CurrentHp);
+		if (!Networking.IsHost) return;
+		InPoolObject.Network.TakeOwnership();
+		PullComp.SetIsPulled(false);
+		Rigidbody.Velocity = 0f;
+		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(InPoolObjectName, InPoolObject);
 	}
 }

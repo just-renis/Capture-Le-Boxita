@@ -5,20 +5,25 @@ namespace Sandbox.Managers;
 
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
+	public static event Action<int> OnMoneyChanged;
+	public static event Func<Vector3> OnTeleportToSpawnLocation;
+	public static event Action<EUi, bool> OnUiStateChanged;
 	public static event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
-	public static event Action<Vector3> OnPlayerLocationSend;
-	public static event Action<EUi, bool> OnUiStateChange;
 	
-	public static void TriggerPlayerConnectionChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
+	public static Vector3 TriggerGetSpawnLocation()
 	{
-		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
+		return OnTeleportToSpawnLocation?.Invoke() ?? Vector3.Zero;
+	}
+	public static void TriggerMoneyChange(int InMoney)
+	{
+		OnMoneyChanged?.Invoke(InMoney);
 	}
 	public static void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
-		OnUiStateChange?.Invoke(InUi, RenderState);
+		OnUiStateChanged?.Invoke(InUi, RenderState);
 	}
-	public static void TriggerPlayerLocationSend(Vector3 InPlayerLocation)
+	public static void TriggerPlayerConnectionChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
-		OnPlayerLocationSend?.Invoke(InPlayerLocation);
+		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
 	}
 }

@@ -143,6 +143,18 @@
         "Radius": 25,
         "StepHeight": 18,
         "UseCollisionRules": false
+      },
+      {
+        "__type": "Sandbox.Components.PullableComponent",
+        "__guid": "9cd31db8-991a-4cd6-bfef-c2cb4f9e76ca",
+        "__enabled": true,
+        "Flags": 0,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
       }
     ],
     "Children": [

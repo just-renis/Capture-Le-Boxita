@@ -15,12 +15,12 @@
 	protected override void OnStart()
 	{
 		EventManager = Scene.GetSystem<EventManager>();
-		EventManager.OnUiStateChange += UiStateChanged;
+		EventManager.OnUiStateChanged += UiStateChanged;
 		Enabled = false;
 	}
 	protected override void OnDestroy()
 	{
-		EventManager.OnUiStateChange -= UiStateChanged;
+		EventManager.OnUiStateChanged -= UiStateChanged;
 	}
 	protected override int BuildHash()
 	{

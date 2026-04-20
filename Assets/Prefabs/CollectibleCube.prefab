@@ -47,8 +47,6 @@
         "__guid": "51580266-fb08-4e30-9c36-93815010dd07",
         "__enabled": true,
         "Flags": 0,
-        "CurrentHp": 100,
-        "MaxHp": 100,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -115,6 +113,19 @@
         "Static": false,
         "Surface": null,
         "SurfaceVelocity": "0,0,0"
+      },
+      {
+        "__type": "Sandbox.Components.PullableComponent",
+        "__guid": "d5cda843-f3c3-4f74-a275-f0f8f063ab8f",
+        "__enabled": true,
+        "Flags": 0,
+        "IsInAirCheckRequired": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
       }
     ],
     "Children": [

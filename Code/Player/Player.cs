@@ -1,3 +1,4 @@
+using Sandbox.Components;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
@@ -11,19 +12,19 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
 
+	private int OutOfBoundsHandle;
 	private int GrabTimerHandle;
-	private int LocationSenderTimerHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
 	private readonly float ThrowForce = 2000f;
 	private readonly float MovementFriction = 5f;
-	private readonly float SendPlayerLocationInterval = 0.5f;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
 	private UiManager UiManager;
 	private CameraComponent Camera;
 	private CharacterController Controller;
+	private PullableComponent PullComp;
 	
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
@@ -36,23 +37,34 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			Object = InObject;
 			HoldDistance = InHoldDistance;
-			Object.Tags.Add("beamaffected");
 			if (Object.Components.TryGet(out Rigidbody OutRigidBody)) { RigidBody = OutRigidBody; }
 		}
 		public float GetHoldDistance() { return HoldDistance; }
 		public GameObject GetObject() { return Object; }
 		public Rigidbody GetRigidBody() { return RigidBody; }
 	}
+	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	public void OnConnected(Connection InChannel)
+	{
+		EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(InChannel.Id, InChannel.Name, 0), true);
+		Log.Info("CONNECTED: " + InChannel.Id);
+	}
+	public void OnDisconnected(Connection InChannel)
+	{
+		//	EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), false);
+		Log.Info("DISCONNECTED: " + InChannel.Id);
+	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
 		base.OnStart();
 		if (IsProxy) return;
+		PullComp = GetComponent<PullableComponent>();
+		OutOfBoundsHandle = TimerManager.AddTimer(OutOfBoundsHandle, 0.2f, true, CheckOutOfBounds);
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
-		LocationSenderTimerHandle = TimerManager.AddTimer(SendPlayerLocationInterval, true, SendPlayerLocation);
 		Controller = GetComponent<CharacterController>();
-		Controller.BoundingBox.AddBBox(new BBox(new Vector3( -5f, -5f, -50f / 2f ), new Vector3( 5f, 5f, 50f / 2 )));
+		Controller.BoundingBox.AddBBox(new BBox(new Vector3( -5f, -5f, -50f / 2f ), new Vector3( 5f, 5f, 50f / 2f )));
 	}
 	protected override void OnUpdate()
 	{
@@ -61,7 +73,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	protected override void OnDestroy()
 	{
-		ClearHeldObjectData(false);
+		ClearHeldObjectData();
 		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -131,7 +143,7 @@ public sealed class Player : Component, Component.INetworkListener
 			HeldObjectData = new FHeldObjectData(GrabbedObject, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
-		else if (Input.Released("Attack2")) ClearHeldObjectData(false);
+		else if (Input.Released("Attack2")) ClearHeldObjectData();
 	}
 	private void ProcessMouseLeftClickInput()
 	{
@@ -146,12 +158,12 @@ public sealed class Player : Component, Component.INetworkListener
 			if (Rigidbody == null) return;
 			Vector3 ThrowDir = Camera.WorldRotation.Forward;
 			Rigidbody.Velocity = ThrowDir * ThrowForce;
-			ClearHeldObjectData(true);
+			ClearHeldObjectData();
 		}
 	}
 	private void SetupGrabbedObjectTimer()
 	{
-		GrabTimerHandle = TimerManager.AddTimer(1f / 60f, true, ProcessGrabbedObjectLogic);
+		GrabTimerHandle = TimerManager.AddTimer(GrabTimerHandle, 1f / 60f, true, ProcessGrabbedObjectLogic);
 	}
 	private void ProcessGrabbedObjectLogic()
 	{
@@ -159,42 +171,31 @@ public sealed class Player : Component, Component.INetworkListener
 		if (HeldObject == null) return;
 		if (!HeldObject.Network.IsOwner)
 		{
-			ClearHeldObjectData(true);
+			ClearHeldObjectData();
 			return;
 		}
-		if (!HeldObjectData.GetRigidBody().IsValid()) return;
+		Rigidbody HeldObjectRigidbody = HeldObjectData.GetRigidBody();
+		if (!HeldObjectRigidbody.IsValid()) return;
 		Vector3 TargetPosition = Camera.WorldPosition + Camera.WorldRotation.Forward * HeldObjectData.GetHoldDistance();
-		Vector3 Displacement = TargetPosition - HeldObjectData.GetObject().WorldPosition;
-		Vector3 Force = Displacement * SpringStrength - HeldObjectData.GetRigidBody().Velocity * DampingStrength;
-		HeldObjectData.GetRigidBody().ApplyForce(Force * HeldObjectData.GetRigidBody().PhysicsBody.Mass);
-		HeldObjectData.GetRigidBody().AngularVelocity = Vector3.Zero;
+		Vector3 Displacement = TargetPosition - HeldObject.WorldPosition;
+		Vector3 Force = Displacement * SpringStrength - HeldObjectRigidbody.Velocity * DampingStrength;
+		HeldObjectRigidbody.ApplyForce(Force * HeldObjectRigidbody.PhysicsBody.Mass);
+		HeldObjectRigidbody.AngularVelocity = Vector3.Zero;
 	}
 	private void SetupManagers()
 	{
 		UiManager = Scene.GetSystem<UiManager>();
 	}
-	private void ClearHeldObjectData(bool IsBeamAffectable)
+	private void ClearHeldObjectData()
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
-		if (HeldObject != null)
-		{
-			if (!IsBeamAffectable) HeldObject.Tags.Remove("beamaffected");
-			HeldObject.Network.DropOwnership();
-		}
+		HeldObject?.Network.DropOwnership();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
-	private void SendPlayerLocation() { EventManager.TriggerPlayerLocationSend(GameObject.WorldPosition); }
-	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
-	public void OnConnected(Connection channel)
+	private void CheckOutOfBounds()
 	{
-		EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), true);
-		Log.Info("CONNECTED: " + channel.Id);
+		if (GameObject.WorldPosition.z < 500f || !PullComp.GetIsPulled()) return;
+		WorldPosition = EventManager.TriggerGetSpawnLocation();
 	}
-	public void OnDisconnected(Connection channel)
-	{
-	//	EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), false);
-		Log.Info("DISCONNECTED: " + channel.Id);
-	}
-	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 }

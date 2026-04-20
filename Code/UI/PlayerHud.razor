@@ -4,7 +4,10 @@
 @inherits PanelComponent
 
 <root>
-	<div class = "Leaderboard" >
+	<div class = "Money">
+		<p>MONEY: @Money</p>
+	</div>
+	<div class = "Leaderboard">
 		@foreach (LeaderboardEntry Entry in Players)
 		{
 			<div class = "Entry">
@@ -17,22 +20,26 @@
 
 @code
 {
-	List<LeaderboardEntry> Players = new();
+	private float Money;
+	private List<LeaderboardEntry> Players = new();
 	protected override void OnStart()
 	{
 		EventManager.OnPlayerConnectionChanged += HandleClickStateChange;
+		EventManager.OnMoneyChanged += SetMoneyAmount;
 	}
 	protected override void OnDestroy()
 	{
 		EventManager.OnPlayerConnectionChanged -= HandleClickStateChange;
+		EventManager.OnMoneyChanged -= SetMoneyAmount;
 	}
 	void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
 		if (InConnected) Players.Add(InLeaderboardEntry);
 		else Players.Remove(InLeaderboardEntry);
 	}
+	void SetMoneyAmount(int InMoney) { Money = InMoney; }
 	protected override int BuildHash()
 	{
-		return System.HashCode.Combine(Players);
+		return System.HashCode.Combine(Money);
 	}
 }
