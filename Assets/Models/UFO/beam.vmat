@@ -1,0 +1,6 @@
+
+Layer0
+{
+	shader "models/ufo/beam.shader_c"
+
+}
