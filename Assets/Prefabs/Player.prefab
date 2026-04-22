@@ -59,7 +59,7 @@
         "Speed": 600,
         "Sword": {
           "_type": "component",
-          "component_id": "911fddae-888d-4d8a-94c0-0eb15d919703",
+          "component_id": "aa6ef62d-fece-4223-a702-587672172ddd",
           "go": "385fa3ef-b5b1-48f9-923a-947567ba22aa",
           "component_type": "Sword"
         }
@@ -149,6 +149,7 @@
         "__guid": "9cd31db8-991a-4cd6-bfef-c2cb4f9e76ca",
         "__enabled": true,
         "Flags": 0,
+        "IsInAirCheckRequired": false,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -163,61 +164,7 @@
         "__version": 2,
         "__Prefab": "prefabs/sword.prefab",
         "__PrefabInstancePatch": {
-          "AddedObjects": [
-            {
-              "Id": {
-                "Type": "Component",
-                "IdValue": "87e34e99-6390-4c1a-ae33-4ab78e563716"
-              },
-              "Parent": {
-                "Type": "GameObject",
-                "IdValue": "48a4fbaa-6e36-4b5c-bc7e-8946814bc7ea"
-              },
-              "PreviousElement": null,
-              "ContainerProperty": "Components",
-              "IsContainerArray": true,
-              "Data": {
-                "__type": "Sandbox.Player.Sword",
-                "__guid": "87e34e99-6390-4c1a-ae33-4ab78e563716",
-                "__enabled": true,
-                "Flags": 0,
-                "OnComponentDestroy": null,
-                "OnComponentDisabled": null,
-                "OnComponentEnabled": null,
-                "OnComponentFixedUpdate": null,
-                "OnComponentStart": null,
-                "OnComponentUpdate": null
-              }
-            },
-            {
-              "Id": {
-                "Type": "Component",
-                "IdValue": "911fddae-888d-4d8a-94c0-0eb15d919703"
-              },
-              "Parent": {
-                "Type": "GameObject",
-                "IdValue": "48a4fbaa-6e36-4b5c-bc7e-8946814bc7ea"
-              },
-              "PreviousElement": {
-                "Type": "Component",
-                "IdValue": "6e501d54-e05c-4196-a583-563594a2e517"
-              },
-              "ContainerProperty": "Components",
-              "IsContainerArray": true,
-              "Data": {
-                "__type": "Sandbox.Player.Sword",
-                "__guid": "911fddae-888d-4d8a-94c0-0eb15d919703",
-                "__enabled": true,
-                "Flags": 0,
-                "OnComponentDestroy": null,
-                "OnComponentDisabled": null,
-                "OnComponentEnabled": null,
-                "OnComponentFixedUpdate": null,
-                "OnComponentStart": null,
-                "OnComponentUpdate": null
-              }
-            }
-          ],
+          "AddedObjects": [],
           "RemovedObjects": [],
           "PropertyOverrides": [
             {
@@ -227,6 +174,14 @@
               },
               "Property": "Position",
               "Value": "0,-30,0"
+            },
+            {
+              "Target": {
+                "Type": "Component",
+                "IdValue": "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb"
+              },
+              "Property": "PushForce",
+              "Value": 5000000
             }
           ],
           "MovedObjects": [
@@ -241,10 +196,7 @@
               },
               "NewContainerProperty": "Components",
               "IsNewContainerArray": true,
-              "NewPreviousElement": {
-                "Type": "Component",
-                "IdValue": "87e34e99-6390-4c1a-ae33-4ab78e563716"
-              }
+              "NewPreviousElement": null
             },
             {
               "Id": {

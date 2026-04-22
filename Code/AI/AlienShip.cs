@@ -16,21 +16,20 @@ public sealed class AlienShip : Component, IPoolObject
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 
 	public void Init() { }
-	
+
 	protected override void OnStart()
 	{
 		base.OnStart();
+		if (!Networking.IsHost) return;
+		SetupBoxCollider();
 		ChangeDirection();
-		Collider = GetComponent<BoxCollider>();
-		BeamCollider = GetComponentInChildren<CapsuleCollider>();
-		BeamCollider?.OnTriggerEnter += BeamEntered;
-		BeamCollider?.OnTriggerExit += BeamExit;
-		Collider.OnTriggerEnter += ChangeToOppositeDirection;
+		SetupBeamCollider();
 		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
 		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
 	}
 	protected override void OnDestroy()
 	{
+		if (!Networking.IsHost) return;
 		Collider?.OnTriggerEnter -= ChangeToOppositeDirection;
 		BeamCollider?.OnTriggerEnter -= BeamEntered;
 		BeamCollider?.OnTriggerExit -= BeamExit;
@@ -65,21 +64,44 @@ public sealed class AlienShip : Component, IPoolObject
 		Direction *= -1;
 		ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
 	}
-	private void BeamEntered(Collider InCollider)
-	{
-		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
-		if (Pullable == null) return;
-		if (!Pullable.IsInAir())
-		{
-			InsideBeamObjects.Add(Pullable);
-			return;
-		}
-		Pullable.SetIsPulled(true);
-	}
 	private void BeamExit(Collider InCollider)
 	{
 		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
 		InsideBeamObjects.Remove(Pullable);
-		Pullable?.SetIsPulled(false);
+		SetPullOnObject(Pullable, false);
+	}
+	private void BeamEntered(Collider InCollider)
+	{
+		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
+		if (Pullable == null) return;
+		if (!Pullable.IsInAir()) InsideBeamObjects.Add(Pullable);
+		else SetPullOnObject(Pullable, true);
+	}
+	private void SetupBoxCollider()
+	{
+		Collider = GameObject.AddComponent<BoxCollider>();
+		Collider.Scale = new Vector3(400f, 400f, 50f);
+		Collider.IsTrigger = true;
+		Collider.ColliderFlags |= ColliderFlags.IgnoreTraces;
+		Collider.ColliderFlags |= ColliderFlags.IgnoreMass;
+		Collider.OnTriggerEnter += ChangeToOppositeDirection;
+	}
+	private void SetupBeamCollider()
+	{
+		GameObject BeamObject = new() { Parent = GameObject };
+		BeamCollider = BeamObject.AddComponent<CapsuleCollider>();
+		BeamCollider.End = new Vector3(0f, 0f, -1000f);
+		BeamCollider.Radius = 100f;
+		BeamCollider.IsTrigger = true;
+		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreTraces;
+		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreMass;
+		BeamCollider.OnTriggerEnter += BeamEntered;
+		BeamCollider.OnTriggerExit += BeamExit;
+	}
+	
+	[Rpc.Broadcast]
+	private void SetPullOnObject(PullableComponent InPullable, bool InState)
+	{
+		InPullable?.SetIsPulled(InState);
 	}
 }

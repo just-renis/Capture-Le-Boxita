@@ -1,3 +1,4 @@
+using System;
 using Sandbox.Components;
 using Sandbox.Data;
 using Sandbox.Enums;
@@ -14,6 +15,7 @@ public sealed class Player : Component, Component.INetworkListener
 
 	private int OutOfBoundsHandle;
 	private int GrabTimerHandle;
+	private int Money;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
@@ -31,17 +33,22 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		private readonly GameObject Object;
 		private readonly Rigidbody RigidBody;
+		private readonly PullableComponent PullableComp;
 		private readonly float HoldDistance;
 
 		public FHeldObjectData(GameObject InObject, float InHoldDistance)
 		{
 			Object = InObject;
 			HoldDistance = InHoldDistance;
+			PullableComp = InObject.GetComponent<PullableComponent>();
+			PullableComp.SetOwnerId(Connection.Local.Id);
 			if (Object.Components.TryGet(out Rigidbody OutRigidBody)) { RigidBody = OutRigidBody; }
 		}
 		public float GetHoldDistance() { return HoldDistance; }
 		public GameObject GetObject() { return Object; }
 		public Rigidbody GetRigidBody() { return RigidBody; }
+
+		public void SetupClearOwnerIdTimer() { PullableComp?.SetClearOwnerIdTimer(); }
 	}
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void OnConnected(Connection InChannel)
@@ -64,6 +71,7 @@ public sealed class Player : Component, Component.INetworkListener
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
 		Controller = GetComponent<CharacterController>();
+		EventManager.OnKill += IncreaseMoney;
 		Controller.BoundingBox.AddBBox(new BBox(new Vector3( -5f, -5f, -50f / 2f ), new Vector3( 5f, 5f, 50f / 2f )));
 	}
 	protected override void OnUpdate()
@@ -74,6 +82,7 @@ public sealed class Player : Component, Component.INetworkListener
 	protected override void OnDestroy()
 	{
 		ClearHeldObjectData();
+		EventManager.OnKill -= IncreaseMoney;
 		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -190,6 +199,7 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
 		HeldObject?.Network.DropOwnership();
+		HeldObjectData.SetupClearOwnerIdTimer();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
@@ -197,5 +207,14 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		if (GameObject.WorldPosition.z < 500f || !PullComp.GetIsPulled()) return;
 		WorldPosition = EventManager.TriggerGetSpawnLocation();
+	}
+	[Rpc.Broadcast]
+	private void IncreaseMoney(Guid InKillerOwnerId, int InMoneyAmount)
+	{
+		Log.Info("IncreaseMoney TEST");
+		if (Connection.Local.Id != InKillerOwnerId) return;
+		Log.Info("IncreaseMoney " + Connection.Local.Id + " " + InKillerOwnerId);
+		Money += InMoneyAmount;
+		EventManager.TriggerMoneyChange(Money);
 	}
 }

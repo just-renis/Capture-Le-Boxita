@@ -3,6 +3,7 @@ namespace Sandbox.Player;
 
 public sealed class Sword : Component
 {
+	[Property] private float PushForce { get; set; }
 	private bool IsInAttackMode;
 	private int ProcessAttackHandle;
 	private int ProcessAttackTimes;
@@ -29,7 +30,7 @@ public sealed class Sword : Component
 		foreach (Collider InTouchCollider in Collider.Touching)
 		{
 			if (!InTouchCollider.GameObject.Tags.Has("player") || !HitObjects.Add(InTouchCollider.GameObject.Root)) continue;
-			Log.Info(InTouchCollider.GameObject.Name);
+			InTouchCollider.GameObject.Root.GetComponent<Rigidbody>()?.ApplyImpulse(GameObject.Parent.WorldRotation.Forward * PushForce);
 		}
 		if (++ProcessAttackTimes <= 18) return;
 		ProcessAttackTimes = 0;

@@ -42,8 +42,7 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		GameObject PooledObject = Pool[InObjectName].Prefab.Clone();
 		Pool[InObjectName].Objects.Push(PooledObject.Id);
 		PooledObject.Network.SetOwnerTransfer(OwnerTransfer.Takeover);
-		PooledObject.GetComponent<IPoolObject>().Init();
 		PooledObject.NetworkSpawn();
-		PooledObject.Network.DropOwnership();
+		PooledObject.GetComponent<IPoolObject>().Init();
 	}
 }
