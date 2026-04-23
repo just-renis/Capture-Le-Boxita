@@ -34,7 +34,6 @@ public sealed class CollectibleCube : Component, IPoolObject
 		if (!Networking.IsHost) return;
 		InPoolObject.Network.TakeOwnership();
 		PullComp.SetIsPulled(false);
-		Log.Info("RETURN TO POOL " + PullComp.GetOwnerId());
 		EventManager.TriggerOnKill(PullComp.GetOwnerId(), PullComp.GetMoneyAmount());
 		PullComp.ClearOwnerId();
 		Rigidbody.Velocity = 0f;

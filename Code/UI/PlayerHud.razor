@@ -37,7 +37,7 @@
 		if (InConnected) Players.Add(InLeaderboardEntry);
 		else Players.Remove(InLeaderboardEntry);
 	}
-	void SetMoneyAmount(int InMoney) { Money = InMoney; }
+	void SetMoneyAmount(float InMoney) { Money = InMoney; }
 	protected override int BuildHash()
 	{
 		return System.HashCode.Combine(Money);

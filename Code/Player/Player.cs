@@ -12,10 +12,10 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
+	[Sync] private float Money { get; set; }
 
 	private int OutOfBoundsHandle;
 	private int GrabTimerHandle;
-	private int Money;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
@@ -36,12 +36,12 @@ public sealed class Player : Component, Component.INetworkListener
 		private readonly PullableComponent PullableComp;
 		private readonly float HoldDistance;
 
-		public FHeldObjectData(GameObject InObject, float InHoldDistance)
+		public FHeldObjectData(GameObject InObject, Guid InOwnerId, float InHoldDistance)
 		{
 			Object = InObject;
 			HoldDistance = InHoldDistance;
 			PullableComp = InObject.GetComponent<PullableComponent>();
-			PullableComp.SetOwnerId(Connection.Local.Id);
+			PullableComp.SetOwnerId(InOwnerId, true);
 			if (Object.Components.TryGet(out Rigidbody OutRigidBody)) { RigidBody = OutRigidBody; }
 		}
 		public float GetHoldDistance() { return HoldDistance; }
@@ -149,7 +149,7 @@ public sealed class Player : Component, Component.INetworkListener
 			if (!Trace.Hit) return;
 			GameObject GrabbedObject = Trace.GameObject;
 			GrabbedObject.Network.TakeOwnership();
-			HeldObjectData = new FHeldObjectData(GrabbedObject, Trace.Distance);
+			HeldObjectData = new FHeldObjectData(GrabbedObject, Network.OwnerId, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
 		else if (Input.Released("Attack2")) ClearHeldObjectData();
@@ -180,7 +180,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (HeldObject == null) return;
 		if (!HeldObject.Network.IsOwner)
 		{
-			ClearHeldObjectData();
+			ClearHeldObjectData(true);
 			return;
 		}
 		Rigidbody HeldObjectRigidbody = HeldObjectData.GetRigidBody();
@@ -195,24 +195,32 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		UiManager = Scene.GetSystem<UiManager>();
 	}
-	private void ClearHeldObjectData()
+	private void ClearHeldObjectData(bool InWasTakenFromOtherPlayer = false)
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
 		HeldObject?.Network.DropOwnership();
-		HeldObjectData.SetupClearOwnerIdTimer();
+		if (!InWasTakenFromOtherPlayer) HeldObjectData.SetupClearOwnerIdTimer();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
 	private void CheckOutOfBounds()
 	{
-		if (GameObject.WorldPosition.z < 500f || !PullComp.GetIsPulled()) return;
+		Log.Info("CURRENT MONEY: " + Money );
+		if (GameObject.WorldPosition.z < 500f) return;
 		WorldPosition = EventManager.TriggerGetSpawnLocation();
+		if (PullComp == null || !PullComp.GetIsPulled()) return;
+		Guid LastOwnedId = PullComp.GetOwnerId();
+		if (LastOwnedId == Guid.Empty || LastOwnedId == Id) return;
+		float MoneyLoss = Money * 0.25f;
+		Money -= MoneyLoss;
+		Log.Info("CURRENT MONEY: " + Money + "  MONEY LOSS: " + MoneyLoss);
+		IncreaseMoney(LastOwnedId, MoneyLoss);
 	}
 	[Rpc.Broadcast]
-	private void IncreaseMoney(Guid InKillerOwnerId, int InMoneyAmount)
+	private void IncreaseMoney(Guid InKillerOwnerId, float InMoneyAmount)
 	{
 		Log.Info("IncreaseMoney TEST");
-		if (Connection.Local.Id != InKillerOwnerId) return;
+		if (Network.OwnerId != InKillerOwnerId) return;
 		Log.Info("IncreaseMoney " + Connection.Local.Id + " " + InKillerOwnerId);
 		Money += InMoneyAmount;
 		EventManager.TriggerMoneyChange(Money);

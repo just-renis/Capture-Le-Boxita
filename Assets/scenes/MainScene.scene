@@ -124,9 +124,9 @@
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
-      "NetworkMode": 2,
+      "NetworkMode": 1,
       "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
+      "NetworkOrphaned": 1,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
@@ -185,7 +185,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 15
+              "MaxAmountActive": 10
             },
             "AlienShip": {
               "Prefab": {
@@ -533,6 +533,11 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "8af6728e-3dd7-44ef-9204-15a622ceaa74"
+        }
+      },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       }

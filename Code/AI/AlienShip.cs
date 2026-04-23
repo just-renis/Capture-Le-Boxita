@@ -98,8 +98,6 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider.OnTriggerEnter += BeamEntered;
 		BeamCollider.OnTriggerExit += BeamExit;
 	}
-	
-	[Rpc.Broadcast]
 	private void SetPullOnObject(PullableComponent InPullable, bool InState)
 	{
 		InPullable?.SetIsPulled(InState);

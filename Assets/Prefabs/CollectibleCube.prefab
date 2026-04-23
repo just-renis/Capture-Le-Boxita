@@ -7,11 +7,11 @@
     "Position": "0,0,0",
     "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
-    "Tags": "collectible,damageable",
+    "Tags": "collectible",
     "Enabled": true,
-    "NetworkMode": 2,
+    "NetworkMode": 1,
     "NetworkFlags": 0,
-    "NetworkOrphaned": 0,
+    "NetworkOrphaned": 1,
     "NetworkTransmit": true,
     "OwnerTransfer": 1,
     "Components": [
@@ -75,7 +75,7 @@
           "Roll": false
         },
         "MassCenterOverride": "0,0,0",
-        "MassOverride": 0,
+        "MassOverride": 100,
         "MinImpactDamageSpeed": 500,
         "MotionEnabled": true,
         "OnComponentDestroy": null,
@@ -128,63 +128,7 @@
         "OnComponentUpdate": null
       }
     ],
-    "Children": [
-      {
-        "__guid": "c9860670-2814-41d0-913b-a8a7a555dbe8",
-        "__version": 2,
-        "Flags": 0,
-        "Name": "HpBar",
-        "Position": "0,0,46.5910683",
-        "Rotation": "0,0,0,1",
-        "Scale": "1,1,1",
-        "Tags": "",
-        "Enabled": true,
-        "NetworkMode": 2,
-        "NetworkFlags": 0,
-        "NetworkOrphaned": 0,
-        "NetworkTransmit": true,
-        "OwnerTransfer": 1,
-        "Components": [
-          {
-            "__type": "Sandbox.WorldPanel",
-            "__guid": "5664f527-887d-4dd3-b322-aa8babeec8a4",
-            "__enabled": false,
-            "Flags": 0,
-            "HorizontalAlign": "Center",
-            "InteractionRange": 800,
-            "LookAtCamera": true,
-            "OnComponentDestroy": null,
-            "OnComponentDisabled": null,
-            "OnComponentEnabled": null,
-            "OnComponentFixedUpdate": null,
-            "OnComponentStart": null,
-            "OnComponentUpdate": null,
-            "PanelSize": "1000,128",
-            "RenderOptions": {
-              "GameLayer": true,
-              "OverlayLayer": false,
-              "BloomLayer": false,
-              "AfterUILayer": false
-            },
-            "RenderScale": 1,
-            "VerticalAlign": "Center"
-          },
-          {
-            "__type": "Sandbox.UI.CubeHpBar",
-            "__guid": "946eeef9-aee8-4990-a6de-2d8f4396b0ce",
-            "__enabled": false,
-            "Flags": 0,
-            "OnComponentDestroy": null,
-            "OnComponentDisabled": null,
-            "OnComponentEnabled": null,
-            "OnComponentFixedUpdate": null,
-            "OnComponentStart": null,
-            "OnComponentUpdate": null
-          }
-        ],
-        "Children": []
-      }
-    ],
+    "Children": [],
     "__properties": {
       "NetworkInterpolation": true,
       "TimeScale": 1,

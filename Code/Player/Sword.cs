@@ -7,6 +7,8 @@ public sealed class Sword : Component
 	private bool IsInAttackMode;
 	private int ProcessAttackHandle;
 	private int ProcessAttackTimes;
+	private const int SwordMaxProcessTimes = 9;
+	private const float SwordAttackRotationSpeed = 10f;
 	private BoxCollider Collider;
 	private readonly HashSet<GameObject> HitObjects = [];
 	
@@ -26,21 +28,21 @@ public sealed class Sword : Component
 	}
 	private void ProcessAttackForward()
 	{
-		LocalRotation *= Rotation.From(new Angles(5f, 0f, 0f));
+		LocalRotation *= Rotation.From(new Angles(SwordAttackRotationSpeed, 0f, 0f));
 		foreach (Collider InTouchCollider in Collider.Touching)
 		{
 			if (!InTouchCollider.GameObject.Tags.Has("player") || !HitObjects.Add(InTouchCollider.GameObject.Root)) continue;
 			InTouchCollider.GameObject.Root.GetComponent<Rigidbody>()?.ApplyImpulse(GameObject.Parent.WorldRotation.Forward * PushForce);
 		}
-		if (++ProcessAttackTimes <= 18) return;
+		if (++ProcessAttackTimes <= SwordMaxProcessTimes) return;
 		ProcessAttackTimes = 0;
 		TimerManager.ClearTimer(ProcessAttackHandle);
 		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackBackward);
 	}
 	private void ProcessAttackBackward()
 	{
-		LocalRotation *= Rotation.From(new Angles(-5f, 0f, 0f));
-		if (++ProcessAttackTimes <= 18) return;
+		LocalRotation *= Rotation.From(new Angles(-SwordAttackRotationSpeed, 0f, 0f));
+		if (++ProcessAttackTimes <= SwordMaxProcessTimes) return;
 		ProcessAttackTimes = 0;
 		TimerManager.ClearTimer(ProcessAttackHandle);
 		IsInAttackMode = false;
