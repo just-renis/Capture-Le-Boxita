@@ -8,10 +8,9 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private bool IsOwnerHolding { get; set; }
 	[Sync] private float LastOwnerTime { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
-	[Sync] private bool IsPulled { get; set; }
+	private bool IsPulled { get; set; }
 	private int PoolingHandle;
 	private int ClearOwnerIdHandle;
-	private int CheckIdsHandle;
 	private float MoneyAmount = 1f;
 	private const float ClearTime = 8f;
 	private const float CheckIds = 10f;
@@ -23,6 +22,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public float GetLastOwnerTime() { return LastOwnerTime; }
 	public Guid GetOwnerId() { return LastOwnedBy; }
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	[Rpc.Broadcast]
 	public void SetIsPulled(bool State)
 	{
 		IsPulled = State;
@@ -43,7 +43,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)
 	{
-		//Log.Info(Id + "      SetOwnerId " + InId + "    IS IT TRUE? " +  IsGrabbedByPlayer);
 		LastOwnerTime = ClearTime;
 		LastOwnedBy = InId;
 		SetIsOwnerHoldingState(true);
@@ -52,15 +51,10 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	public void SetClearOwnerIdTimer()
 	{
-		//Log.Info(Id + "      SetClearOwnerIdTimer");
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
 	}
-	public void ClearOwnerId()
-	{
-	//	Log.Info(Id + "      ClearOwnerId");
-		LastOwnedBy = Guid.Empty;
-	}
+	public void ClearOwnerId() { LastOwnedBy = Guid.Empty; }
 	public void OnCollisionStart(Collision InCollision)
 	{
 		if (GameObject.Tags.Has("player") || LastOwnedBy == Guid.Empty) return;
@@ -71,22 +65,8 @@ public class PullableComponent : Component, Component.ICollisionListener
 		if (OtherPullableComponent.GetLastOwnerTime().AlmostEqual(LastOwnerTime) && OtherPullableComponent.IsOwnerHolding) return;
 		OtherPullableComponent.SetOwnerId(LastOwnedBy, false);
 	}
-	
-	public void OnCollisionStop(CollisionStop InCollision)
-	{
-		
-	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
-	protected override void OnStart()
-	{
-		Rigidbody = GetComponent<Rigidbody>();
-		CheckIdsHandle = TimerManager.AddTimer(CheckIdsHandle, CheckIds, true, CheckIdsFunction);
-	}
-
-	private void CheckIdsFunction()
-	{
-		
-	}
+	protected override void OnStart() { Rigidbody = GetComponent<Rigidbody>(); }
 	protected override void OnUpdate()
 	{
 		base.OnUpdate();

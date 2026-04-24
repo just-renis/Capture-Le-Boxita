@@ -12,7 +12,6 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
-	[Sync] private float Money { get; set; }
 
 	private int OutOfBoundsHandle;
 	private int GrabTimerHandle;
@@ -27,6 +26,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private CameraComponent Camera;
 	private CharacterController Controller;
 	private PullableComponent PullComp;
+	private PlayerData PlayerData;
 	
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
@@ -65,13 +65,14 @@ public sealed class Player : Component, Component.INetworkListener
 	protected override void OnStart()
 	{
 		base.OnStart();
+		EventManager.OnKill += IncreaseMoney;
 		if (IsProxy) return;
+		LoadSaveData();
 		PullComp = GetComponent<PullableComponent>();
 		OutOfBoundsHandle = TimerManager.AddTimer(OutOfBoundsHandle, 0.2f, true, CheckOutOfBounds);
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
 		Controller = GetComponent<CharacterController>();
-		EventManager.OnKill += IncreaseMoney;
 		Controller.BoundingBox.AddBBox(new BBox(new Vector3( -5f, -5f, -50f / 2f ), new Vector3( 5f, 5f, 50f / 2f )));
 	}
 	protected override void OnUpdate()
@@ -81,8 +82,11 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	protected override void OnDestroy()
 	{
-		ClearHeldObjectData();
-		EventManager.OnKill -= IncreaseMoney;
+		if (!IsProxy)
+		{
+			ClearHeldObjectData();
+			EventManager.OnKill -= IncreaseMoney;
+		}
 		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -149,7 +153,7 @@ public sealed class Player : Component, Component.INetworkListener
 			if (!Trace.Hit) return;
 			GameObject GrabbedObject = Trace.GameObject;
 			GrabbedObject.Network.TakeOwnership();
-			HeldObjectData = new FHeldObjectData(GrabbedObject, Network.OwnerId, Trace.Distance);
+			HeldObjectData = new FHeldObjectData(GrabbedObject, Connection.Local.Id, Trace.Distance);
 			SetupGrabbedObjectTimer();
 		}
 		else if (Input.Released("Attack2")) ClearHeldObjectData();
@@ -205,24 +209,42 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void CheckOutOfBounds()
 	{
-		Log.Info("CURRENT MONEY: " + Money );
 		if (GameObject.WorldPosition.z < 500f) return;
 		WorldPosition = EventManager.TriggerGetSpawnLocation();
 		if (PullComp == null || !PullComp.GetIsPulled()) return;
 		Guid LastOwnedId = PullComp.GetOwnerId();
-		if (LastOwnedId == Guid.Empty || LastOwnedId == Id) return;
-		float MoneyLoss = Money * 0.25f;
-		Money -= MoneyLoss;
-		Log.Info("CURRENT MONEY: " + Money + "  MONEY LOSS: " + MoneyLoss);
-		IncreaseMoney(LastOwnedId, MoneyLoss);
+		if (LastOwnedId == Guid.Empty || LastOwnedId == Connection.Local.Id) return;
+		float MoneyLoss = PlayerData.Money * 0.25f;
+		SubtractMoney(MoneyLoss);
+		EventManager.TriggerOnKill(PullComp.GetOwnerId(), MoneyLoss);
+	}
+	private void AddMoney(float InMoneyAmount)
+	{
+		PlayerData.Money += InMoneyAmount;
+	//	PlayerData.AnotherMoney += InMoneyAmount;
+	//	Log.Info(PlayerData.AnotherMoney);
+		PlayerData.Save(PlayerData);
+		EventManager.TriggerMoneyChange(PlayerData.Money);
+	}
+	private void SubtractMoney(float InMoneyAmount)
+	{
+		PlayerData.Money -= InMoneyAmount;
+	//	PlayerData.AnotherMoney -= InMoneyAmount;
+		//Log.Info(PlayerData.AnotherMoney);
+		PlayerData.Save(PlayerData);
+	//	Log.Info(PlayerData.AnotherMoney);
+		EventManager.TriggerMoneyChange(PlayerData.Money);
+	}
+	private void LoadSaveData()
+	{
+		PlayerData = PlayerData.Load();
+		//Log.Info(PlayerData.AnotherMoney);
+		EventManager.TriggerMoneyChange(PlayerData.Money);
 	}
 	[Rpc.Broadcast]
 	private void IncreaseMoney(Guid InKillerOwnerId, float InMoneyAmount)
 	{
-		Log.Info("IncreaseMoney TEST");
-		if (Network.OwnerId != InKillerOwnerId) return;
-		Log.Info("IncreaseMoney " + Connection.Local.Id + " " + InKillerOwnerId);
-		Money += InMoneyAmount;
-		EventManager.TriggerMoneyChange(Money);
+		if (IsProxy || Connection.Local.Id != InKillerOwnerId) return;
+		AddMoney(InMoneyAmount);
 	}
 }

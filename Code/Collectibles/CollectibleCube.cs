@@ -25,6 +25,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	private void CheckOutOfBounds()
 	{
 		if (GameObject.WorldPosition.z < 500f || !PullComp.GetIsPulled()) return;
+	//	Log.Info("RETURN");
 		TimerManager.ClearTimer(OutOfBoundsHandle);
 		RequestReturnToPoolObject(EPoolObject.CollectibleCube, GameObject);
 	}
