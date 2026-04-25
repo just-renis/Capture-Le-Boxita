@@ -1,0 +1,18 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "materials/sand/sand.shader"
+
+	g_flGrainScale "15"
+	g_flWaveScale "2"
+	MaterialParameter1 "materials/sand/14131-normal.jpg"
+	MaterialParameter2 "materials/sand/sand1_n.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Sand sparkle ----
+	g_flSparkleAmount "196"
+	g_flSparkleAngle "1.6"
+}

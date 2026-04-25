@@ -1,0 +1,534 @@
+{
+  "IsSubgraph": false,
+  "Path": "materials/sand/sand.sgrph",
+  "Model": null,
+  "Title": null,
+  "Description": null,
+  "Category": null,
+  "Icon": null,
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": false,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.8,
+      "DefaultMetalness": 0,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Emission": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Normal": {
+        "Identifier": "13",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.71163,0.60373,0.17211,1",
+      "Identifier": "1",
+      "Position": "-276,-156",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "VoronoiNoise",
+      "AngleOffset": 2.8423948,
+      "CellDensity": 100,
+      "Worley": false,
+      "Identifier": "2",
+      "Position": "-660,-12",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "12",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "A": {
+        "Identifier": "22",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "23",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Step",
+      "DefaultInput": 0,
+      "DefaultEdge": 0.999,
+      "Identifier": "3",
+      "Position": "-468,-12",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "WorldNormal",
+      "Identifier": "4",
+      "Position": "-660,84",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 16,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "5",
+      "Position": "-708,432",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "14",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "CoordsInput": {
+        "Identifier": "19",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "DotProduct",
+      "Identifier": "6",
+      "Position": "-468,96",
+      "HandleOffsets": {},
+      "InputA": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "InputB": {
+        "Identifier": "8",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "1cb48cde-7173-4865-a22a-9bb6a826542e",
+      "Identifier": "7",
+      "Position": "-924,204",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ViewDirection",
+      "Identifier": "8",
+      "Position": "-660,132",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "9",
+      "Position": "-252,24",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "6",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 5,
+      "Identifier": "10",
+      "Position": "-120,24",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "WorldPosition",
+      "NoHighPrecisionLightingOffsets": false,
+      "Identifier": "11",
+      "Position": "-996,-60",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 0.1,
+      "Identifier": "12",
+      "Position": "-792,-60",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "NormalBlend",
+      "Mode": "Reoriented",
+      "Identifier": "13",
+      "Position": "-144,360",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "17",
+        "Output": "XYZ",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "16",
+        "Output": "XYZ",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "1e28d39f-8a7a-4c78-850a-ea9732bd49c6",
+      "Identifier": "14",
+      "Position": "-936,432",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 16,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "15",
+      "Position": "-708,204",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "CoordsInput": {
+        "Identifier": "18",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "CombineVector",
+      "DefaultX": 0,
+      "DefaultY": 0,
+      "DefaultZ": 0,
+      "DefaultW": 0,
+      "Identifier": "16",
+      "Position": "-492,456",
+      "HandleOffsets": {},
+      "X": {
+        "Identifier": "5",
+        "Output": "R",
+        "Subgraph": null
+      },
+      "Y": {
+        "Identifier": "5",
+        "Output": "G",
+        "Subgraph": null
+      },
+      "Z": {
+        "Identifier": "5",
+        "Output": "B",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "CombineVector",
+      "DefaultX": 0,
+      "DefaultY": 0,
+      "DefaultZ": 0,
+      "DefaultW": 0,
+      "Identifier": "17",
+      "Position": "-492,228",
+      "HandleOffsets": {},
+      "X": {
+        "Identifier": "15",
+        "Output": "R",
+        "Subgraph": null
+      },
+      "Y": {
+        "Identifier": "15",
+        "Output": "G",
+        "Subgraph": null
+      },
+      "Z": {
+        "Identifier": "15",
+        "Output": "B",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "UVScaleNode",
+      "DefaultScale": "2,2",
+      "Identifier": "18",
+      "Position": "-924,264",
+      "HandleOffsets": {},
+      "Scale": {
+        "Identifier": "20",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "UVScaleNode",
+      "DefaultScale": "15,15",
+      "Identifier": "19",
+      "Position": "-936,492",
+      "HandleOffsets": {},
+      "Scale": {
+        "Identifier": "21",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "c1332750-23a5-4595-b0f0-a09566b36861",
+      "Identifier": "20",
+      "Position": "-1152,288",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "9b63e3a9-f332-4632-9c44-aef6085ae061",
+      "Identifier": "21",
+      "Position": "-1152,516",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "bf1d274c-d5e8-4b37-b8fd-a1e2beba3287",
+      "Identifier": "22",
+      "Position": "-912,24",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "c5e0ef36-3a24-41c7-98fe-4bf664e00c20",
+      "Identifier": "23",
+      "Position": "-912,84",
+      "HandleOffsets": {}
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter0",
+        "IsAttribute": true,
+        "DefaultColor": "1,1,1,1",
+        "DefaultTexture": "materials/14131-normal.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "HeightToNormal",
+        "ColorSpace": "Linear",
+        "ImageFormat": "ATI1N",
+        "SrgbRead": true,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "78ade108-b420-4ab7-b3aa-dedad966f50c",
+      "Name": "MaterialParameter0"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter1",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/sand/14131-normal.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "1cb48cde-7173-4865-a22a-9bb6a826542e",
+      "Name": "MaterialParameter1"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter2",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/sand/sand1_n.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "1e28d39f-8a7a-4c78-850a-ea9732bd49c6",
+      "Name": "MaterialParameter2"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 100,
+      "Value": 15,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "9b63e3a9-f332-4632-9c44-aef6085ae061",
+      "Name": "Grain Scale"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 100,
+      "Value": 2,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "c1332750-23a5-4595-b0f0-a09566b36861",
+      "Name": "Wave Scale"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 10,
+      "Value": 1.6,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.2,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": "Sand sparkle",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "bf1d274c-d5e8-4b37-b8fd-a1e2beba3287",
+      "Name": "Sparkle Angle"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 500,
+      "Value": 196,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": "Sand sparkle",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "c5e0ef36-3a24-41c7-98fe-4bf664e00c20",
+      "Name": "Sparkle Amount"
+    }
+  ],
+  "__version": 5
+}
