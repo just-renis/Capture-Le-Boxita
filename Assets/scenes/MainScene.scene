@@ -47,9 +47,9 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Platform",
-      "Position": "-35.7073402,5.10791016,0",
+      "Position": "-35.7073402,5.10791016,-100",
       "Rotation": "0,0,0,1",
-      "Scale": "1000,1000,1",
+      "Scale": "1000,1000,10",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -190,7 +190,7 @@
             "AlienShip": {
               "Prefab": {
                 "_type": "gameobject",
-                "prefab": "prefabs/alienship.prefab"
+                "prefab": "prefabs/alien.prefab"
               },
               "MaxAmountActive": 10
             }
@@ -250,6 +250,7 @@
           "__guid": "2e7713f4-f662-4d73-89a0-bf19cdd61224",
           "__enabled": true,
           "Flags": 0,
+          "IsOpen": false,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -533,13 +534,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "8af6728e-3dd7-44ef-9204-15a622ceaa74"
         }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },

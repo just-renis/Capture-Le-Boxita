@@ -1,4 +1,5 @@
 using System;
+using Sandbox.Collectibles;
 using Sandbox.Components;
 using Sandbox.Interfaces;
 using Sandbox.Managers;
@@ -20,6 +21,7 @@ public sealed class AlienShip : Component, IPoolObject
 	protected override void OnStart()
 	{
 		base.OnStart();
+		SetupBeamVfx();
 		if (!Networking.IsHost) return;
 		SetupBoxCollider();
 		ChangeDirection();
@@ -61,8 +63,13 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void ChangeToOppositeDirection(Collider InCollider)
 	{
-		Direction *= -1;
-		ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
+		if (InCollider.Tags.Has("collectible")) InCollider.GameObject.GetComponent<CollectibleCube>()?.RequestReturnToPoolObject();
+		else if (InCollider.Tags.Has("player")) InCollider.GameObject.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
+		else
+		{
+			Direction *= -1;
+			ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
+		}
 	}
 	private void BeamExit(Collider InCollider)
 	{
@@ -97,6 +104,10 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreMass;
 		BeamCollider.OnTriggerEnter += BeamEntered;
 		BeamCollider.OnTriggerExit += BeamExit;
+	}
+	private void SetupBeamVfx()
+	{
+		
 	}
 	private void SetPullOnObject(PullableComponent InPullable, bool InState)
 	{

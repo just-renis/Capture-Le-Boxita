@@ -6,14 +6,10 @@ namespace Sandbox.Collectibles;
 
 public sealed class CollectibleCube : Component, IPoolObject
 {
-	private int OutOfBoundsHandle;
 	private PullableComponent PullComp;
 	private Rigidbody Rigidbody;
 	
-	public void Init()
-	{
-		OutOfBoundsHandle = TimerManager.AddTimer(OutOfBoundsHandle, 0.2f, true, CheckOutOfBounds);
-	}
+	public void Init() { }
 	
 	protected override void OnStart()
 	{
@@ -21,22 +17,16 @@ public sealed class CollectibleCube : Component, IPoolObject
 		PullComp = GetComponent<PullableComponent>();
 		Rigidbody = GetComponent<Rigidbody>();
 	}
-
-	private void CheckOutOfBounds()
-	{
-		if (GameObject.WorldPosition.z < 500f || !PullComp.GetIsPulled()) return;
-		TimerManager.ClearTimer(OutOfBoundsHandle);
-		RequestReturnToPoolObject(EPoolObject.CollectibleCube, GameObject);
-	}
+	
 	[Rpc.Broadcast]
-	private void RequestReturnToPoolObject(EPoolObject InPoolObjectName, GameObject InPoolObject)
+	public void RequestReturnToPoolObject()
 	{
 		if (!Networking.IsHost) return;
-		InPoolObject.Network.TakeOwnership();
+		GameObject.Network.TakeOwnership();
 		PullComp.SetIsPulled(false);
 		EventManager.TriggerOnKill(PullComp.GetOwnerId(), PullComp.GetMoneyAmount());
 		PullComp.ClearOwnerId();
 		Rigidbody.Velocity = 0f;
-		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(InPoolObjectName, InPoolObject);
+		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);
 	}
 }

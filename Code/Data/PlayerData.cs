@@ -18,14 +18,14 @@ public sealed class PlayerData
         InData.Checksum = Hash;
 
         string FinalJson = Json.Serialize(InData);
-        string Noise = Guid.NewGuid().ToString()[..Random.Shared.Int( 1, 15 )];
+        string Noise = Guid.NewGuid().ToString()[..Random.Shared.Int(1, 15)];
         
         string Header = Noise.Length.ToString("D2");
         string ContentToHide = Header + Noise + FinalJson;
         
-        string Obfuscated = XorInput( ContentToHide, SECRET_KEY );
-        string Base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(Obfuscated));
-        FileSystem.Data.WriteAllText("save.dat", Base64);
+        string Base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(ContentToHide));
+        string Obfuscated = XorInput(Base64, SECRET_KEY);
+        FileSystem.Data.WriteAllText("save.dat", Obfuscated);
     }
 
     public static PlayerData Load()
@@ -33,9 +33,9 @@ public sealed class PlayerData
         if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData();
         try
         {
-            string Base64 = FileSystem.Data.ReadAllText("save.dat");
-            string Obfuscated = Encoding.UTF8.GetString(Convert.FromBase64String(Base64));
-            string Decrypted = XorInput( Obfuscated, SECRET_KEY );
+	        string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
+	        string Base64 = XorInput(Obfuscated, SECRET_KEY);
+	        string Decrypted = Encoding.UTF8.GetString(Convert.FromBase64String(Base64));
 
             if (!int.TryParse(Decrypted[..2], out int NoiseLength)) throw new Exception("Header Corrupt");
 

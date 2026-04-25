@@ -5,7 +5,7 @@
 
 <root>
 	<div class = "Money">
-		<p>MONEY: @Money.ToString("F1")</p>
+		<p>MONEY: @Money.FloorToInt()</p>
 	</div>
 	<div class = "Leaderboard">
 		@foreach (LeaderboardEntry Entry in Players)

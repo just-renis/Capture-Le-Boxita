@@ -13,7 +13,6 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
 
-	private int OutOfBoundsHandle;
 	private int GrabTimerHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
@@ -69,7 +68,6 @@ public sealed class Player : Component, Component.INetworkListener
 		if (IsProxy) return;
 		LoadSaveData();
 		PullComp = GetComponent<PullableComponent>();
-		OutOfBoundsHandle = TimerManager.AddTimer(OutOfBoundsHandle, 0.2f, true, CheckOutOfBounds);
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
 		Controller = GetComponent<CharacterController>();
@@ -207,9 +205,8 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
-	private void CheckOutOfBounds()
+	public void ReturnToSpawnLocation()
 	{
-		if (GameObject.WorldPosition.z < 500f) return;
 		WorldPosition = EventManager.TriggerGetSpawnLocation();
 		if (PullComp == null || !PullComp.GetIsPulled()) return;
 		Guid LastOwnedId = PullComp.GetOwnerId();
@@ -221,24 +218,18 @@ public sealed class Player : Component, Component.INetworkListener
 	private void AddMoney(float InMoneyAmount)
 	{
 		PlayerData.Money += InMoneyAmount;
-	//	PlayerData.AnotherMoney += InMoneyAmount;
-	//	Log.Info(PlayerData.AnotherMoney);
 		PlayerData.Save(PlayerData);
 		EventManager.TriggerMoneyChange(PlayerData.Money);
 	}
 	private void SubtractMoney(float InMoneyAmount)
 	{
 		PlayerData.Money -= InMoneyAmount;
-	//	PlayerData.AnotherMoney -= InMoneyAmount;
-		//Log.Info(PlayerData.AnotherMoney);
 		PlayerData.Save(PlayerData);
-	//	Log.Info(PlayerData.AnotherMoney);
 		EventManager.TriggerMoneyChange(PlayerData.Money);
 	}
 	private void LoadSaveData()
 	{
 		PlayerData = PlayerData.Load();
-		//Log.Info(PlayerData.AnotherMoney);
 		EventManager.TriggerMoneyChange(PlayerData.Money);
 	}
 	[Rpc.Broadcast]

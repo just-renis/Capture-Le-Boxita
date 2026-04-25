@@ -55,7 +55,54 @@
         "OnComponentUpdate": null
       }
     ],
-    "Children": [],
+    "Children": [
+      {
+        "__guid": "e00fba19-b4b2-4c9b-8ab9-244ac161ceaa",
+        "__version": 2,
+        "Flags": 0,
+        "Name": "BeamShader",
+        "Position": "0,0,-250",
+        "Rotation": "0,0,0,1",
+        "Scale": "1,1,2.5",
+        "Tags": "",
+        "Enabled": true,
+        "NetworkMode": 2,
+        "NetworkFlags": 0,
+        "NetworkOrphaned": 0,
+        "NetworkTransmit": true,
+        "OwnerTransfer": 1,
+        "Components": [
+          {
+            "__type": "Sandbox.ModelRenderer",
+            "__guid": "93322ae1-4cbf-404d-8c1f-358e2052c6e6",
+            "__enabled": true,
+            "Flags": 0,
+            "BodyGroups": 18446744073709551615,
+            "CreateAttachments": false,
+            "LodOverride": null,
+            "MaterialGroup": null,
+            "MaterialOverride": null,
+            "Materials": null,
+            "Model": "models/ufo/beam.vmdl",
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null,
+            "RenderOptions": {
+              "GameLayer": true,
+              "OverlayLayer": false,
+              "BloomLayer": false,
+              "AfterUILayer": false
+            },
+            "RenderType": "Off",
+            "Tint": "1,1,1,1"
+          }
+        ],
+        "Children": []
+      }
+    ],
     "__properties": {
       "NetworkInterpolation": true,
       "TimeScale": 1,
