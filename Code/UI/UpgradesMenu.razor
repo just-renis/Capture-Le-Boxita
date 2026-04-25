@@ -2,18 +2,339 @@
 @using Sandbox.Enums
 @using Sandbox.Managers
 @inherits PanelComponent
+@using System;
 
 <root>
-	<div class="Info">
-		<p>AH MY FRIEND</p>
-	</div>
+    <!-- We wrap everything in a main container. Toggling classes on inner divs is 100% reliable in S&box -->
+    <div class="wrapper @(IsOpen ? "open" : "")">
+        
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <div class="logo-box">
+                    <i>emoji_events</i>
+                </div>
+                <div class="title-info">
+                    <h1>S&BOX SKILL NEXUS</h1>
+                    <p>NEURAL_ARRAY_V2.0.4</p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="money-info">
+                    <span>AVAILABLE CREDITS</span>
+                    <div class="money-amount">
+                        <i>savings</i>
+                        <span>$@Money</span>
+                    </div>
+                </div>
+                <div class="code-btn" @onclick=@CloseMenu>
+                    <i>close</i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Canvas Workspace -->
+        <div class="canvas-container">
+            <!-- Background Drag Catcher (Removed mouse up/move from here, handled safely in OnUpdate) -->
+            <div class="canvas-bg" @onmousedown=@OnMouseClicked></div>
+
+            <!-- Transformable Canvas View -->
+            <div class="canvas" style="transform: scale(@Scale) translate(@(CanvasX)px, @(CanvasY)px);">
+                <!-- Connection Lines -->
+                <div class="lines">
+                    @foreach ( var node in Upgrades )
+                    {
+                        @foreach ( var pId in node.Parents )
+                        {
+                            var parent = Upgrades.FirstOrDefault( u => u.Id == pId );
+                            if ( parent == null ) continue;
+
+                            var dx = node.X - parent.X;
+                            var dy = node.Y - parent.Y;
+                            var length = MathF.Sqrt( dx * dx + dy * dy );
+                            var angle = MathF.Atan2( dy, dx ) * 180f / MathF.PI;
+                            var isOwnedPath = IsOwned( node.Id ) && IsOwned( parent.Id );
+
+                            <div class="line @(isOwnedPath ? "owned" : "")" 
+                                 style="left: @(parent.X)px; top: @(parent.Y)px; width: @(length)px; transform: rotate(@(angle)deg);" />
+                        }
+                    }
+                </div>
+
+                <!-- Upgrade Nodes -->
+                <div class="nodes">
+                    @foreach ( var node in Upgrades )
+                    {
+                        var isSelected = SelectedId == node.Id;
+                        var isOwned = IsOwned( node.Id );
+                        var isAvailable = IsAvailable( node.Id );
+
+                        <div class="node-wrapper @(isSelected ? "selected" : "")" 
+                             style="left: @(node.X)px; top: @(node.Y)px;" 
+                             @onclick=@(() => SelectNode(node.Id))>
+                            
+                            <div class="node @(isOwned ? "owned" : "") @(isAvailable ? "available" : "locked") @node.Category">
+                                <i>@node.Icon</i>
+                                @if ( isOwned )
+                                {
+                                    <div class="check"><i>check</i></div>
+                                }
+                            </div>
+                            <div class="node-label">@node.Name</div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <div class="btn" @onclick=@(() => { Scale = Math.Min(Scale + 0.2f, 3f); StateHasChanged(); })><i>add</i></div>
+                <div class="btn" @onclick=@(() => { Scale = Math.Max(Scale - 0.2f, 0.2f); StateHasChanged(); })><i>remove</i></div>
+                <div class="btn text" @onclick=@(() => { Scale = 1f; StateHasChanged(); })>1.0x</div>
+                <div class="btn" @onclick=@(() => { CanvasX = 0; CanvasY = 0; Scale = 1f; StateHasChanged(); })><i>home</i></div>
+            </div>
+
+            <!-- Sidebar Info -->
+            @if ( SelectedUpgrade != null )
+            {
+                <div class="sidebar">
+                    <div class="close-sidebar" @onclick=@(() => { SelectedId = null; StateHasChanged(); })><i>close</i></div>
+                    
+                    <div class="sidebar-icon @SelectedUpgrade.Category">
+                        <i>@SelectedUpgrade.Icon</i>
+                    </div>
+                    
+                    <h2>@SelectedUpgrade.Name</h2>
+                    
+                    <div class="badges">
+                        <span class="badge @SelectedUpgrade.Category">@SelectedUpgrade.Category.ToUpper()</span>
+                        @if ( IsOwned( SelectedId ) )
+                        {
+                            <span class="badge owned"><i style="font-size: 12px; margin-right: 4px;">check</i> PURCHASED</span>
+                        }
+                    </div>
+
+                    <p class="desc">@SelectedUpgrade.Description</p>
+
+                    <div class="stats">
+                        <div class="stat-row">
+                            <span>UPGRADE COST</span>
+                            <span class="@(CanAfford || IsOwned(SelectedId) ? "text-white" : "text-red")">$@SelectedUpgrade.Cost</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="stat-row">
+                            <span>REQUIREMENTS</span>
+                            <span class="text-white">@(SelectedUpgrade.Parents.Count > 0 ? $"{SelectedUpgrade.Parents.Count} Linked" : "None")</span>
+                        </div>
+                    </div>
+
+                    <div class="buy-section">
+                        @if ( IsOwned( SelectedId ) )
+                        {
+                            <div class="status-box owned">ALREADY INSTALLED</div>
+                        }
+                        else
+                        {
+                            <div class="buy-btn @(CanAfford && IsAvailable(SelectedId) ? "active" : "disabled")" @onclick=@BuyUpgrade>
+                                @(!IsAvailable(SelectedId) ? "LOCKED" : CanAfford ? "PURCHASE UPGRADE" : "INSUFFICIENT CREDITS")
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="tips">
+                <div class="tip"><i>ads_click</i> CLICK NODES TO SELECT</div>
+                <div class="tip"><i>navigation</i> @Upgrades.Count UPGRADES AVAILABLE</div>
+            </div>
+            <div class="progress-info">
+                <div class="progress-bar">
+                    <div class="fill combat" style="width: @(GetProgress("combat"))%"></div>
+                    <div class="fill mobility" style="width: @(GetProgress("mobility"))%"></div>
+                    <div class="fill resource" style="width: @(GetProgress("resource"))%"></div>
+                </div>
+                <span class="power-text">SYSTEM POWER: @Math.Round((float)OwnedUpgrades.Count / Math.Max(1, Upgrades.Count) * 100)%</span>
+            </div>
+        </footer>
+    </div>
 </root>
 
 @code
 {
+	// === Logic & State ===
+    [Property] public bool IsOpen { get; set; } = false;
+    
+    public int Money { get; set; } = 1500;
+    public HashSet<string> OwnedUpgrades { get; set; } = new() { "root" };
+    public string SelectedId { get; set; } = "root";
+
+    public float CanvasX { get; set; } = 0f;
+    public float CanvasY { get; set; } = 0f;
+    public float Scale { get; set; } = 1f;
+
+    private bool isDragging;
+    private Vector2 dragStartPos;
+    private Vector2 dragStartOffset;
+
+    public List<Upgrade> Upgrades { get; set; } = new();
+
+    public Upgrade SelectedUpgrade => Upgrades.FirstOrDefault( u => u.Id == SelectedId );
+    public bool CanAfford => SelectedUpgrade != null && Money >= SelectedUpgrade.Cost;
+
+    public class Upgrade
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int Cost { get; set; }
+        public List<string> Parents { get; set; } = new();
+        public string Icon { get; set; }
+        public string Category { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+    }
+
+    protected override void OnUpdate()
+    {
+        // 1. Toggling Menu (Modern Scene system standardizes actions like "Score" and "Menu")
+        if ( Input.Pressed( "Score" ))
+        {
+            IsOpen = !IsOpen;
+            Log.Info($"Skill Tree Toggled! IsOpen: {IsOpen}");
+            
+            // Critical step to ensure the UI catches your clicks only when open
+            if (Panel != null) Panel.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
+            
+            StateHasChanged();
+        }
+
+        // 2. Reliable Dragging Processing
+        if ( isDragging )
+        {
+            // Moved to standard modern 'Mouse.Position' rather than old Sandbox.Mouse
+            var delta = Mouse.Position - dragStartPos;
+            CanvasX = dragStartOffset.x + (delta.x / Scale);
+            CanvasY = dragStartOffset.y + (delta.y / Scale);
+            StateHasChanged();
+
+            // S&box defaults primary click to "Attack1". If it's lifted, stop dragging.
+            if ( !Input.Down( "Attack1" ) && !Input.Down("attack1") ) 
+            {
+                isDragging = false;
+            }
+        }
+    }
+
+    public void CloseMenu()
+    {
+        IsOpen = false;
+        if (Panel != null) Panel.Style.PointerEvents = PointerEvents.None;
+        StateHasChanged();
+    }
+
+    public bool IsAvailable( string id )
+    {
+        var upgrade = Upgrades.FirstOrDefault( u => u.Id == id );
+        if ( upgrade == null ) return false;
+        if ( upgrade.Parents.Count == 0 ) return true;
+        return upgrade.Parents.Any( pid => OwnedUpgrades.Contains( pid ) );
+    }
+
+    public bool IsOwned( string id ) => OwnedUpgrades.Contains( id );
+
+    public void BuyUpgrade()
+    {
+        if ( SelectedId != null && SelectedUpgrade != null && !IsOwned( SelectedId ) && CanAfford && IsAvailable( SelectedId ) )
+        {
+            Money -= SelectedUpgrade.Cost;
+            OwnedUpgrades.Add( SelectedId );
+            StateHasChanged();
+        }
+    }
+
+    public void SelectNode( string id )
+    {
+        SelectedId = id;
+        StateHasChanged();
+    }
+
+    public float GetProgress( string category )
+    {
+        int max = category == "resource" ? 10 : 15;
+        int count = OwnedUpgrades.Count( id => id.StartsWith( category ) );
+        return Math.Clamp( ((float)count / max) * 100f, 0, 100 );
+    }
+
+    // === Dragging Events ===
+
+    public void OnMouseClicked()
+    {
+        isDragging = true;
+        dragStartPos = Mouse.Position;
+        dragStartOffset = new Vector2( CanvasX, CanvasY );
+    }
+
+    // === Generation Logic ===
+
+    private List<Upgrade> GenerateUpgrades()
+    {
+        var list = new List<Upgrade>();
+
+        list.Add( new Upgrade { 
+            Id = "root", Name = "Neural Link", Description = "The base connection to the upgrade network.", 
+            Cost = 0, Icon = "memory", Category = "utility", X = 0, Y = 0 
+        });
+
+        var categories = new[] {
+            new { Key = "combat", Name = "Combat", Icon = "swords", Dx = -3f, Dy = 1.5f },
+            new { Key = "mobility", Name = "Mobility", Icon = "air", Dx = 3f, Dy = 1.5f },
+            new { Key = "resource", Name = "Resource", Icon = "paid", Dx = -3f, Dy = -1.5f },
+            new { Key = "utility", Name = "Utility", Icon = "build", Dx = 3f, Dy = -1.5f }
+        };
+
+        var iconPool = new[] { "bolt", "shield", "skull", "local_fire_department", "my_location", "science", "star", "rocket", "handyman", "monitor_heart", "emoji_events", "inventory_2", "public", "favorite", "lightbulb", "explore", "terminal", "military_tech", "cyclone" };
+
+        for ( int catIdx = 0; catIdx < categories.Length; catIdx++ )
+        {
+            var cat = categories[catIdx];
+            var t1Id = $"{cat.Key}_tier1";
+            list.Add( new Upgrade { 
+                Id = t1Id, Name = $"{cat.Name} Specialist", Description = $"Basic level of {cat.Name.ToLower()} training.", 
+                Cost = 100, Parents = new List<string> { "root" }, Icon = cat.Icon, Category = cat.Key, 
+                X = cat.Dx * 180, Y = cat.Dy * 180 
+            });
+
+            for ( int i = 0; i < 3; i++ )
+            {
+                var subId = $"{cat.Key}_sub_{i}";
+                list.Add( new Upgrade { 
+                    Id = subId, Name = $"{cat.Name} Skill {i + 1}", Description = $"Enhance your {cat.Name.ToLower()} efficiency.", 
+                    Cost = 250, Parents = new List<string> { t1Id }, Icon = iconPool[(catIdx * 5 + i) % iconPool.Length], Category = cat.Key, 
+                    X = cat.Dx * 180 + (i - 1) * 220, Y = cat.Dy * 180 + (cat.Dy * 180) 
+                });
+
+                for ( int j = 0; j < 3; j++ )
+                {
+                    var deepId = $"{subId}_deep_{j}";
+                    list.Add( new Upgrade { 
+                        Id = deepId, Name = $"{cat.Name} Mastery {i + 1}.{j + 1}", Description = $"Master level refinement for {cat.Name.ToLower()}.", 
+                        Cost = 500 + (j * 100), Parents = new List<string> { subId }, Icon = iconPool[(catIdx * 7 + i * 3 + j) % iconPool.Length], Category = cat.Key, 
+                        X = cat.Dx * 180 + (i - 1) * 220 + (j - 1) * 140, Y = cat.Dy * 180 + (cat.Dy * 180) + (cat.Dy * 180) 
+                    });
+                }
+            }
+        }
+        return list;
+    }
 	EventManager EventManager;
 	protected override void OnStart()
 	{
+		Upgrades = GenerateUpgrades();
+		if (Panel != null) Panel.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
 		EventManager = Scene.GetSystem<EventManager>();
 		EventManager.OnUiStateChanged += UiStateChanged;
 		Enabled = false;
@@ -24,7 +345,7 @@
 	}
 	protected override int BuildHash()
 	{
-		return System.HashCode.Combine("");
+		return HashCode.Combine( IsOpen, Money, SelectedId, Scale, CanvasX, CanvasY ) ^ HashCode.Combine( OwnedUpgrades.Count, isDragging );
 	}
 
 	private void UiStateChanged(EUi InUi, bool RenderState)
