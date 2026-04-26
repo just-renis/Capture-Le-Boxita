@@ -18,13 +18,12 @@ public sealed class CollectibleCube : Component, IPoolObject
 		Rigidbody = GetComponent<Rigidbody>();
 	}
 	
-	[Rpc.Broadcast]
 	public void RequestReturnToPoolObject()
 	{
 		if (!Networking.IsHost) return;
 		GameObject.Network.TakeOwnership();
 		PullComp.SetIsPulled(false);
-		EventManager.TriggerOnKill(PullComp.GetOwnerId(), PullComp.GetMoneyAmount());
+		EventManager.TriggerOnKill(PullComp.GetOwnerId(), false, PullComp.GetMoneyAmount());
 		PullComp.ClearOwnerId();
 		Rigidbody.Velocity = 0f;
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);

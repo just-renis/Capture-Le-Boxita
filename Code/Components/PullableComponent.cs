@@ -13,7 +13,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private int ClearOwnerIdHandle;
 	private float MoneyAmount = 1f;
 	private const float ClearTime = 8f;
-	private const float CheckIds = 10f;
 	private Rigidbody Rigidbody;
 	
 	public bool GetIsPulled() { return IsPulled; }
@@ -80,7 +79,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	private void SetClearOwnerIdTimerInternally()
 	{
-		//Log.Info(Id + "      SetClearOwnerIdTimer");
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
 	}

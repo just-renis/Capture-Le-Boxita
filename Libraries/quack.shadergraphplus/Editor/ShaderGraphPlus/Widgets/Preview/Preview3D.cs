@@ -1207,6 +1207,7 @@ public sealed class Preview3D : SceneRenderingWidget
 		}
 	}
 
+	[Obsolete("Use OnMouseWheel")]
 	protected override void OnWheel( WheelEvent e )
 	{
 		base.OnWheel( e );

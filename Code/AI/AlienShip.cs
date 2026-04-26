@@ -1,6 +1,7 @@
 using System;
 using Sandbox.Collectibles;
 using Sandbox.Components;
+using Sandbox.Enums;
 using Sandbox.Interfaces;
 using Sandbox.Managers;
 namespace Sandbox.AI;
@@ -9,19 +10,31 @@ public sealed class AlienShip : Component, IPoolObject
 {
 	private int MoveHandle;
 	private int CheckIsInAirObjectsHandle;
+	private int FlyUpwardsHandle;
 	private const float MoveSpeed = 50f;
+	private const float MoveUpwardsSpeed = 2000f;
+	private const float FpsTime = 1f / 60f;
+	private const float ScaleIncrease = 1f;
+	private const float MaxScale = 4f;
 	private float ChangeDirectionTimer;
 	private Vector2 Direction;
 	private BoxCollider Collider;
 	private CapsuleCollider BeamCollider;
+	private GameObject BeamVfx;
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 
-	public void Init() { }
+	public void Init()
+	{
+		Collider?.Enabled = true;
+		BeamCollider?.Enabled = true;
+		BeamVfx?.Enabled = true;
+		WorldScale = new Vector3(1f);
+	}
 
 	protected override void OnStart()
 	{
 		base.OnStart();
-		SetupBeamVfx();
+		BeamVfx = GameObject.Children.FirstOrDefault(OutGameObject => OutGameObject.Name == "BeamShader");
 		if (!Networking.IsHost) return;
 		SetupBoxCollider();
 		ChangeDirection();
@@ -50,7 +63,7 @@ public sealed class AlienShip : Component, IPoolObject
 		List<PullableComponent> ToRemove = InsideBeamObjects.Where(Pullable => Pullable.IsInAir()).ToList();
 		foreach (PullableComponent Pullable in ToRemove)
 		{
-			Pullable.SetIsPulled(true);
+			SetPullOnObject(Pullable, true);
 			InsideBeamObjects.Remove(Pullable);
 		}
 	}
@@ -63,13 +76,49 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void ChangeToOppositeDirection(Collider InCollider)
 	{
-		if (InCollider.Tags.Has("collectible")) InCollider.GameObject.GetComponent<CollectibleCube>()?.RequestReturnToPoolObject();
-		else if (InCollider.Tags.Has("player")) InCollider.GameObject.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
+		if (InCollider.Tags.Has("collectible"))
+		{
+			InCollider.GameObject.Root.GetComponent<CollectibleCube>()?.RequestReturnToPoolObject();
+			GameObject.WorldScale += new Vector3(ScaleIncrease);
+			if (GameObject.WorldScale.x >= MaxScale) FlyAway();
+		}
+		else if (InCollider.Tags.Has("player"))
+		{
+			InCollider.GameObject.Root.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
+			GameObject.WorldScale += new Vector3(ScaleIncrease);
+			if (GameObject.WorldScale.x >= MaxScale) FlyAway();
+		}
 		else
 		{
 			Direction *= -1;
 			ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
 		}
+	}
+	private void FlyAway()
+	{
+		foreach (Collider PullableCollider in BeamCollider.Touching)
+		{
+			PullableComponent Pullable = PullableCollider.GameObject.GetComponent<PullableComponent>();
+			if (Pullable == null) continue;
+			SetPullOnObject(Pullable, false);
+			InsideBeamObjects.Remove(Pullable);
+		}
+		Collider?.Enabled = false;
+		BeamCollider?.Enabled = false;
+		DisableBeamVfx();
+		FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime,  true, FlyUpProcess);
+	}
+	private void FlyUpProcess()
+	{
+		WorldPosition += new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
+		if (WorldPosition.z >= 5000f) ReturnToPool();
+	}
+	private void ReturnToPool()
+	{
+		if (!Networking.IsHost) return;
+		TimerManager.ClearTimer(FlyUpwardsHandle);
+		GameObject.Network.TakeOwnership();
+		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.AlienShip, GameObject);
 	}
 	private void BeamExit(Collider InCollider)
 	{
@@ -105,12 +154,14 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider.OnTriggerEnter += BeamEntered;
 		BeamCollider.OnTriggerExit += BeamExit;
 	}
-	private void SetupBeamVfx()
-	{
-		
-	}
 	private void SetPullOnObject(PullableComponent InPullable, bool InState)
 	{
 		InPullable?.SetIsPulled(InState);
+	}
+	[Rpc.Broadcast]
+	private void DisableBeamVfx()
+	{
+		if (IsProxy) return;
+		BeamVfx?.Enabled = false;
 	}
 }

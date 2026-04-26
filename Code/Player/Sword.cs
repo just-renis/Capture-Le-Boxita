@@ -1,3 +1,5 @@
+using System;
+using Sandbox.Components;
 using Sandbox.Managers;
 namespace Sandbox.Player;
 
@@ -17,23 +19,11 @@ public sealed class Sword : Component
 		base.OnStart();
 		Collider = GetComponentInChildren<BoxCollider>();
 	}
-
-	[Rpc.Broadcast]
-	public void Attack()
-	{
-		if (IsInAttackMode) return;
-		HitObjects.Clear();
-		IsInAttackMode = true;
-		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackForward);
-	}
+	
 	private void ProcessAttackForward()
 	{
 		LocalRotation *= Rotation.From(new Angles(SwordAttackRotationSpeed, 0f, 0f));
-		foreach (Collider InTouchCollider in Collider.Touching)
-		{
-			if (!InTouchCollider.GameObject.Tags.Has("player") || !HitObjects.Add(InTouchCollider.GameObject.Root)) continue;
-			InTouchCollider.GameObject.Root.GetComponent<Rigidbody>()?.ApplyImpulse(GameObject.Parent.WorldRotation.Forward * PushForce);
-		}
+		ApplyPushForce(Network.OwnerId);
 		if (++ProcessAttackTimes <= SwordMaxProcessTimes) return;
 		ProcessAttackTimes = 0;
 		TimerManager.ClearTimer(ProcessAttackHandle);
@@ -46,5 +36,25 @@ public sealed class Sword : Component
 		ProcessAttackTimes = 0;
 		TimerManager.ClearTimer(ProcessAttackHandle);
 		IsInAttackMode = false;
+	}
+
+	[Rpc.Host]
+	private void ApplyPushForce(Guid InPusherId)
+	{
+		foreach (Collider InTouchCollider in Collider.Touching)
+		{
+			GameObject Target = InTouchCollider.GameObject.Root;
+			if (!InTouchCollider.GameObject.Tags.Has("player") || !HitObjects.Add(Target)) continue;
+			Target.GetComponent<Player>()?.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * PushForce);
+			Target.GetComponent<PullableComponent>()?.SetOwnerId(Network.OwnerId, false);
+		}
+	}
+	[Rpc.Broadcast]
+	public void Attack()
+	{
+		if (IsInAttackMode) return;
+		HitObjects.Clear();
+		IsInAttackMode = true;
+		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackForward);
 	}
 }

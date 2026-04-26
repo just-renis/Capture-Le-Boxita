@@ -180,6 +180,7 @@ public class GraphView : GraphicsView, IGridSizeView
 		_moveablePressed = false;
 	}
 
+	[Obsolete("Use OnMouseWheel")]
 	protected override void OnWheel( WheelEvent e )
 	{
 		Zoom( e.Delta > 0 ? 1.1f : 0.90f, e.Position );

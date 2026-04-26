@@ -6,7 +6,7 @@ namespace Sandbox.Managers;
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	public static event Action<float> OnMoneyChanged;
-	public static event Action<Guid, float> OnKill;
+	public static event Action<Guid, bool, float> OnKill;
 	public static event Action<EUi, bool> OnUiStateChanged;
 	public static event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
 	public static event Func<Vector3> OnTeleportToSpawnLocation;
@@ -15,9 +15,9 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnMoneyChanged?.Invoke(InMoney);
 	}
-	public static void TriggerOnKill(Guid InKillerPlayerId, float InMoneyAmount)
+	public static void TriggerOnKill(Guid InKillerPlayerId, bool InIsPlayerKill, float InMoneyAmount)
 	{
-		OnKill?.Invoke(InKillerPlayerId, InMoneyAmount);
+		OnKill?.Invoke(InKillerPlayerId, InIsPlayerKill, InMoneyAmount);
 	}
 	public static void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
@@ -27,7 +27,6 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
 	}
-	
 	public static Vector3 TriggerGetSpawnLocation()
 	{
 		return OnTeleportToSpawnLocation?.Invoke() ?? Vector3.Zero;

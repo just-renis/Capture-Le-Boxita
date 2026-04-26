@@ -181,7 +181,7 @@
                 "IdValue": "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb"
               },
               "Property": "PushForce",
-              "Value": 5000000
+              "Value": 500000
             }
           ],
           "MovedObjects": [

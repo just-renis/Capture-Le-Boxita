@@ -67,8 +67,12 @@
           "CreateAttachments": false,
           "LodOverride": null,
           "MaterialGroup": null,
-          "MaterialOverride": "materials/sand/sand.vmat",
-          "Materials": null,
+          "MaterialOverride": null,
+          "Materials": {
+            "indexed": {
+              "0": "materials/sand/sand.vmat"
+            }
+          },
           "Model": "models/dev/box.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -192,7 +196,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 10
+              "MaxAmountActive": 1
             }
           }
         }

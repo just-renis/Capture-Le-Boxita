@@ -688,6 +688,7 @@ public class Preview2D : SceneRenderingWidget
 		Scene = null;
 	}
 
+	[Obsolete("Use OnMouseWheel")]
 	protected override void OnWheel( WheelEvent e )
 	{
 		base.OnWheel( e );
