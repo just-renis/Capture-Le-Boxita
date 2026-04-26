@@ -1,0 +1,297 @@
+{
+  "IsSubgraph": false,
+  "Path": "models/metal box/metal.sgrph",
+  "Model": "models/dev/box.vmdl",
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": false,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.2120142,
+      "DefaultMetalness": 1,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Normal": {
+        "Identifier": "5",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Roughness": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "RemapValue",
+      "In": 0.5,
+      "InMin": -1,
+      "InMax": 1,
+      "OutMin": 0.4,
+      "OutMax": 0.7,
+      "Clamp": true,
+      "Identifier": "1",
+      "Position": "-276,72",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "D": {
+        "Identifier": "8",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "E": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "2",
+      "Position": "-504,-24",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "TileAndOffset",
+      "DefaultTile": "0.699999988,0.699999988",
+      "DefaultOffset": "0.669999838,-0.740000188",
+      "WrapTo01": false,
+      "Identifier": "3",
+      "Position": "-720,-24",
+      "HandleOffsets": {},
+      "Tile": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Offset": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "dda5963e-4e06-4457-b0dc-b06d1dcfdcc9",
+      "Identifier": "4",
+      "Position": "-456,252",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 32,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "5",
+      "Position": "-276,252",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.62791,0.62791,0.62791,1",
+      "Identifier": "6",
+      "Position": "-600,-384",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.74419,0.74419,0.74419,1",
+      "Identifier": "7",
+      "Position": "-600,-240",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "abfab4f7-eeed-46ec-86e0-4c8be3b1c3f8",
+      "Identifier": "8",
+      "Position": "-516,108",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "76cb6b24-d00a-4d72-af06-a16492abaa57",
+      "Identifier": "9",
+      "Position": "-516,168",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "a8ec4371-a60f-4e06-b814-7ac2f58f725e",
+      "Identifier": "10",
+      "Position": "-1020,-72",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "cc199312-1c23-4476-a8d1-bb33b0a3c928",
+      "Identifier": "11",
+      "Position": "-1020,36",
+      "HandleOffsets": {}
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "Normal Map",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "models/metal box/metal-normal.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "dda5963e-4e06-4457-b0dc-b06d1dcfdcc9",
+      "Name": "Normal Map"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.4,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.05,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Dull metal roughness",
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "abfab4f7-eeed-46ec-86e0-4c8be3b1c3f8",
+      "Name": "Roughness min"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.7,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.05,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Dull metal roughness",
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "76cb6b24-d00a-4d72-af06-a16492abaa57",
+      "Name": "Roughness max"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "10,10",
+      "Value": "0.699999988,0.699999988",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.1,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": "Dull metal roughness",
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "a8ec4371-a60f-4e06-b814-7ac2f58f725e",
+      "Name": "Tile scale"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "-3,-3",
+      "Max": "3,3",
+      "Value": "0.42574501,0.908367515",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": "Dull metal roughness",
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "cc199312-1c23-4476-a8d1-bb33b0a3c928",
+      "Name": "Tile offset"
+    }
+  ],
+  "__version": 5
+}

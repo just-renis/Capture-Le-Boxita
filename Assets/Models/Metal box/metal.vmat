@@ -1,0 +1,17 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/metal box/metal.shader"
+
+	NormalMap "models/metal box/metal-normal.jpg"
+
+	//---- Dull metal roughness ----
+	g_flRoughnessmax "0.70"
+	g_flRoughnessmin "0.40"
+	g_vTileoffset "[0.670 0.740]"
+	g_vTilescale "[0.7 0.7]"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+}
