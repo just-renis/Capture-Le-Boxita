@@ -1,0 +1,13 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/gold/gold.shader"
+
+	MaterialParameter0 "models/gold/gold_normal.jpg"
+	MaterialParameter1 "models/edge_mask.jpg"
+	MaterialParameter2 "models/metal box/metal-normal.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+}

@@ -2,47 +2,6 @@
   "__guid": "dc821146-dcf2-49cc-8dca-eb45ab7390c0",
   "GameObjects": [
     {
-      "__guid": "36cd281b-013b-4696-9f26-1fa42f21f0a0",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "Directional Light",
-      "Position": "0,0,200",
-      "Rotation": "-0.245984197,0.593858182,0.293152511,0.707732677",
-      "Scale": "1,1,1",
-      "Tags": "light_directional,light",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "Sandbox.DirectionalLight",
-          "__guid": "d83d4cc3-2fee-443f-a9dc-656416ddbc28",
-          "__enabled": true,
-          "Flags": 0,
-          "FogMode": "Enabled",
-          "FogStrength": 1,
-          "LightColor": "0.91373,0.98039,1,1",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "ShadowBias": 0.0005,
-          "ShadowCascadeCount": 4,
-          "ShadowCascadeSplitRatio": 0.91,
-          "ShadowHardness": 0,
-          "Shadows": true,
-          "SkyColor": "0,0,0,0",
-          "Visualizer": {}
-        }
-      ],
-      "Children": []
-    },
-    {
       "__guid": "b7d92bcc-b1f0-410d-962e-6e53eb66bcd4",
       "__version": 2,
       "Flags": 0,
@@ -86,7 +45,7 @@
             "BloomLayer": false,
             "AfterUILayer": false
           },
-          "RenderType": "Off",
+          "RenderType": "On",
           "Tint": "0.18707,0.50698,0.07074,1"
         },
         {
@@ -254,7 +213,6 @@
           "__guid": "2e7713f4-f662-4d73-89a0-bf19cdd61224",
           "__enabled": true,
           "Flags": 0,
-          "IsOpen": false,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -516,6 +474,81 @@
         }
       ],
       "Children": []
+    },
+    {
+      "__guid": "e6d60a82-9b8e-48b9-adac-c8e6306c9adf",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "2D Skybox",
+      "Position": "0,0,897.642944",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "skybox",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.SkyBox2D",
+          "__guid": "6be7ed52-2a72-4ddb-a8c7-12346fc4a4d9",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SkyIndirectLighting": true,
+          "SkyMaterial": "materials/skybox/skybox_day_01.vmat",
+          "Tint": "0.83256,0.83256,0.83256,1"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "6de34d4c-dbb1-4a0e-bd0a-8f694f88b42c",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Sun",
+      "Position": "0,0,452.62027",
+      "Rotation": "0.368307739,0.497717649,-0.741481543,0.258518547",
+      "Scale": "1,1,1",
+      "Tags": "light_directional,light",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.DirectionalLight",
+          "__guid": "85eedcc4-6b58-4bda-9c47-4003ed4480d0",
+          "__enabled": true,
+          "Flags": 0,
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "0.91373,0.98039,1,1",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "ShadowBias": 0.0005,
+          "ShadowCascadeCount": 4,
+          "ShadowCascadeSplitRatio": 0.91,
+          "ShadowHardness": 0,
+          "Shadows": true,
+          "SkyColor": "0,0,0,0",
+          "Visualizer": {}
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
@@ -538,13 +571,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "8af6728e-3dd7-44ef-9204-15a622ceaa74"
         }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },

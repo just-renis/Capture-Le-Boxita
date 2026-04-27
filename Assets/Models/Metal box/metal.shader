@@ -81,12 +81,8 @@ PS
 	#include "common/pixel.hlsl"
 	
 	SamplerState g_sSampler0 < Filter( ANISOTROPIC ); AddressU( WRAP ); AddressV( WRAP ); AddressW( WRAP ); MaxAniso( 32 ); >;
-	CreateInputTexture2D( NormalMap, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "models/metal box/metal-normal.jpg" ) );
-	Texture2D g_tNormalMap < Channel( RGBA, Box( NormalMap ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
-	float2 g_vTilescale < UiType( Slider ); UiStep( 0.1 ); UiGroup( "Dull metal roughness,0/,0/2" ); Default2( 0.7,0.7 ); Range2( 0,0, 10,10 ); >;
-	float2 g_vTileoffset < UiType( Slider ); UiGroup( "Dull metal roughness,0/,0/2" ); Default2( 0.426,0.908 ); Range2( -3,-3, 3,3 ); >;
-	float g_flRoughnessmin < UiType( Slider ); UiStep( 0.05 ); UiGroup( "Dull metal roughness,0/,0/1" ); Default1( 0.4 ); Range1( 0, 1 ); >;
-	float g_flRoughnessmax < UiType( Slider ); UiStep( 0.05 ); UiGroup( "Dull metal roughness,0/,0/1" ); Default1( 0.7 ); Range1( 0, 1 ); >;
+	CreateInputTexture2D( MaterialParameter0, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/metal box/metal-normal.jpg" ) );
+	Texture2D g_tMaterialParameter0 < Channel( RGBA, Box( MaterialParameter0 ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
 		
 	RenderState( CullMode, F_RENDER_BACKFACES ? NONE : DEFAULT );
 	
@@ -104,20 +100,16 @@ PS
 		m.Emission = float3( 0, 0, 0 );
 		m.Transmission = 0;
 		
-		float4 l_0 = float4( 0.74419, 0.74419, 0.74419, 1 );
-		float4 l_1 = g_tNormalMap.Sample( g_sSampler0,i.vTextureCoords.xy );
-		float2 l_2 = g_vTilescale;
-		float2 l_3 = g_vTileoffset;
-		float2 l_4 = TileAndOffsetUv( i.vTextureCoords.xy, l_2, l_3 );
-		float l_5 = Simplex2D(l_4);
-		float l_6 = g_flRoughnessmin;
-		float l_7 = g_flRoughnessmax;
-		float l_8 = (saturate( ( l_5 - -1 ) / ( 1 - -1 ) ) * ( l_7 - l_6 )) + l_6;
+		float4 l_0 = float4( 0.74418604, 0.74418604, 0.74418604, 1 );
+		float4 l_1 = g_tMaterialParameter0.Sample( g_sSampler0,i.vTextureCoords.xy );
+		float2 l_2 = TileAndOffsetUv( i.vTextureCoords.xy, float2( 0.7, 0.7 ), float2( 0.66999984, -0.7400002 ) );
+		float l_3 = Simplex2D(l_2);
+		float l_4 = (saturate( ( l_3 - -1 ) / ( 1 - -1 ) ) * ( 0.7 - 0.4 )) + 0.4;
 		
 		m.Albedo = l_0.xyz;
 		m.Opacity = 1;
 		m.Normal = l_1.xyz;
-		m.Roughness = l_8;
+		m.Roughness = l_4;
 		m.Metalness = 1;
 		m.AmbientOcclusion = 1;
 		

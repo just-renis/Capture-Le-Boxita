@@ -1,0 +1,604 @@
+{
+  "IsSubgraph": false,
+  "Path": "materials/obsidian/obsidian.sgrph",
+  "Model": "models/dev/box.vmdl",
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": false,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.2120142,
+      "DefaultMetalness": 1,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "13",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Normal": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Roughness": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "RemapValue",
+      "In": 0.5,
+      "InMin": -1,
+      "InMax": 1,
+      "OutMin": 0.19659449,
+      "OutMax": 0.54896736,
+      "Clamp": true,
+      "Identifier": "1",
+      "Position": "-276,72",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "D": {
+        "Identifier": "19",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "E": {
+        "Identifier": "20",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "2",
+      "Position": "-504,96",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "TileAndOffset",
+      "DefaultTile": "0.430000037,0.699999988",
+      "DefaultOffset": "1.83999944,0.819999874",
+      "WrapTo01": false,
+      "Identifier": "3",
+      "Position": "-720,96",
+      "HandleOffsets": {},
+      "Tile": {
+        "Identifier": "18",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Offset": {
+        "Identifier": "21",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "dda5963e-4e06-4457-b0dc-b06d1dcfdcc9",
+      "Identifier": "4",
+      "Position": "-684,252",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 32,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "5",
+      "Position": "-456,300",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "CoordsInput": {
+        "Identifier": "12",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.01395,0.01395,0.01395,1",
+      "Identifier": "6",
+      "Position": "-492,-348",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "7",
+      "Position": "-228,276",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "5",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "ccd06dd2-40c9-4c63-af26-b625f93bc711",
+      "Identifier": "8",
+      "Position": "-636,780",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 32,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "9",
+      "Position": "-372,744",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "8",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "43d67be1-1f26-45bf-9c12-61158dc37bc2",
+      "Identifier": "10",
+      "Position": "-720,528",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 32,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "11",
+      "Position": "-528,528",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "UVRotationNode",
+      "DefaultRotationCenter": "0.5,0.5",
+      "DefaultRotation": 50,
+      "Identifier": "12",
+      "Position": "-756,372",
+      "HandleOffsets": {},
+      "RotationCenter": {
+        "Identifier": "17",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Rotation": {
+        "Identifier": "22",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "13",
+      "Position": "-204,-276",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "16",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "6",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "14",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 32,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "14",
+      "Position": "-408,-180",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "15",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "ccd06dd2-40c9-4c63-af26-b625f93bc711",
+      "Identifier": "15",
+      "Position": "-612,-120",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.87442,0.87442,0.87442,1",
+      "Identifier": "16",
+      "Position": "-408,-516",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "f5252804-54ea-4aa0-ba1b-c364aeef7e48",
+      "Identifier": "17",
+      "Position": "-996,276",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "2a81e7d5-1e8c-4149-b271-5dc0589be9f6",
+      "Identifier": "18",
+      "Position": "-996,60",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "8427282b-c5d0-4fa8-8fd3-85ac99cf009f",
+      "Identifier": "19",
+      "Position": "-504,144",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "ceec19f8-3ae9-4dc1-bf68-ef9734d89a6b",
+      "Identifier": "20",
+      "Position": "-504,192",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "e3cc3b60-76bb-4b45-ac83-c5be96165ab8",
+      "Identifier": "21",
+      "Position": "-996,156",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "6701da0b-c661-4026-8ce7-932ca0257579",
+      "Identifier": "22",
+      "Position": "-996,372",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "dda5963e-4e06-4457-b0dc-b06d1dcfdcc9",
+      "Identifier": "23",
+      "Position": "-684,252",
+      "HandleOffsets": {}
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter0",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/obsidian/obsidian_normal.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "dda5963e-4e06-4457-b0dc-b06d1dcfdcc9",
+      "Name": "MaterialParameter0"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter1",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/edge_mask.jpg",
+        "Extension": "Mask",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Srgb",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "ccd06dd2-40c9-4c63-af26-b625f93bc711",
+      "Name": "MaterialParameter1"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter2",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/diamond/diamond_edge_normal.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "43d67be1-1f26-45bf-9c12-61158dc37bc2",
+      "Name": "MaterialParameter2"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0.5,0.5",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": "Texture UV",
+          "Priority": 2
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "f5252804-54ea-4aa0-ba1b-c364aeef7e48",
+      "Name": "Rotation center"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": -360,
+      "Max": 360,
+      "Value": 50,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Texture UV",
+          "Priority": 2
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "6701da0b-c661-4026-8ce7-932ca0257579",
+      "Name": "Rotation"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.5994759,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 4,
+        "PrimaryGroup": {
+          "Name": "Roughness UV",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "ceec19f8-3ae9-4dc1-bf68-ef9734d89a6b",
+      "Name": "Max Roghness"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.26814604,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 3,
+        "PrimaryGroup": {
+          "Name": "Roughness UV",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "8427282b-c5d0-4fa8-8fd3-85ac99cf009f",
+      "Name": "Min Roguhness"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "-10,-10",
+      "Max": "10,10",
+      "Value": "-0.5,0.229999989",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.01,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Roughness UV",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "2a81e7d5-1e8c-4149-b271-5dc0589be9f6",
+      "Name": "Tile scale"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "-5,-5",
+      "Max": "5,5",
+      "Value": "2.18000007,0.599999964",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.01,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Roughness UV",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "e3cc3b60-76bb-4b45-ac83-c5be96165ab8",
+      "Name": "Tile offset"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter3",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/emerald/emerald-bump.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "e732636e-24a4-4525-ad84-c429c79130f7",
+      "Name": "MaterialParameter3"
+    }
+  ],
+  "__version": 5
+}

@@ -1,6 +1,6 @@
 {
   "IsSubgraph": false,
-  "Path": "models/metal box/metal.sgrph",
+  "Path": "materials/metal box/metal.sgrph",
   "Model": "models/dev/box.vmdl",
   "Title": "",
   "Description": null,
@@ -61,22 +61,12 @@
         "Identifier": "2",
         "Output": "Result",
         "Subgraph": null
-      },
-      "D": {
-        "Identifier": "8",
-        "Output": "Result",
-        "Subgraph": null
-      },
-      "E": {
-        "Identifier": "9",
-        "Output": "Result",
-        "Subgraph": null
       }
     },
     {
       "_class": "SimplexNoise",
       "Identifier": "2",
-      "Position": "-504,-24",
+      "Position": "-504,96",
       "HandleOffsets": {},
       "Coords": {
         "Identifier": "3",
@@ -90,18 +80,8 @@
       "DefaultOffset": "0.669999838,-0.740000188",
       "WrapTo01": false,
       "Identifier": "3",
-      "Position": "-720,-24",
-      "HandleOffsets": {},
-      "Tile": {
-        "Identifier": "10",
-        "Output": "Result",
-        "Subgraph": null
-      },
-      "Offset": {
-        "Identifier": "11",
-        "Output": "Result",
-        "Subgraph": null
-      }
+      "Position": "-720,96",
+      "HandleOffsets": {}
     },
     {
       "_class": "Texture2DParameterNode",
@@ -146,44 +126,16 @@
       "Identifier": "7",
       "Position": "-600,-240",
       "HandleOffsets": {}
-    },
-    {
-      "_class": "FloatParameterNode",
-      "ParameterIdentifier": "abfab4f7-eeed-46ec-86e0-4c8be3b1c3f8",
-      "Identifier": "8",
-      "Position": "-516,108",
-      "HandleOffsets": {}
-    },
-    {
-      "_class": "FloatParameterNode",
-      "ParameterIdentifier": "76cb6b24-d00a-4d72-af06-a16492abaa57",
-      "Identifier": "9",
-      "Position": "-516,168",
-      "HandleOffsets": {}
-    },
-    {
-      "_class": "Float2ParameterNode",
-      "ParameterIdentifier": "a8ec4371-a60f-4e06-b814-7ac2f58f725e",
-      "Identifier": "10",
-      "Position": "-1020,-72",
-      "HandleOffsets": {}
-    },
-    {
-      "_class": "Float2ParameterNode",
-      "ParameterIdentifier": "cc199312-1c23-4476-a8d1-bb33b0a3c928",
-      "Identifier": "11",
-      "Position": "-1020,36",
-      "HandleOffsets": {}
     }
   ],
   "parameters": [
     {
       "_class": "Texture2DParameter",
       "Value": {
-        "Name": "Normal Map",
+        "Name": "MaterialParameter0",
         "IsAttribute": false,
         "DefaultColor": "0,0,0,0",
-        "DefaultTexture": "models/metal box/metal-normal.jpg",
+        "DefaultTexture": "materials/metal box/metal-normal.jpg",
         "Extension": "Normal",
         "CustomExtension": null,
         "ShowExtension": true,
@@ -202,95 +154,7 @@
         }
       },
       "Identifier": "dda5963e-4e06-4457-b0dc-b06d1dcfdcc9",
-      "Name": "Normal Map"
-    },
-    {
-      "_class": "FloatParameter",
-      "Min": 0,
-      "Max": 1,
-      "Value": 0.4,
-      "UI": {
-        "Type": "Slider",
-        "Step": 0.05,
-        "Priority": 1,
-        "PrimaryGroup": {
-          "Name": "Dull metal roughness",
-          "Priority": 0
-        },
-        "SecondaryGroup": {
-          "Name": null,
-          "Priority": 0
-        }
-      },
-      "IsAttribute": false,
-      "Identifier": "abfab4f7-eeed-46ec-86e0-4c8be3b1c3f8",
-      "Name": "Roughness min"
-    },
-    {
-      "_class": "FloatParameter",
-      "Min": 0,
-      "Max": 1,
-      "Value": 0.7,
-      "UI": {
-        "Type": "Slider",
-        "Step": 0.05,
-        "Priority": 1,
-        "PrimaryGroup": {
-          "Name": "Dull metal roughness",
-          "Priority": 0
-        },
-        "SecondaryGroup": {
-          "Name": null,
-          "Priority": 0
-        }
-      },
-      "IsAttribute": false,
-      "Identifier": "76cb6b24-d00a-4d72-af06-a16492abaa57",
-      "Name": "Roughness max"
-    },
-    {
-      "_class": "Float2Parameter",
-      "Min": "0,0",
-      "Max": "10,10",
-      "Value": "0.699999988,0.699999988",
-      "UI": {
-        "Type": "Slider",
-        "Step": 0.1,
-        "Priority": 2,
-        "PrimaryGroup": {
-          "Name": "Dull metal roughness",
-          "Priority": 0
-        },
-        "SecondaryGroup": {
-          "Name": null,
-          "Priority": 0
-        }
-      },
-      "IsAttribute": false,
-      "Identifier": "a8ec4371-a60f-4e06-b814-7ac2f58f725e",
-      "Name": "Tile scale"
-    },
-    {
-      "_class": "Float2Parameter",
-      "Min": "-3,-3",
-      "Max": "3,3",
-      "Value": "0.42574501,0.908367515",
-      "UI": {
-        "Type": "Slider",
-        "Step": 0,
-        "Priority": 2,
-        "PrimaryGroup": {
-          "Name": "Dull metal roughness",
-          "Priority": 0
-        },
-        "SecondaryGroup": {
-          "Name": null,
-          "Priority": 0
-        }
-      },
-      "IsAttribute": false,
-      "Identifier": "cc199312-1c23-4476-a8d1-bb33b0a3c928",
-      "Name": "Tile offset"
+      "Name": "MaterialParameter0"
     }
   ],
   "__version": 5

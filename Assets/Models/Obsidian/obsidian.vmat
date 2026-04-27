@@ -1,0 +1,23 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/obsidian/obsidian.shader"
+
+	MaterialParameter0 "models/obsidian/obsidian_normal.jpg"
+	MaterialParameter1 "models/edge_mask.jpg"
+	MaterialParameter2 "models/metal box/metal-normal.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Roughness UV ----
+	g_flMaxRoghness "0.599"
+	g_flMinRoguhness "0.268"
+	g_vTileoffset "[2.18 0.60]"
+	g_vTilescale "[-0.50 0.23]"
+
+	//---- Texture UV ----
+	g_flRotation "50"
+	g_vRotationcenter "[0.500 0.500]"
+}

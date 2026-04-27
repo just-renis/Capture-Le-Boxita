@@ -445,7 +445,7 @@
       "_class": "FloatParameter",
       "Min": 0,
       "Max": 100,
-      "Value": 15,
+      "Value": 35,
       "UI": {
         "Type": "Slider",
         "Step": 1,
@@ -467,7 +467,7 @@
       "_class": "FloatParameter",
       "Min": 0,
       "Max": 100,
-      "Value": 2,
+      "Value": 5,
       "UI": {
         "Type": "Slider",
         "Step": 1,

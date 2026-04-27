@@ -4,8 +4,8 @@ Layer0
 {
 	shader "materials/sand/sand.shader"
 
-	g_flGrainScale "15"
-	g_flWaveScale "2"
+	g_flGrainScale "35"
+	g_flWaveScale "5"
 	MaterialParameter1 "materials/sand/14131-normal.jpg"
 	MaterialParameter2 "materials/sand/sand1_n.jpg"
 
@@ -13,6 +13,6 @@ Layer0
 	g_bFogEnabled "1"
 
 	//---- Sand sparkle ----
-	g_flSparkleAmount "196"
+	g_flSparkleAmount "182"
 	g_flSparkleAngle "1.6"
 }

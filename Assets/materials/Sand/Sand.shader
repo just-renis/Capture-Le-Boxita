@@ -88,8 +88,8 @@ PS
 	Texture2D g_tMaterialParameter2 < Channel( RGBA, Box( MaterialParameter2 ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
 	float g_flSparkleAngle < UiType( Slider ); UiStep( 0.2 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 1.6 ); Range1( 0, 10 ); >;
 	float g_flSparkleAmount < UiType( Slider ); UiStep( 1 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 196 ); Range1( 0, 500 ); >;
-	float g_flWaveScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/0" ); Default1( 2 ); Range1( 0, 100 ); >;
-	float g_flGrainScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/1" ); Default1( 15 ); Range1( 0, 100 ); >;
+	float g_flWaveScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/0" ); Default1( 5 ); Range1( 0, 100 ); >;
+	float g_flGrainScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/1" ); Default1( 35 ); Range1( 0, 100 ); >;
 		
 	RenderState( CullMode, F_RENDER_BACKFACES ? NONE : DEFAULT );
 		

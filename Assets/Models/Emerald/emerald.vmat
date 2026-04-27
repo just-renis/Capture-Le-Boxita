@@ -1,0 +1,21 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/emerald/emerald.shader"
+
+	MaterialParameter0 "models/emerald/emerald_normal.jpg"
+	MaterialParameter1 "models/edge_mask.jpg"
+	MaterialParameter2 "models/diamond/diamond_edge_normal.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Roughness UV ----
+	g_vTileoffset "[1.84 0.82]"
+	g_vTilescale "[0.43 0.70]"
+
+	//---- Texture UV ----
+	g_flRotation "50"
+	g_vRotationcenter "[0.500 0.500]"
+}
