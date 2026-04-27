@@ -70,13 +70,14 @@ public sealed class Player : Component, Component.INetworkListener
 		EventManager.OnKill += OnKillEventListener;
 		PullComp = GetComponent<PullableComponent>();
 		if (IsProxy) return;
+		EventManager.OnPlayerDataRequired += GetPlayerData;
 		PlayerRigidbody = GetComponent<Rigidbody>();
 		MoneyMultiplier = Random.Shared.Float(2f, 60f);
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		SetupManagers();
 		Controller = GetComponent<CharacterController>();
-		Controller.BoundingBox.AddBBox(new BBox(new Vector3( -5f, -5f, -50f / 2f ), new Vector3( 5f, 5f, 50f / 2f )));
+		Controller.BoundingBox.AddBBox(new BBox(new Vector3(-5f, -5f, -50f / 2f), new Vector3(5f, 5f, 50f / 2f)));
 	}
 	protected override void OnUpdate()
 	{
@@ -85,14 +86,17 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	protected override void OnDestroy()
 	{
+		EventManager.OnKill -= OnKillEventListener;
 		if (!IsProxy)
 		{
 			ClearHeldObjectData();
-			EventManager.OnKill -= OnKillEventListener;
+			EventManager.OnPlayerDataRequired -= GetPlayerData;
 		}
 		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
+	private PlayerData GetPlayerData() { return PlayerData; }
+	
 	private void ProcessInput()
 	{
 		ProcessMouseInput();
@@ -217,32 +221,6 @@ public sealed class Player : Component, Component.INetworkListener
 		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
 		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
-	[Rpc.Broadcast]
-	public void ReceivePush(Guid InPusherId, Vector3 InPushForce)
-	{
-		if (IsProxy) return;
-		PullComp.SetOwnerId(InPusherId, false);
-		PlayerRigidbody?.ApplyImpulse(InPushForce);
-	}
-	[Rpc.Broadcast]
-	private void RequestMoneyTransfer(Guid TargetId)
-	{
-		if (IsProxy || TargetId != Network.OwnerId) return;
-		float MoneyLoss = PlayerData.Money * 0.25f;
-		SubtractMoney(MoneyLoss);
-		SendBackMoney(MoneyLoss);
-	}
-	[Rpc.Host]
-	private void SendBackMoney(float InMoney)
-	{
-		EventManager.TriggerOnKill(PullComp.GetOwnerId(), true, InMoney);
-	}
-	[Rpc.Broadcast]
-	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
-	{
-		if (IsProxy) return;
-		WorldPosition = InPosition;
-	}
 	private void AddMoney(float InMoneyAmount)
 	{
 		PlayerData.Money += InMoneyAmount;
@@ -265,10 +243,39 @@ public sealed class Player : Component, Component.INetworkListener
 		if (!Networking.IsHost) return;
 		IncreaseMoney(InKillerId, InIsPlayerKill, InMoneyAmount);
 	}
+	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
+	[Rpc.Broadcast]
+	public void ReceivePush(Guid InPusherId, Vector3 InPushForce)
+	{
+		if (IsProxy) return;
+		PullComp.SetOwnerId(InPusherId, false);
+		PlayerRigidbody?.ApplyImpulse(InPushForce);
+	}
+	
 	[Rpc.Broadcast]
 	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, float InMoneyAmount)
 	{
 		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
 		AddMoney(InMoneyAmount * (InIsPlayerKill ? 1f : MoneyMultiplier));
+	}
+	[Rpc.Broadcast]
+	private void RequestMoneyTransfer(Guid TargetId)
+	{
+		if (IsProxy || TargetId != Network.OwnerId) return;
+		float MoneyLoss = PlayerData.Money * 0.25f;
+		SubtractMoney(MoneyLoss);
+		SendBackMoney(MoneyLoss);
+	}
+	[Rpc.Broadcast]
+	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
+	{
+		if (IsProxy) return;
+		WorldPosition = InPosition;
+	}
+	
+	[Rpc.Host]
+	private void SendBackMoney(float InMoney)
+	{
+		EventManager.TriggerOnKill(PullComp.GetOwnerId(), true, InMoney);
 	}
 }

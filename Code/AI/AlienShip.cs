@@ -10,6 +10,7 @@ public sealed class AlienShip : Component, IPoolObject
 {
 	private int MoveHandle;
 	private int CheckIsInAirObjectsHandle;
+	private int PullObjectsTowardsCenterHandle;
 	private int FlyUpwardsHandle;
 	private const float MoveSpeed = 50f;
 	private const float MoveUpwardsSpeed = 2000f;
@@ -21,13 +22,14 @@ public sealed class AlienShip : Component, IPoolObject
 	private BoxCollider Collider;
 	private CapsuleCollider BeamCollider;
 	private GameObject BeamVfx;
+	private readonly HashSet<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 
 	public void Init()
 	{
 		Collider?.Enabled = true;
 		BeamCollider?.Enabled = true;
-		BeamVfx?.Enabled = true;
+		ChangeBeamVfxState(true);
 		WorldScale = new Vector3(1f);
 	}
 
@@ -35,12 +37,22 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		base.OnStart();
 		BeamVfx = GameObject.Children.FirstOrDefault(OutGameObject => OutGameObject.Name == "BeamShader");
+		ChangeBeamVfxState(true);
 		if (!Networking.IsHost) return;
 		SetupBoxCollider();
 		ChangeDirection();
 		SetupBeamCollider();
 		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
 		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
+		PullObjectsTowardsCenterHandle = TimerManager.AddTimer(PullObjectsTowardsCenterHandle, 0.025f, true, PullObjectsTowardsCenter);
+	}
+	private void PullObjectsTowardsCenter()
+	{
+		foreach (PullableComponent Pullable in InsideBeamObjects)
+		{
+			Vector3 TargetPos = new (WorldPosition.x, WorldPosition.y, Pullable.WorldPosition.z);
+			Pullable.WorldPosition = Vector3.Lerp(Pullable.WorldPosition, TargetPos, 0.1f);
+		}
 	}
 	protected override void OnDestroy()
 	{
@@ -60,11 +72,11 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void CheckIsInAirObjects()
 	{
-		List<PullableComponent> ToRemove = InsideBeamObjects.Where(Pullable => Pullable.IsInAir()).ToList();
+		List<PullableComponent> ToRemove = ImmovableBeamObjects.Where(Pullable => Pullable.IsInAir()).ToList();
 		foreach (PullableComponent Pullable in ToRemove)
 		{
 			SetPullOnObject(Pullable, true);
-			InsideBeamObjects.Remove(Pullable);
+			ImmovableBeamObjects.Remove(Pullable);
 		}
 	}
 	private void ChangeDirection()
@@ -96,16 +108,16 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void FlyAway()
 	{
-		foreach (Collider PullableCollider in BeamCollider.Touching)
+		foreach (PullableComponent Pullable in InsideBeamObjects.ToList())
 		{
-			PullableComponent Pullable = PullableCollider.GameObject.GetComponent<PullableComponent>();
-			if (Pullable == null) continue;
+			if (!Pullable.IsValid()) continue;
 			SetPullOnObject(Pullable, false);
+			ImmovableBeamObjects.Remove(Pullable);
 			InsideBeamObjects.Remove(Pullable);
 		}
 		Collider?.Enabled = false;
 		BeamCollider?.Enabled = false;
-		DisableBeamVfx();
+		ChangeBeamVfxState(false);
 		FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime,  true, FlyUpProcess);
 	}
 	private void FlyUpProcess()
@@ -122,16 +134,19 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void BeamExit(Collider InCollider)
 	{
-		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
+		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>(true);
+		if (Pullable == null) return;
 		InsideBeamObjects.Remove(Pullable);
+		ImmovableBeamObjects.Remove(Pullable);
 		SetPullOnObject(Pullable, false);
 	}
 	private void BeamEntered(Collider InCollider)
 	{
 		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
 		if (Pullable == null) return;
-		if (!Pullable.IsInAir()) InsideBeamObjects.Add(Pullable);
+		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
 		else SetPullOnObject(Pullable, true);
+		InsideBeamObjects.Add(Pullable);
 	}
 	private void SetupBoxCollider()
 	{
@@ -158,10 +173,7 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		InPullable?.SetIsPulled(InState);
 	}
+	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
-	private void DisableBeamVfx()
-	{
-		if (IsProxy) return;
-		BeamVfx?.Enabled = false;
-	}
+	private void ChangeBeamVfxState(bool InState) { BeamVfx?.Enabled = InState; }
 }

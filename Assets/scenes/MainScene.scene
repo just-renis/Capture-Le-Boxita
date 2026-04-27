@@ -86,7 +86,7 @@
             "BloomLayer": false,
             "AfterUILayer": false
           },
-          "RenderType": "On",
+          "RenderType": "Off",
           "Tint": "0.18707,0.50698,0.07074,1"
         },
         {

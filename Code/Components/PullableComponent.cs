@@ -21,25 +21,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public float GetLastOwnerTime() { return LastOwnerTime; }
 	public Guid GetOwnerId() { return LastOwnedBy; }
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
-	[Rpc.Broadcast]
-	public void SetIsPulled(bool State)
-	{
-		IsPulled = State;
-		if (IsPulled)
-		{
-			Rigidbody?.Gravity = false;
-			PoolingHandle = TimerManager.AddTimer(PoolingHandle, 1f / 60f, true, PullingLogic);
-		}
-		else
-		{
-			if (Rigidbody != null)
-			{
-				Rigidbody.Gravity = true;
-				Rigidbody.Velocity = 0f;
-			}
-			TimerManager.ClearTimer(PoolingHandle);
-		}
-	}
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)
 	{
 		LastOwnerTime = ClearTime;
@@ -81,5 +62,25 @@ public class PullableComponent : Component, Component.ICollisionListener
 	{
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
+	}
+	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
+	[Rpc.Broadcast]
+	public void SetIsPulled(bool State)
+	{
+		IsPulled = State;
+		if (IsPulled)
+		{
+			Rigidbody?.Gravity = false;
+			PoolingHandle = TimerManager.AddTimer(PoolingHandle, 1f / 60f, true, PullingLogic);
+		}
+		else
+		{
+			if (Rigidbody != null)
+			{
+				Rigidbody.Gravity = true;
+				Rigidbody.Velocity = 0f;
+			}
+			TimerManager.ClearTimer(PoolingHandle);
+		}
 	}
 }

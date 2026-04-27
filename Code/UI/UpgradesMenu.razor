@@ -6,8 +6,7 @@
 
 <root>
     <!-- We wrap everything in a main container. Toggling classes on inner divs is 100% reliable in S&box -->
-    <div class="wrapper @(IsOpen ? "open" : "")">
-        
+    <div class="wrapper">
         <!-- Header -->
         <header>
             <div class="header-left">
@@ -37,7 +36,7 @@
         <!-- Canvas Workspace -->
         <div class="canvas-container">
             <!-- Background Drag Catcher (Removed mouse up/move from here, handled safely in OnUpdate) -->
-            <div class="canvas-bg" @onmousedown=@OnMouseClicked></div>
+            <div class="canvas-bg" @onmousedown=@OnMouseDragged @onmouseup=@OnMouseReleased></div>
 
             <!-- Transformable Canvas View -->
             <div class="canvas" style="transform: scale(@Scale) translate(@(CanvasX)px, @(CanvasY)px);">
@@ -166,8 +165,6 @@
 @code
 {
 	// === Logic & State ===
-    [Property] public bool IsOpen { get; set; } = false;
-    
     public int Money { get; set; } = 1500;
     public HashSet<string> OwnedUpgrades { get; set; } = new() { "root" };
     public string SelectedId { get; set; } = "root";
@@ -200,38 +197,17 @@
 
     protected override void OnUpdate()
     {
-        // 1. Toggling Menu (Modern Scene system standardizes actions like "Score" and "Menu")
-        if ( Input.Pressed( "Score" ))
-        {
-            IsOpen = !IsOpen;
-            Log.Info($"Skill Tree Toggled! IsOpen: {IsOpen}");
-            
-            // Critical step to ensure the UI catches your clicks only when open
-            if (Panel != null) Panel.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
-            
-            StateHasChanged();
-        }
-
-        // 2. Reliable Dragging Processing
-        if ( isDragging )
-        {
-            // Moved to standard modern 'Mouse.Position' rather than old Sandbox.Mouse
-            var delta = Mouse.Position - dragStartPos;
-            CanvasX = dragStartOffset.x + (delta.x / Scale);
-            CanvasY = dragStartOffset.y + (delta.y / Scale);
-            StateHasChanged();
-
-            // S&box defaults primary click to "Attack1". If it's lifted, stop dragging.
-            if ( !Input.Down( "Attack1" ) && !Input.Down("attack1") ) 
-            {
-                isDragging = false;
-            }
-        }
+	    // 2. Reliable Dragging Processing
+	    if (!isDragging) return;
+	    // Moved to standard modern 'Mouse.Position' rather than old Sandbox.Mouse
+        Vector2 Delta = Mouse.Position - dragStartPos;
+        CanvasX = dragStartOffset.x + Delta.x / Scale;
+        CanvasY = dragStartOffset.y + Delta.y / Scale;
+        StateHasChanged();
     }
 
     public void CloseMenu()
     {
-        IsOpen = false;
         if (Panel != null) Panel.Style.PointerEvents = PointerEvents.None;
         StateHasChanged();
     }
@@ -271,58 +247,79 @@
 
     // === Dragging Events ===
 
-    public void OnMouseClicked()
+    public void OnMouseDragged()
     {
         isDragging = true;
         dragStartPos = Mouse.Position;
         dragStartOffset = new Vector2( CanvasX, CanvasY );
+    }
+    public void OnMouseReleased()
+    {
+	    isDragging = false;
+    }
+    
+    public struct CategoryData
+    {
+	    public string Key { get; set; }
+	    public string Name { get; set; }
+	    public string Icon { get; set; }
+	    public float Dx { get; set; }
+	    public float Dy { get; set; }
     }
 
     // === Generation Logic ===
 
     private List<Upgrade> GenerateUpgrades()
     {
-        var list = new List<Upgrade>();
+        List<Upgrade> list =
+        [
+	        new()
+	        {
+		        Id = "root",
+		        Name = "Neural Link",
+		        Description = "The base connection to the upgrade network.",
+		        Cost = 0,
+		        Icon = "memory",
+		        Category = "utility",
+		        X = 0,
+		        Y = 0
+	        }
 
-        list.Add( new Upgrade { 
-            Id = "root", Name = "Neural Link", Description = "The base connection to the upgrade network.", 
-            Cost = 0, Icon = "memory", Category = "utility", X = 0, Y = 0 
-        });
-
-        var categories = new[] {
-            new { Key = "combat", Name = "Combat", Icon = "swords", Dx = -3f, Dy = 1.5f },
-            new { Key = "mobility", Name = "Mobility", Icon = "air", Dx = 3f, Dy = 1.5f },
-            new { Key = "resource", Name = "Resource", Icon = "paid", Dx = -3f, Dy = -1.5f },
-            new { Key = "utility", Name = "Utility", Icon = "build", Dx = 3f, Dy = -1.5f }
+        ];
+        List<CategoryData> categories = new()
+        {
+	        new() { Key = "combat", Name = "Combat", Icon = "swords", Dx = -3f, Dy = 1.5f },
+	        new() { Key = "mobility", Name = "Mobility", Icon = "air", Dx = 3f, Dy = 1.5f },
+	        new() { Key = "resource", Name = "Resource", Icon = "paid", Dx = -3f, Dy = -1.5f },
+	        new() { Key = "utility", Name = "Utility", Icon = "build", Dx = 3f, Dy = -1.5f }
         };
 
-        var iconPool = new[] { "bolt", "shield", "skull", "local_fire_department", "my_location", "science", "star", "rocket", "handyman", "monitor_heart", "emoji_events", "inventory_2", "public", "favorite", "lightbulb", "explore", "terminal", "military_tech", "cyclone" };
+        string[] iconPool = ["bolt", "shield", "skull", "local_fire_department", "my_location", "science", "star", "rocket", "handyman", "monitor_heart", "emoji_events", "inventory_2", "public", "favorite", "lightbulb", "explore", "terminal", "military_tech", "cyclone"];
 
-        for ( int catIdx = 0; catIdx < categories.Length; catIdx++ )
+        for ( int catIdx = 0; catIdx < categories.Count; catIdx++ )
         {
-            var cat = categories[catIdx];
-            var t1Id = $"{cat.Key}_tier1";
+            CategoryData cat = categories[catIdx];
+            string t1Id = $"{cat.Key}_tier1";
             list.Add( new Upgrade { 
                 Id = t1Id, Name = $"{cat.Name} Specialist", Description = $"Basic level of {cat.Name.ToLower()} training.", 
-                Cost = 100, Parents = new List<string> { "root" }, Icon = cat.Icon, Category = cat.Key, 
+                Cost = 100, Parents = ["root"], Icon = cat.Icon, Category = cat.Key, 
                 X = cat.Dx * 180, Y = cat.Dy * 180 
             });
-
             for ( int i = 0; i < 3; i++ )
             {
-                var subId = $"{cat.Key}_sub_{i}";
+                string subId = $"{cat.Key}_sub_{i}";
                 list.Add( new Upgrade { 
                     Id = subId, Name = $"{cat.Name} Skill {i + 1}", Description = $"Enhance your {cat.Name.ToLower()} efficiency.", 
-                    Cost = 250, Parents = new List<string> { t1Id }, Icon = iconPool[(catIdx * 5 + i) % iconPool.Length], Category = cat.Key, 
+                    Cost = 250, Parents = [t1Id], Icon = iconPool[(catIdx * 5 + i) % iconPool.Length], Category = cat.Key, 
                     X = cat.Dx * 180 + (i - 1) * 220, Y = cat.Dy * 180 + (cat.Dy * 180) 
                 });
 
                 for ( int j = 0; j < 3; j++ )
                 {
-                    var deepId = $"{subId}_deep_{j}";
+                    string deepId = $"{subId}_deep_{j}";
                     list.Add( new Upgrade { 
                         Id = deepId, Name = $"{cat.Name} Mastery {i + 1}.{j + 1}", Description = $"Master level refinement for {cat.Name.ToLower()}.", 
-                        Cost = 500 + (j * 100), Parents = new List<string> { subId }, Icon = iconPool[(catIdx * 7 + i * 3 + j) % iconPool.Length], Category = cat.Key, 
+                        Cost = 500 + (j * 100), Parents = [subId], Icon = iconPool[(catIdx * 7 + i * 3 + j) % iconPool.Length], Category = cat.Key, 
                         X = cat.Dx * 180 + (i - 1) * 220 + (j - 1) * 140, Y = cat.Dy * 180 + (cat.Dy * 180) + (cat.Dy * 180) 
                     });
                 }
@@ -330,12 +327,9 @@
         }
         return list;
     }
-	EventManager EventManager;
 	protected override void OnStart()
 	{
 		Upgrades = GenerateUpgrades();
-		if (Panel != null) Panel.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
-		EventManager = Scene.GetSystem<EventManager>();
 		EventManager.OnUiStateChanged += UiStateChanged;
 		Enabled = false;
 	}
@@ -345,12 +339,13 @@
 	}
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( IsOpen, Money, SelectedId, Scale, CanvasX, CanvasY ) ^ HashCode.Combine( OwnedUpgrades.Count, isDragging );
+		return HashCode.Combine( Money, SelectedId, Scale, CanvasX, CanvasY ) ^ HashCode.Combine( OwnedUpgrades.Count, isDragging );
 	}
 
 	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
 		if (InUi != EUi.UpgradesMenu) return;
 		Enabled = RenderState;
+		Panel?.Style.PointerEvents = Enabled ? PointerEvents.All : PointerEvents.None;
 	}
 }

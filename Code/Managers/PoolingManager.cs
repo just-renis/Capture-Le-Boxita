@@ -2,7 +2,6 @@ using System;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Interfaces;
-
 namespace Sandbox.Managers;
 
 public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
@@ -18,8 +17,8 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		if (PoolData.Objects.Count == 0) AllocatePoolObject(InObjectName);
-		Guid ObjectId = PoolData.Objects.Pop();
-		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectId);
+		Guid ObjectGuid = PoolData.Objects.Pop();
+		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectGuid);
 		PoolObject.LocalPosition = InLocation;
 		PoolObject.LocalRotation = InRotation;
 		PoolObject.Enabled = true;
@@ -43,6 +42,5 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		Pool[InObjectName].Objects.Push(PooledObject.Id);
 		PooledObject.Network.SetOwnerTransfer(OwnerTransfer.Takeover);
 		PooledObject.NetworkSpawn();
-		PooledObject.GetComponent<IPoolObject>().Init();
 	}
 }

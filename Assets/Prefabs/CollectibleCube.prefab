@@ -47,6 +47,16 @@
         "__guid": "51580266-fb08-4e30-9c36-93815010dd07",
         "__enabled": true,
         "Flags": 0,
+        "CubeModelRenderer": {
+          "_type": "component",
+          "component_id": "9254a7e9-4387-47a8-bd46-9dd569f009bd",
+          "go": "b9534048-4851-40da-aee1-2bd0bb4e5d4b",
+          "component_type": "ModelRenderer"
+        },
+        "Materials": {
+          "Cardboard": "models/cardboard box/cardboard box.fbm/cardboard.vmat",
+          "Metal": "models/metal box/metal.vmat"
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
