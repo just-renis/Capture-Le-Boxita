@@ -6,6 +6,6 @@ public sealed class ObjectPoolData
 	public GameObject Prefab { get; set; }
 	public int MaxAmountActive { get; set; }
 	
-	[Hide] public readonly Stack<Guid> Objects = new();
-	[Hide] public int ActiveCount;
+	[Hide] public List<Guid> Objects { get; set; } = new();
+	[Hide] public int ActiveCount { get; set; }
 }

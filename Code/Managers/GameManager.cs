@@ -7,7 +7,7 @@ public sealed class GameManager : Component
 {
 	[Property] private NetDictionary<EPoolObject, ObjectPoolData> Prefabs { get; set; }
 	[Property] private List<GameObject> PlayerSpawners { get; set; }
-	
+
 	private CollectibleCubeManager CollectibleCubeManager;
 	private PoolingManager PoolingManager;
 	
@@ -17,14 +17,15 @@ public sealed class GameManager : Component
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
 		CollectibleCubeManager.Init();
 		PoolingManager = Scene.GetSystem<PoolingManager>();
-		if (!Networking.IsHost) return;
 		EventManager.OnTeleportToSpawnLocation += GetSpawnerLocation;
+		if (!Networking.IsHost) return;
 		PoolingManager.Init(Prefabs);
 	}
 	protected override void OnUpdate()
 	{
 		TimerManager.OnUpdate();
-		if (Networking.IsHost) CollectibleCubeManager.OnUpdate();
+		if (!Networking.IsHost) return;
+		CollectibleCubeManager.OnUpdate();
 	}
 	protected override void OnDestroy()
 	{
@@ -32,7 +33,6 @@ public sealed class GameManager : Component
 		TimerManager.OnDestroy();
 		base.OnDestroy();
 	}
-
 	private Vector3 GetSpawnerLocation()
 	{
 		return PlayerSpawners[Random.Shared.Int(0, PlayerSpawners.Count - 1)].WorldPosition;

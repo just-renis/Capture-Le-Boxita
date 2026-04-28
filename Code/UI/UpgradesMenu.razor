@@ -96,7 +96,7 @@
             @if (SelectedUpgrade != null)
             {
                 <div class="sidebar">
-                    <div class="close-sidebar" @onclick=@(() => { SelectedId = null; StateHasChanged(); })><i>close</i></div>
+                    <div class="close-sidebar" @onclick=@(() => { SelectedId = null; })><i>close</i></div>
                     
                     <div class="sidebar-icon @SelectedUpgrade.Category">
                         <i>@SelectedUpgrade.Icon</i>
@@ -213,17 +213,12 @@
 	    return Math.Clamp((float)Count / Max * 100f, 0, 100);
     }
 
-    public void SelectNode(string InId)
-    {
-        SelectedId = InId;
-        StateHasChanged();
-    }
+    public void SelectNode(string InId) { SelectedId = InId; }
     public void BuyUpgrade()
     {
 	    if (SelectedId == null || SelectedUpgrade == null || GetIsOwned(SelectedId) || !CanAfford || !GetIsAvailable(SelectedId)) return;
 	    Money -= SelectedUpgrade.Cost;
 	    OwnedUpgrades.Add( SelectedId );
-	    StateHasChanged();
     }
     public void CloseMenu() { UiManager.TriggerUiStateChange(EUi.UpgradesMenu); }
     // ------------------------------------------------------------------------------------- VIRTUAL METHODS ---------------------------------------------------------------------------
@@ -239,7 +234,7 @@
     }
     protected override int BuildHash()
     {
-	    return HashCode.Combine( Money, SelectedId, Scale, CanvasX, CanvasY ) ^ HashCode.Combine( OwnedUpgrades.Count, IsDragging );
+	    return HashCode.Combine(Money, SelectedId, Scale, CanvasX, CanvasY, OwnedUpgrades.Count, IsDragging);
     }
     protected override void OnUpdate()
     {
@@ -249,7 +244,6 @@
 	    Vector2 Delta = Mouse.Position - DragStartPos;
 	    CanvasX = DragStartOffset.x + Delta.x / Scale;
 	    CanvasY = DragStartOffset.y + Delta.y / Scale;
-	    StateHasChanged();
     }
 
     // === Dragging Events ===
@@ -258,7 +252,7 @@
     {
         IsDragging = true;
         DragStartPos = Mouse.Position;
-        DragStartOffset = new Vector2( CanvasX, CanvasY );
+        DragStartOffset = new Vector2(CanvasX, CanvasY);
     }
     public void OnMouseReleased() { IsDragging = false; }
 
@@ -354,7 +348,7 @@
     {
 	    base.OnMouseWheel(InValue);
 	    if (InValue.y < 0) Scale = Math.Min(Scale + 0.2f, 3f);
-	    else if (InValue.y > 0) Scale = Math.Max(Scale - 0.2f, 0.2f);
+	    else if (InValue.y > 0) Scale = Math.Max(Scale - 0.2f, 0.8f);
     }
 
 	private void UiStateChanged(EUi InUi, bool RenderState)

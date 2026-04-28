@@ -13,7 +13,6 @@ public sealed class CollectibleCube : Component, IPoolObject
 	private PullableComponent PullComp;
 	private Rigidbody Rigidbody;
 
-	public void FirstInit(int InId) { }
 	public void RequestReturnToPoolObject()
 	{
 		if (!Networking.IsHost) return;
@@ -24,7 +23,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		Rigidbody.Velocity = 0f;
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);
 	}
-	
+
 	protected override void OnStart()
 	{
 		base.OnStart();

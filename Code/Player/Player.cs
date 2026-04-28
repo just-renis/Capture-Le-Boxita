@@ -14,6 +14,7 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private Sword Sword { get; set; }
 
 	private int GrabTimerHandle;
+	private Guid PreviousHostId;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
@@ -55,11 +56,12 @@ public sealed class Player : Component, Component.INetworkListener
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void OnConnected(Connection InChannel)
 	{
-		EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(InChannel.Id, InChannel.Name, 0), true);
+		//EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(InChannel.Id, InChannel.Name, 0), true);
 		Log.Info("CONNECTED: " + InChannel.Id);
 	}
 	public void OnDisconnected(Connection InChannel)
 	{
+		if (Networking.IsHost) PreviousHostId = InChannel.Id;
 		//	EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), false);
 		Log.Info("DISCONNECTED: " + InChannel.Id);
 	}
@@ -205,11 +207,13 @@ public sealed class Player : Component, Component.INetworkListener
 	private void ClearHeldObjectData(bool InWasTakenFromOtherPlayer = false)
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
-		HeldObject?.Network.DropOwnership();
+		ReturnAuthorityToHost(HeldObject);
 		if (!InWasTakenFromOtherPlayer) HeldObjectData.SetupClearOwnerIdTimer();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
+	[Rpc.Host]
+	private void ReturnAuthorityToHost(GameObject InHeldObject) { InHeldObject?.Network.TakeOwnership(); }
 	public void ReturnToSpawnLocation()
 	{
 		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());

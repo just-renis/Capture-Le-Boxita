@@ -148,14 +148,18 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 10
+              "MaxAmountActive": 2,
+              "Objects": [],
+              "ActiveCount": 0
             },
             "AlienShip": {
               "Prefab": {
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 1
+              "MaxAmountActive": 1,
+              "Objects": [],
+              "ActiveCount": 0
             }
           }
         }
@@ -573,6 +577,11 @@
     "GameObjectSystems": {
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
+        }
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {

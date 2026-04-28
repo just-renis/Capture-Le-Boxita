@@ -17,7 +17,9 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		if (PoolData.Objects.Count == 0) AllocatePoolObject(InObjectName);
-		Guid ObjectGuid = PoolData.Objects.Pop();
+		int LastIndex = PoolData.Objects.Count - 1;
+		Guid ObjectGuid = PoolData.Objects[LastIndex];
+		PoolData.Objects.RemoveAt(LastIndex);
 		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectGuid);
 		PoolObject.LocalPosition = InLocation;
 		PoolObject.LocalRotation = InRotation;
@@ -32,15 +34,14 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		InGameObject.Enabled = false;
-		PoolData.Objects.Push(InGameObject.Id);
+		PoolData.Objects.Add(InGameObject.Id);
 		PoolData.ActiveCount--;
 	}
 
 	private void AllocatePoolObject(EPoolObject InObjectName)
 	{
 		GameObject PooledObject = Pool[InObjectName].Prefab.Clone();
-		Pool[InObjectName].Objects.Push(PooledObject.Id);
-		PooledObject.Network.SetOwnerTransfer(OwnerTransfer.Takeover);
+		Pool[InObjectName].Objects.Add(PooledObject.Id);
 		PooledObject.NetworkSpawn();
 	}
 }

@@ -8,6 +8,7 @@ namespace Sandbox.AI;
 
 public sealed class AlienShip : Component, IPoolObject
 {
+	private bool IsLogicInitialized = false;
 	private int MoveHandle;
 	private int CheckIsInAirObjectsHandle;
 	private int PullObjectsTowardsCenterHandle;
@@ -38,7 +39,14 @@ public sealed class AlienShip : Component, IPoolObject
 		base.OnStart();
 		BeamVfx = GameObject.Children.FirstOrDefault(OutGameObject => OutGameObject.Name == "BeamShader");
 		ChangeBeamVfxState(true);
-		if (!Networking.IsHost) return;
+	}
+	protected override void OnUpdate()
+	{
+		if (Networking.IsHost && !IsLogicInitialized) SetupHostLogic();
+	}
+	private void SetupHostLogic()
+	{
+		IsLogicInitialized = true;
 		SetupBoxCollider();
 		ChangeDirection();
 		SetupBeamCollider();
@@ -109,9 +117,8 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void FlyAway()
 	{
-		foreach (PullableComponent Pullable in InsideBeamObjects.ToList())
+		foreach (PullableComponent Pullable in InsideBeamObjects.ToList().Where(Pullable => Pullable.IsValid()))
 		{
-			if (!Pullable.IsValid()) continue;
 			SetPullOnObject(Pullable, false);
 			ImmovableBeamObjects.Remove(Pullable);
 			InsideBeamObjects.Remove(Pullable);

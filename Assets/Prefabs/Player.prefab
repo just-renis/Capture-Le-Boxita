@@ -9,9 +9,9 @@
     "Scale": "1,1,1",
     "Tags": "player",
     "Enabled": true,
-    "NetworkMode": 1,
+    "NetworkMode": 2,
     "NetworkFlags": 0,
-    "NetworkOrphaned": 1,
+    "NetworkOrphaned": 0,
     "NetworkTransmit": true,
     "OwnerTransfer": 1,
     "Components": [
