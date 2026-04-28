@@ -9,14 +9,11 @@ public sealed class GameManager : Component
 	[Property] private List<GameObject> PlayerSpawners { get; set; }
 	
 	private CollectibleCubeManager CollectibleCubeManager;
-	private UiManager UiManager;
 	private PoolingManager PoolingManager;
 	
 	protected override void OnStart()
 	{
 		base.OnStart();
-		UiManager = Scene.GetSystem<UiManager>();
-		UiManager.OnStart();
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
 		CollectibleCubeManager.Init();
 		PoolingManager = Scene.GetSystem<PoolingManager>();

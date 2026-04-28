@@ -138,7 +138,7 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		ProcessMovementInput();
 		ProcessCameraLook();
-		if (Input.Pressed("OpenUpgrades"))
+		if (Input.Pressed("Score"))
 		{
 			UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
 		}
@@ -168,10 +168,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private void ProcessMouseLeftClickInput()
 	{
 		if (!Input.Pressed("Attack1")) return;
-		if (HeldObjectData.GetObject() == null)
-		{
-			Sword.Attack();
-		}
+		if (HeldObjectData.GetObject() == null) Sword.Attack();
 		else
 		{
 			Rigidbody Rigidbody = HeldObjectData.GetRigidBody();

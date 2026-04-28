@@ -50,6 +50,7 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		foreach (PullableComponent Pullable in InsideBeamObjects)
 		{
+			if (!Pullable.IsInAir()) continue;
 			Vector3 TargetPos = new (WorldPosition.x, WorldPosition.y, Pullable.WorldPosition.z);
 			Pullable.WorldPosition = Vector3.Lerp(Pullable.WorldPosition, TargetPos, 0.1f);
 		}

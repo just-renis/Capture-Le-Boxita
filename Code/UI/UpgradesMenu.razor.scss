@@ -163,6 +163,10 @@ UpgradesMenu .line.owned {
   border-top: 2px solid #facc15;
   box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
 }
+UpgradesMenu .line.unowned {
+  border-top: 2px solid #5A738B;
+  box-shadow: 0 0 10px rgba(111, 111, 111, 0.5);
+}
 
 /* --- Nodes --- */
 

@@ -3,25 +3,20 @@ namespace Sandbox.Managers;
 
 public sealed class UiManager(Scene Scene) : GameObjectSystem(Scene)
 {
-	private Dictionary<EUi, bool> UiStates = new()
+	private static readonly Dictionary<EUi, bool> UI_STATES = new()
 	{
 		{ EUi.UpgradesMenu, false }
 	};
-	private EventManager EventManager;
 
-	public void OnStart()
+	public static void TriggerUiStateChange(EUi InUi)
 	{
-		EventManager = Scene.GetSystem<EventManager>();
-	}
-	public void TriggerUiStateChange(EUi InUi)
-	{
-		bool NewRenderState = !UiStates[InUi];
-		UiStates[InUi] = NewRenderState;
+		bool NewRenderState = !UI_STATES[InUi];
+		UI_STATES[InUi] = NewRenderState;
 		EventManager.TriggerUiStateChange(InUi, NewRenderState);
 	}
-	public void TriggerUiStateChange(EUi InUi, bool RenderState)
+	public static void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
-		UiStates[InUi] = RenderState;
+		UI_STATES[InUi] = RenderState;
 		EventManager.TriggerUiStateChange(InUi, RenderState);
 	}
 }
