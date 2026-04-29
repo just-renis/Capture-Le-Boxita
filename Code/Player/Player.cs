@@ -12,9 +12,10 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
+	[Property] private BoxCollider PlayerCollider { get; set; }
 
 	private int GrabTimerHandle;
-	private Guid PreviousHostId;
+	private int HostClientCollisionUpdateHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
@@ -23,12 +24,12 @@ public sealed class Player : Component, Component.INetworkListener
 	private float MoneyMultiplier = 1f;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
-	private UiManager UiManager;
 	private CameraComponent Camera;
 	private CharacterController Controller;
 	private PullableComponent PullComp;
 	private PlayerData PlayerData;
 	private Rigidbody PlayerRigidbody;
+	private Rotation LastRotation;
 	
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
@@ -61,9 +62,21 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	public void OnDisconnected(Connection InChannel)
 	{
-		if (Networking.IsHost) PreviousHostId = InChannel.Id;
 		//	EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), false);
 		Log.Info("DISCONNECTED: " + InChannel.Id);
+	}
+	public void GiveImpulseForce(Vector3 InImpulseForce)
+	{
+		InImpulseForce.z = 0f;
+		PlayerRigidbody?.ApplyImpulse(InImpulseForce);
+	}
+	public void ReturnToSpawnLocation()
+	{
+		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
+		if (PullComp == null || !PullComp.GetIsPulled()) return;
+		Guid LastOwnedId = PullComp.GetOwnerId();
+		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
+		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
@@ -71,15 +84,23 @@ public sealed class Player : Component, Component.INetworkListener
 		base.OnStart();
 		EventManager.OnKill += OnKillEventListener;
 		PullComp = GetComponent<PullableComponent>();
+		Controller = GetComponent<CharacterController>();
+		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
-		PlayerRigidbody = GetComponent<Rigidbody>();
 		MoneyMultiplier = Random.Shared.Float(2f, 60f);
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
-		SetupManagers();
-		Controller = GetComponent<CharacterController>();
+		PlayerRigidbody = GetComponent<Rigidbody>();
 		Controller.BoundingBox.AddBBox(new BBox(new Vector3(-5f, -5f, -50f / 2f), new Vector3(5f, 5f, 50f / 2f)));
+	}
+	private void UpdateClientsForHost()
+	{
+		if (!Networking.IsHost || !IsProxy || PlayerCollider == null) return;
+		if (WorldRotation == LastRotation) return;
+		PlayerCollider.Enabled = false;
+		PlayerCollider.Enabled = true;
+		LastRotation = WorldRotation;
 	}
 	protected override void OnUpdate()
 	{
@@ -89,6 +110,7 @@ public sealed class Player : Component, Component.INetworkListener
 	protected override void OnDestroy()
 	{
 		EventManager.OnKill -= OnKillEventListener;
+		TimerManager.ClearTimer(HostClientCollisionUpdateHandle);
 		if (!IsProxy)
 		{
 			ClearHeldObjectData();
@@ -140,10 +162,7 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		ProcessMovementInput();
 		ProcessCameraLook();
-		if (Input.Pressed("Score"))
-		{
-			UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
-		}
+		if (Input.Pressed("Score")) UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
 	}
 	private void ProcessMouseInput()
 	{
@@ -175,9 +194,8 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			Rigidbody Rigidbody = HeldObjectData.GetRigidBody();
 			if (Rigidbody == null) return;
-			Vector3 ThrowDir = Camera.WorldRotation.Forward;
-			Rigidbody.Velocity = ThrowDir * ThrowForce;
-			ClearHeldObjectData();
+			Vector3 ThrowVelocity = Camera.WorldRotation.Forward * ThrowForce;
+			ClearHeldObjectData(false, ThrowVelocity);
 		}
 	}
 	private void SetupGrabbedObjectTimer()
@@ -200,27 +218,23 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectRigidbody.ApplyForce(Force * HeldObjectRigidbody.PhysicsBody.Mass);
 		HeldObjectRigidbody.AngularVelocity = Vector3.Zero;
 	}
-	private void SetupManagers()
-	{
-		UiManager = Scene.GetSystem<UiManager>();
-	}
-	private void ClearHeldObjectData(bool InWasTakenFromOtherPlayer = false)
+	private void ClearHeldObjectData(bool InWasTakenFromOtherPlayer = false, Vector3 InThrownVelocity = default)
 	{
 		GameObject HeldObject = HeldObjectData.GetObject();
-		ReturnAuthorityToHost(HeldObject);
+		ReturnAuthorityToHost(HeldObject, InThrownVelocity);
 		if (!InWasTakenFromOtherPlayer) HeldObjectData.SetupClearOwnerIdTimer();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
 	[Rpc.Host]
-	private void ReturnAuthorityToHost(GameObject InHeldObject) { InHeldObject?.Network.TakeOwnership(); }
-	public void ReturnToSpawnLocation()
+	private void ReturnAuthorityToHost(GameObject InHeldObject, Vector3 InThrownVelocity)
 	{
-		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
-		if (PullComp == null || !PullComp.GetIsPulled()) return;
-		Guid LastOwnedId = PullComp.GetOwnerId();
-		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
-		RequestMoneyTransfer(PullComp.Network.OwnerId);
+		if (InHeldObject == null) return;
+		InHeldObject.Network.TakeOwnership();
+		if (InThrownVelocity != Vector3.Zero && InHeldObject.Components.TryGet(out Rigidbody Rigidbody))
+		{
+			Rigidbody.Velocity = InThrownVelocity;
+		}
 	}
 	private void AddMoney(float InMoneyAmount)
 	{
@@ -250,6 +264,12 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		if (IsProxy) return;
 		PullComp.SetOwnerId(InPusherId, false);
+		PlayerRigidbody?.ApplyImpulse(InPushForce);
+	}
+	[Rpc.Broadcast]
+	public void ReceivePush(Vector3 InPushForce)
+	{
+		if (IsProxy) return;
 		PlayerRigidbody?.ApplyImpulse(InPushForce);
 	}
 	

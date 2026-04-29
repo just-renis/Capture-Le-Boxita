@@ -13,6 +13,8 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private int ClearOwnerIdHandle;
 	private float MoneyAmount = 1f;
 	private const float ClearTime = 8f;
+	private const float PushForceMultiplier = 200000f;
+	private TimeSince LastPushTime;
 	private Rigidbody Rigidbody;
 	
 	public bool GetIsPulled() { return IsPulled; }
@@ -41,7 +43,14 @@ public class PullableComponent : Component, Component.ICollisionListener
 		GameObject CollisionObject = InCollision.Other.GameObject;
 		if (!CollisionObject.Tags.Has("player") && !CollisionObject.Tags.Has("collectible")) return;
 		PullableComponent OtherPullableComponent = CollisionObject.GetComponent<PullableComponent>();
-		if (OtherPullableComponent == null || OtherPullableComponent.GetLastOwnerTime() > LastOwnerTime) return;
+		if (OtherPullableComponent == null) return;
+		if (OtherPullableComponent.Tags.Has("player") && OtherPullableComponent.Network.OwnerId != LastOwnedBy)
+		{
+			Vector3 PushDir = (OtherPullableComponent.WorldPosition - WorldPosition).Normal;
+			PushDir.z = 0;
+			OtherPullableComponent.GetComponent<Player.Player>()?.ReceivePush(PushDir * PushForceMultiplier);
+		}
+		if (OtherPullableComponent.GetLastOwnerTime() > LastOwnerTime) return;
 		if (OtherPullableComponent.GetLastOwnerTime().AlmostEqual(LastOwnerTime) && OtherPullableComponent.IsOwnerHolding) return;
 		OtherPullableComponent.SetOwnerId(LastOwnedBy, false);
 	}
@@ -49,7 +58,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	protected override void OnStart() { Rigidbody = GetComponent<Rigidbody>(); }
 	protected override void OnUpdate()
 	{
-		base.OnUpdate();
 		if (!IsOwnerHolding) LastOwnerTime -= Time.Delta;
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -62,6 +70,13 @@ public class PullableComponent : Component, Component.ICollisionListener
 	{
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
+	}
+	[Rpc.Host]
+	private void ApplyPushForce(Vector3 InVelocity)
+	{
+		if (LastPushTime < 0.1f) return;
+		LastPushTime = 0;
+		GameObject.GetComponent<Player.Player>()?.GiveImpulseForce(InVelocity);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]

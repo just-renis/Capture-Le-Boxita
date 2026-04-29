@@ -9,11 +9,11 @@
     "Scale": "1,1,1",
     "Tags": "player",
     "Enabled": true,
-    "NetworkMode": 2,
+    "NetworkMode": 1,
     "NetworkFlags": 0,
     "NetworkOrphaned": 0,
     "NetworkTransmit": true,
-    "OwnerTransfer": 1,
+    "OwnerTransfer": 0,
     "Components": [
       {
         "__type": "Sandbox.ModelRenderer",
@@ -55,6 +55,12 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
+        "PlayerCollider": {
+          "_type": "component",
+          "component_id": "c5bbd256-f9e3-44f7-862e-c1c1623bda27",
+          "go": "31e9ff72-845f-4a0a-9ff5-d951bb07c897",
+          "component_type": "BoxCollider"
+        },
         "Sensitivity": 0.2,
         "Speed": 600,
         "Sword": {
@@ -63,32 +69,6 @@
           "go": "385fa3ef-b5b1-48f9-923a-947567ba22aa",
           "component_type": "Sword"
         }
-      },
-      {
-        "__type": "Sandbox.BoxCollider",
-        "__guid": "77b4b4ef-f21f-4b7f-96b0-ec1f7b8cee16",
-        "__enabled": true,
-        "Flags": 0,
-        "Center": "0,0,0",
-        "ColliderFlags": "IgnoreTraces",
-        "Elasticity": null,
-        "Friction": null,
-        "IsTrigger": false,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "OnObjectTriggerEnter": null,
-        "OnObjectTriggerExit": null,
-        "OnTriggerEnter": null,
-        "OnTriggerExit": null,
-        "RollingResistance": null,
-        "Scale": "50,50,50",
-        "Static": false,
-        "Surface": null,
-        "SurfaceVelocity": "0,0,0"
       },
       {
         "__type": "Sandbox.Rigidbody",
@@ -141,7 +121,7 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "Radius": 25,
-        "StepHeight": 18,
+        "StepHeight": 0,
         "UseCollisionRules": false
       },
       {
@@ -156,6 +136,32 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null
+      },
+      {
+        "__type": "Sandbox.BoxCollider",
+        "__guid": "c5bbd256-f9e3-44f7-862e-c1c1623bda27",
+        "__enabled": true,
+        "Flags": 0,
+        "Center": "0,0,0",
+        "ColliderFlags": "IgnoreTraces",
+        "Elasticity": null,
+        "Friction": null,
+        "IsTrigger": false,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnObjectTriggerEnter": null,
+        "OnObjectTriggerExit": null,
+        "OnTriggerEnter": null,
+        "OnTriggerExit": null,
+        "RollingResistance": null,
+        "Scale": "50,50,50",
+        "Static": false,
+        "Surface": null,
+        "SurfaceVelocity": "0,0,0"
       }
     ],
     "Children": [

@@ -51,6 +51,12 @@
         "__guid": "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb",
         "__enabled": true,
         "Flags": 0,
+        "Collision": {
+          "_type": "component",
+          "component_id": "422a5cd5-3929-4a2f-83a0-cce9885b19ec",
+          "go": "568a1886-ef74-4cb4-9801-3b9f5b9686d4",
+          "component_type": "BoxCollider"
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,

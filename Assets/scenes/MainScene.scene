@@ -148,7 +148,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 2,
+              "MaxAmountActive": 10,
               "Objects": [],
               "ActiveCount": 0
             },
@@ -157,7 +157,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 1,
+              "MaxAmountActive": 5,
               "Objects": [],
               "ActiveCount": 0
             }
@@ -262,6 +262,38 @@
             {
               "_type": "gameobject",
               "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
+            },
+            {
+              "_type": "gameobject",
+              "go": "4ddd2493-88f0-4ba1-a084-6aaf1a4ad590"
+            },
+            {
+              "_type": "gameobject",
+              "go": "3e8e6e2e-93a8-4dea-ab3f-949d81dbddb2"
+            },
+            {
+              "_type": "gameobject",
+              "go": "09dae8dd-c7a7-489c-9a81-1674caca1f74"
+            },
+            {
+              "_type": "gameobject",
+              "go": "a3954b12-5f1f-48e2-9a0b-2b8c840e3536"
+            },
+            {
+              "_type": "gameobject",
+              "go": "4634f208-c6ea-4115-9ee7-7a26ef147122"
+            },
+            {
+              "_type": "gameobject",
+              "go": "a08f3b15-7920-43f3-a99a-e62c61d4ff56"
+            },
+            {
+              "_type": "gameobject",
+              "go": "62810ad0-2a71-4bc4-913a-2df8afa8fc54"
+            },
+            {
+              "_type": "gameobject",
+              "go": "5a9d27a7-94ad-4c2b-894e-f94f99d124c0"
             }
           ],
           "StartServer": true
@@ -575,18 +607,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
-        }
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "8af6728e-3dd7-44ef-9204-15a622ceaa74"
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },

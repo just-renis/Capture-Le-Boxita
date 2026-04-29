@@ -6,19 +6,13 @@ namespace Sandbox.Player;
 public sealed class Sword : Component
 {
 	[Property] private float PushForce { get; set; }
+	[Property] private BoxCollider Collision { get; set; }
 	private bool IsInAttackMode;
 	private int ProcessAttackHandle;
 	private int ProcessAttackTimes;
 	private const int SwordMaxProcessTimes = 9;
 	private const float SwordAttackRotationSpeed = 10f;
-	private BoxCollider Collider;
 	private readonly HashSet<GameObject> HitObjects = [];
-	
-	protected override void OnStart()
-	{
-		base.OnStart();
-		Collider = GetComponentInChildren<BoxCollider>();
-	}
 	
 	private void ProcessAttackForward()
 	{
@@ -41,7 +35,7 @@ public sealed class Sword : Component
 	[Rpc.Host]
 	private void ApplyPushForce(Guid InPusherId)
 	{
-		foreach (Collider InTouchCollider in Collider.Touching)
+		foreach (Collider InTouchCollider in Collision.Touching)
 		{
 			GameObject Target = InTouchCollider.GameObject.Root;
 			if (!InTouchCollider.GameObject.Tags.Has("player") || !HitObjects.Add(Target)) continue;
