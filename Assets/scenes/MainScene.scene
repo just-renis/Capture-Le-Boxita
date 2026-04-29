@@ -6,9 +6,9 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Platform",
-      "Position": "-35.7073402,5.10791016,-100",
+      "Position": "-35.7073402,5.10791016,-25.571785",
       "Rotation": "0,0,0,1",
-      "Scale": "1000,1000,10",
+      "Scale": "1000,1000,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -53,7 +53,7 @@
           "__guid": "1f1784f2-eb56-4253-ab50-b01ea8b318b1",
           "__enabled": true,
           "Flags": 0,
-          "Center": "0,0.00173568702,0",
+          "Center": "0,0.00173568726,-0.0633659363",
           "ColliderFlags": "IgnoreTraces, IgnoreMass",
           "Elasticity": null,
           "Friction": null,
@@ -69,7 +69,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "50,50.0034714,50",
+          "Scale": "50,50.0034714,50.5127411",
           "Static": false,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -585,6 +585,47 @@
         }
       ],
       "Children": []
+    },
+    {
+      "__guid": "e36bda2a-b581-4653-95e7-12ab0f5d394d",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Clutter",
+      "Position": "-594.686157,-713.149475,19.3858299",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.Clutter.ClutterComponent",
+          "__guid": "01ae076c-c4ae-4c26-ae0a-3b4fcca8cc47",
+          "__enabled": true,
+          "Flags": 0,
+          "Bounds": {
+            "Mins": "-7699.76074,-3337.34668,-97.853653",
+            "Maxs": "5398.53809,3408.45947,512"
+          },
+          "Clutter": "models/desert.clutter",
+          "Mode": "Volume",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Seed": 0,
+          "Storage": {
+            "$blob": "76d01354-334c-4d89-97fe-9220ede69543"
+          }
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
@@ -607,13 +648,18 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "8af6728e-3dd7-44ef-9204-15a622ceaa74"
         }
       },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
+        }
       }
     }
   },

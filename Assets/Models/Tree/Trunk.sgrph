@@ -1,0 +1,439 @@
+{
+  "IsSubgraph": false,
+  "Path": "materials/tree/trunk.sgrph",
+  "Model": null,
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": true,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.90030664,
+      "DefaultMetalness": 0,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "6",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "c75fadce-cd93-4522-b7b3-b0f2f8399ab3",
+      "Identifier": "1",
+      "Position": "-984,756",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "WorldNormal",
+      "Identifier": "2",
+      "Position": "-1200,672",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "DotProduct",
+      "Identifier": "3",
+      "Position": "-984,672",
+      "HandleOffsets": {},
+      "InputA": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "InputB": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float3ConstantNode",
+      "Min": "0,0,0",
+      "Max": "1,1,1",
+      "Step": 0,
+      "Value": "0,0,1",
+      "Identifier": "4",
+      "Position": "-1200,732",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0.4,
+      "DefaultEdge2": 0.8,
+      "Identifier": "5",
+      "Position": "-756,756",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Edge1": {
+        "Identifier": "1",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "Edge2": {
+        "Identifier": "1",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "6",
+      "Position": "-216,252",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "5",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "c264cd03-bbd5-496a-a26e-f6c5cd386349",
+      "Identifier": "7",
+      "Position": "-588,396",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "d14d308d-91ec-4c9c-b7da-edb0309922ab",
+      "Identifier": "8",
+      "Position": "-768,156",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Bilinear",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 8,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "9",
+      "Position": "-588,156",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "8",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter0",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/tree/tree_mask.jpg",
+        "Extension": "Color",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Srgb",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "0386649e-71ba-4816-9a73-7504ac38204d",
+      "Name": "MaterialParameter0"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "1,0.80784,0.45098,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "c264cd03-bbd5-496a-a26e-f6c5cd386349",
+      "Name": "MaterialParameter1"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.37647,0.32941,0.29412,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "cff8197a-dad9-49de-89cc-889429c5bbce",
+      "Name": "Tree Ridges Color"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.4902,0.46275,0.39608,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "42d293fd-aa8b-4d56-bae2-87e6a7f3b03a",
+      "Name": "Tree Bark Color"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.40392,0.36078,0.19216,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "95801115-f3a8-42c6-9ea3-7eebb9c70524",
+      "Name": "Stump Primary Color"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.23529,0.16863,0.11373,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "d98ab6ef-aa39-48f7-af4a-2e1e1310f1b0",
+      "Name": "Stump Secondary Color"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0.400000006,0.800000012",
+      "UI": {
+        "Type": "Default",
+        "Step": 0.05,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "c75fadce-cd93-4522-b7b3-b0f2f8399ab3",
+      "Name": "Sand Smoothing"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 50,
+      "Value": 10,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "153cd742-4db8-4732-afb2-3fbf2a2375f4",
+      "Name": "Tree Ridge Amount"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "10,10",
+      "Value": "1,1",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "fd65cfe3-d992-4c18-8810-7dbc2fe75ba9",
+      "Name": "Tree Bark UV"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 50,
+      "Value": 20,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "fe3e9fb4-e922-444c-9282-c69956fd34eb",
+      "Name": "Stump Age"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "-100,-100",
+      "Max": "100,100",
+      "Value": "0,0",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "4e64066d-4229-4490-a341-236a56c74586",
+      "Name": "Tree Age Offset"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "MaterialParameter2",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/tree/trunk_color.jpg",
+        "Extension": "Color",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Srgb",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "d14d308d-91ec-4c9c-b7da-edb0309922ab",
+      "Name": "MaterialParameter2"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.51628,0.51628,0.51628,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "1fbb16e7-7fb8-40ec-aa87-6fb6b947d83d",
+      "Name": "MaterialParameter3"
+    }
+  ],
+  "__version": 5
+}

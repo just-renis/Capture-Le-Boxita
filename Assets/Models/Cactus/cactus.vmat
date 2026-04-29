@@ -1,0 +1,6 @@
+
+Layer0
+{
+	shader "models/cactus/cactus.shader_c"
+
+}

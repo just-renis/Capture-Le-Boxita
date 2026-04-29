@@ -1,0 +1,561 @@
+{
+  "IsSubgraph": false,
+  "Path": "materials/tree/tree.sgrph",
+  "Model": "models/dev/box.vmdl",
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": true,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.9,
+      "DefaultMetalness": 0,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "168,204",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "24",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Normal": {
+        "Identifier": "12",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "AmbientOcclusion": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "TileAndOffset",
+      "DefaultTile": "1,1",
+      "DefaultOffset": "0,0",
+      "WrapTo01": false,
+      "Identifier": "1",
+      "Position": "-1392,228",
+      "HandleOffsets": {},
+      "Tile": {
+        "Identifier": "4",
+        "Output": "XY",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "20fc17ea-00e4-489f-bfb8-337a1c9d9274",
+      "Identifier": "2",
+      "Position": "-2268,180",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 10,
+      "Identifier": "3",
+      "Position": "-1800,180",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "5",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "CombineVector",
+      "DefaultX": 0,
+      "DefaultY": 0,
+      "DefaultZ": 0,
+      "DefaultW": 0,
+      "Identifier": "4",
+      "Position": "-1680,204",
+      "HandleOffsets": {},
+      "X": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Y": {
+        "Identifier": "2",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "5",
+      "Position": "-2088,204",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "2",
+        "Output": "X",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "6",
+      "Position": "-1200,228",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0,
+      "DefaultEdge2": 0,
+      "Identifier": "7",
+      "Position": "-996,228",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "6",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Edge1": {
+        "Identifier": "8",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "Edge2": {
+        "Identifier": "8",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "cf1b6179-e9bf-4775-b41d-545bfa0e4219",
+      "Identifier": "8",
+      "Position": "-1200,288",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "9",
+      "Position": "-768,180",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "525d4b57-8a23-40d1-88b6-f4b6fe4f485e",
+      "Identifier": "10",
+      "Position": "-1008,-96",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "0e8435ae-6506-4d0e-8a0c-77c1c64f187d",
+      "Identifier": "11",
+      "Position": "-1008,60",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "HeightToNormal",
+      "OutputSpace": "World",
+      "DefaultStrength": 0.1,
+      "Identifier": "12",
+      "Position": "-768,288",
+      "HandleOffsets": {},
+      "Height": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Strength": {
+        "Identifier": "13",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "25f35b26-7c18-4819-b8e1-514d970580a1",
+      "Identifier": "13",
+      "Position": "-996,336",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ObjectPosition",
+      "Identifier": "14",
+      "Position": "-1164,564",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SplitVector",
+      "Identifier": "15",
+      "Position": "-984,564",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "14",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "RemapValue",
+      "In": 0.5,
+      "InMin": 0,
+      "InMax": 50,
+      "OutMin": 1,
+      "OutMax": 0,
+      "Clamp": true,
+      "Identifier": "16",
+      "Position": "-768,564",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "15",
+        "Output": "Z",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "17",
+      "Position": "-504,360",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "18",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "16",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "8b140f41-9d8f-41b7-9d96-703b5839c69e",
+      "Identifier": "18",
+      "Position": "-768,384",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "WorldNormal",
+      "Identifier": "19",
+      "Position": "-960,732",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float3ParameterNode",
+      "ParameterIdentifier": "f5cd0c8a-4161-4329-9afd-b3d4b1129804",
+      "Identifier": "20",
+      "Position": "-960,792",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "DotProduct",
+      "Identifier": "21",
+      "Position": "-744,732",
+      "HandleOffsets": {},
+      "InputA": {
+        "Identifier": "19",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "InputB": {
+        "Identifier": "20",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0,
+      "DefaultEdge2": 0,
+      "Identifier": "22",
+      "Position": "-504,732",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "21",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Edge1": {
+        "Identifier": "23",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "Edge2": {
+        "Identifier": "23",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "0927b60e-c647-47a8-a252-f9ab48e7fad5",
+      "Identifier": "23",
+      "Position": "-744,816",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "24",
+      "Position": "-252,468",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "17",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "25",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "22",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "087bc2a7-56b4-44ae-a87f-453810c8a14f",
+      "Identifier": "25",
+      "Position": "-504,492",
+      "HandleOffsets": {}
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "20,20",
+      "Value": "1,1",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "20fc17ea-00e4-489f-bfb8-337a1c9d9274",
+      "Name": "Bark Scale"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0.195180699,0.600000024",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "cf1b6179-e9bf-4775-b41d-545bfa0e4219",
+      "Name": "Bark Smooth Step"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.4,0.31656,0.27163,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "525d4b57-8a23-40d1-88b6-f4b6fe4f485e",
+      "Name": "Bark Ridge Color"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "1,0.8514,0.66977,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "0e8435ae-6506-4d0e-8a0c-77c1c64f187d",
+      "Name": "Bark Primary Color"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.7998106,
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "25f35b26-7c18-4819-b8e1-514d970580a1",
+      "Name": "Bark Ridge Normal Strength"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "1,0.7786,0.36744,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "8b140f41-9d8f-41b7-9d96-703b5839c69e",
+      "Name": "Sand Color"
+    },
+    {
+      "_class": "Float3Parameter",
+      "Min": "-1,-1,-1",
+      "Max": "1,1,1",
+      "Value": "0,0,1",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "f5cd0c8a-4161-4329-9afd-b3d4b1129804",
+      "Name": "Sand Direction"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0.5,0.800000012",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "0927b60e-c647-47a8-a252-f9ab48e7fad5",
+      "Name": "Sand Smooth Step"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "1,0.87581,0.58605,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "087bc2a7-56b4-44ae-a87f-453810c8a14f",
+      "Name": "Fallen Sand Color"
+    }
+  ],
+  "__version": 5
+}

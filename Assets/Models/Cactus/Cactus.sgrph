@@ -1,0 +1,535 @@
+{
+  "IsSubgraph": false,
+  "Path": "models/cactus/cactus.sgrph",
+  "Model": null,
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": false,
+    "ShowGround": true,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 1,
+      "DefaultMetalness": 0,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "19",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Normal": {
+        "Identifier": "17",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "TileAndOffset",
+      "DefaultTile": "1.00999498,1.00999808",
+      "DefaultOffset": "0,0",
+      "WrapTo01": false,
+      "Identifier": "1",
+      "Position": "-1992,-120",
+      "HandleOffsets": {},
+      "Tile": {
+        "Identifier": "6",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Offset": {
+        "Identifier": "25",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "2",
+      "Position": "-1788,-120",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "3",
+      "Position": "-972,-312",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "5",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "24",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.01938,0.11389,0,1",
+      "Identifier": "4",
+      "Position": "-1212,-288",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.08967,0.15022,0,1",
+      "Identifier": "5",
+      "Position": "-1212,-444",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "4bf5dc16-eb19-4bb2-9baa-955d5fe6c875",
+      "Identifier": "6",
+      "Position": "-2208,-96",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "TileAndOffset",
+      "DefaultTile": "1,1",
+      "DefaultOffset": "0,0",
+      "WrapTo01": false,
+      "Identifier": "7",
+      "Position": "-1452,312",
+      "HandleOffsets": {},
+      "Tile": {
+        "Identifier": "27",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SplitVector",
+      "Identifier": "8",
+      "Position": "-1248,312",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 20,
+      "Identifier": "9",
+      "Position": "-996,336",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "8",
+        "Output": "X",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Sine",
+      "Identifier": "10",
+      "Position": "-888,336",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "RemapValue",
+      "In": 0.5,
+      "InMin": -1,
+      "InMax": 1,
+      "OutMin": 0,
+      "OutMax": 1,
+      "Clamp": true,
+      "Identifier": "11",
+      "Position": "-768,336",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "VoronoiNoise",
+      "AngleOffset": 1.8307921,
+      "CellDensity": 2,
+      "Worley": false,
+      "Identifier": "12",
+      "Position": "-1056,192",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "13",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "A": {
+        "Identifier": "23",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "23",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "TileAndOffset",
+      "DefaultTile": "9,9",
+      "DefaultOffset": "0,0",
+      "WrapTo01": false,
+      "Identifier": "13",
+      "Position": "-1272,72",
+      "HandleOffsets": {},
+      "Tile": {
+        "Identifier": "22",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "OneMinus",
+      "Identifier": "14",
+      "Position": "-876,192",
+      "HandleOffsets": {},
+      "In": {
+        "Identifier": "12",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Power",
+      "DefaultA": 1,
+      "DefaultB": 8,
+      "Identifier": "15",
+      "Position": "-768,216",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "14",
+        "Output": "Out",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Add",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "16",
+      "Position": "-480,144",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "15",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "HeightToNormal",
+      "OutputSpace": "World",
+      "DefaultStrength": 0.1,
+      "Identifier": "17",
+      "Position": "-360,144",
+      "HandleOffsets": {},
+      "Height": {
+        "Identifier": "16",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0.7,
+      "DefaultEdge2": 0.95,
+      "Identifier": "18",
+      "Position": "-744,48",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "14",
+        "Output": "Out",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "19",
+      "Position": "-324,-84",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "20",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "18",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorConstantNode",
+      "Value": "0.30698,0.30012,0.23844,1",
+      "Identifier": "20",
+      "Position": "-768,-180",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "RemapValue",
+      "In": 0.5,
+      "InMin": 0,
+      "InMax": 1,
+      "OutMin": 0.5,
+      "OutMax": 0.8,
+      "Clamp": true,
+      "Identifier": "21",
+      "Position": "-1704,-12",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "95645ba6-bf65-4d4a-b58f-a37e010a38a8",
+      "Identifier": "22",
+      "Position": "-1476,96",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "2520ee08-cfda-4bcf-ba92-e284e9827867",
+      "Identifier": "23",
+      "Position": "-1248,192",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0,
+      "DefaultEdge2": 1,
+      "Identifier": "24",
+      "Position": "-1212,-120",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Edge1": {
+        "Identifier": "26",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "Edge2": {
+        "Identifier": "26",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "5e8a51c2-58c1-46c6-836a-d8589d29d329",
+      "Identifier": "25",
+      "Position": "-2208,-12",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "f5d22cfa-9e8b-4302-a471-2b60556a1bc5",
+      "Identifier": "26",
+      "Position": "-1464,-72",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "b039ffe3-7fce-431a-9941-e9946c17fb01",
+      "Identifier": "27",
+      "Position": "-1704,324",
+      "HandleOffsets": {}
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 20,
+      "Value": 9,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.5,
+        "Priority": 4,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "95645ba6-bf65-4d4a-b58f-a37e010a38a8",
+      "Name": "Spike Amount"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.783,
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "4bf5dc16-eb19-4bb2-9baa-955d5fe6c875",
+      "Name": "Cactus Color Mix"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "2,10",
+      "Value": "1.39999998,10",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.1,
+        "Priority": 5,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "2520ee08-cfda-4bcf-ba92-e284e9827867",
+      "Name": "Spike Voronoi Noise"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "5,5",
+      "Value": "2.43600011,0",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "5e8a51c2-58c1-46c6-836a-d8589d29d329",
+      "Name": "Cactus Color Offset"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0,1",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 3,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "f5d22cfa-9e8b-4302-a471-2b60556a1bc5",
+      "Name": "Color Smooth Step"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 50,
+      "Value": 14,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "b039ffe3-7fce-431a-9941-e9946c17fb01",
+      "Name": "Cactus Ridges"
+    }
+  ],
+  "__version": 5
+}

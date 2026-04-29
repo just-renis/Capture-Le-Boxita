@@ -1,0 +1,21 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/rock/rock.shader"
+
+	AmbientOcclusion "models/rock/rock_ao.jpg"
+	g_flGritStoneDetailScale "15"
+	g_flRockSpeckles "0.10"
+	g_flUVScale "1.000"
+	g_vRockPrimaryColor "[0.690196 0.549020 0.380392 1.000000]"
+	g_vRockSecondaryColor "[0.592157 0.462745 0.321569 1.000000]"
+	g_vSandColor "[0.941177 0.678431 0.290196 1.000000]"
+	g_vSandDustDirection "[0.000 0.000 1.000]"
+	g_vSandDustSmoothStep "[0.500 0.850]"
+	NormalMap "models/rock/rock_normal.jpg"
+	RoughnessMap "models/rock/rock_rough.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+}

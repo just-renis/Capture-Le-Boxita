@@ -1,0 +1,13 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/tree/trunk.shader"
+
+	g_vMaterialParameter1 "[1.000000 0.811765 0.450980 1.000000]"
+	g_vSandSmoothing "[0.40 0.80]"
+	MaterialParameter2 "models/tree/trunk_color.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+}
