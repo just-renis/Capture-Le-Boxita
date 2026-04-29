@@ -1,11 +1,14 @@
 {
   "Entries": [
     {
-      "Prefab": null,
-      "Model": "models/cactus/cactus.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/cactus/cactus.prefab"
+      },
+      "Model": null,
       "Weight": 1,
       "HasAsset": true,
-      "AssetName": "models/cactus/cactus.vmdl"
+      "AssetName": "cactus"
     },
     {
       "Prefab": null,
@@ -104,8 +107,8 @@
   "TileRadius": 10,
   "Scatterer": {
     "Type": "SimpleScatterer",
-    "Scale": "0.800000012 2",
-    "Density": 2,
+    "Scale": "2 2.5",
+    "Density": 0.025,
     "PlaceOnGround": true,
     "HeightOffset": 0,
     "AlignToNormal": false

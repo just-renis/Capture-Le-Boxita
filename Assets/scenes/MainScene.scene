@@ -54,7 +54,7 @@
           "__enabled": true,
           "Flags": 0,
           "Center": "0,0.00173568726,-0.0633659363",
-          "ColliderFlags": "IgnoreTraces, IgnoreMass",
+          "ColliderFlags": "IgnoreMass",
           "Elasticity": null,
           "Friction": null,
           "IsTrigger": false,
@@ -611,7 +611,7 @@
             "Mins": "-7699.76074,-3337.34668,-97.853653",
             "Maxs": "5398.53809,3408.45947,512"
           },
-          "Clutter": "models/desert.clutter",
+          "Clutter": "models/desert cactus.clutter",
           "Mode": "Volume",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -625,7 +625,909 @@
           }
         }
       ],
-      "Children": []
+      "Children": [
+        {
+          "__guid": "cdc93550-7f15-41ab-b995-9c20a74afe35",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-6865.30273,1485.12305,-19.7646103"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.381936342,0.924188614"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.22645426,2.22645426,2.22645426"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "cdc93550-7f15-41ab-b995-9c20a74afe35",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "bdf54ad2-7cd2-4835-8929-2fb662e3ff1d",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "c8fd76a3-7fd5-4121-bc2c-a3354d725a2a",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "cab0ef24-b3be-4cfd-b918-9c6a6685fcf2",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "b65a31ad-df51-4352-99a4-4c89905e7165",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "f791901e-4d0d-42f1-be6d-0921dcdebf61",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "827bddab-5744-4f33-b9fe-9305aa2d866a"
+          }
+        },
+        {
+          "__guid": "0951a893-8604-471d-b540-4e8287027b3c",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-6340.18652,-1073.06665,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.353757024,-0.935337365"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.3580327,2.3580327,2.3580327"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "0951a893-8604-471d-b540-4e8287027b3c",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "f74a36bc-5123-48ed-8df3-aa413bc0bf27",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "978ea5da-dec9-4de0-85ac-d1450630fdff",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "254daa2c-ed44-460c-a460-b1057653bc85",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "51ad0974-e2fd-452f-b16e-f006f61848ce",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "dca9f1e5-f7cc-4719-99b5-b2909da67c5b",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "32ed3eb4-dd72-4ab7-9814-d69483f5f1da"
+          }
+        },
+        {
+          "__guid": "0b781735-73f3-43f7-bec0-39c50a67c1a0",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-6340.18652,974.933228,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.353757024,-0.935337365"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.3580327,2.3580327,2.3580327"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "0b781735-73f3-43f7-bec0-39c50a67c1a0",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "b807395f-79e8-4f87-9b9f-eb269916910a",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "f7c9cdb9-9d6d-4e0b-8cf7-06001d183d5b",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "55a20798-ce35-473e-9491-4bb091cdf73e",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "c817d4ec-b5b9-402e-ac51-3acd8acd4a1a",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "3b72a0e9-e9bd-467e-85ed-a766476174c0",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "f2c90532-72fb-4cf0-9f71-156c5f2c67cb"
+          }
+        },
+        {
+          "__guid": "b7d35fba-ec2d-4710-a344-1b0476c71ead",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-5514.60938,-1891.49292,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.298694074,0.954348922"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.09633231,2.09633231,2.09633231"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "b7d35fba-ec2d-4710-a344-1b0476c71ead",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "4ba237c9-b612-4bd4-a9a6-7903c642e939",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "e807987f-aead-4291-b2aa-57be6a6d78bf",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "9ef11bab-5dc8-4797-a6c8-fe104985a5ff",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "9c9351fe-e993-4cf9-902f-7b5e971e4f95",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "fef9a7db-64b7-4f27-9548-8f4a45aef412",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "102c72b4-f7b1-488a-a008-44fa8509045d"
+          }
+        },
+        {
+          "__guid": "e0f1f15c-9322-4b90-9b38-66ff64200811",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-3965.49316,-1377.68262,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.435102046,-0.900381148"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.22791076,2.22791076,2.22791076"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "e0f1f15c-9322-4b90-9b38-66ff64200811",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "f1efa774-3c8e-4340-896e-9096c4b288ed",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "7e0bdbfd-57d8-418b-857a-2d4757ab15a4",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "3ed3358e-f20d-44a0-9628-cc735dda996a",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "789c21ac-a97e-43da-9b1a-46ba39c2bb10",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "d25e3568-2772-47fb-ae29-628b8a8d283e",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "f9517d83-74d6-493e-b619-db71451b2059"
+          }
+        },
+        {
+          "__guid": "81b7f5ba-164c-4166-9c56-c82f98c4e81b",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-3965.49316,2718.31738,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.435102046,-0.900381148"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.22791076,2.22791076,2.22791076"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "81b7f5ba-164c-4166-9c56-c82f98c4e81b",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "8ac2d937-90c7-4371-a126-dd9e4854385b",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "b01d6c2f-60cb-47a9-966c-5de2628801e9",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "602f4dc9-395c-46f1-bea9-035bd5ad0d75",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "db92bdb8-3b1e-42b5-b920-5e94cdda474d",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "ac4d1ce7-2bea-41e0-b1f1-3ed411f3257f",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "8654f6ac-a175-4bbe-ab26-5e7750d72ee1"
+          }
+        },
+        {
+          "__guid": "317068f6-606b-4766-aeeb-036e0c02f75d",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-2381.57275,146.485535,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.271472663,0.962446153"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.10021162,2.10021162,2.10021162"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "317068f6-606b-4766-aeeb-036e0c02f75d",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "d63e5c30-6955-45db-bb34-5edbc20cce0b",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "98695f58-a8c9-4e1a-9e29-0ee0dd029ddd",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "c2b20634-5e90-4eca-8c4b-b05a5664c20e",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "c568dde8-df1d-4225-aa15-2fb28ba84a3b",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "65f085c2-0105-4983-9772-6390a5372898",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "202f99de-8347-4bd5-9ac0-82812f497da1"
+          }
+        },
+        {
+          "__guid": "ce5942fd-8577-481a-81c9-d78e712d6461",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "-84.7590332,-199.02832,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.807424307,0.589971185"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.48468161,2.48468161,2.48468161"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "ce5942fd-8577-481a-81c9-d78e712d6461",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "784176d7-aa14-4485-afdc-4a9344bec0f7",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "67316e9f-3e74-4dce-8287-1f2865c5d454",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "d50465b6-0be8-4f85-b317-a770d373b297",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "ae76fd82-8f91-457d-ae6a-3392f3eb82df",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "c975cfa5-5526-453d-846c-be62160c702c",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "9af33de4-f97b-4e7a-999c-618cd912aad2"
+          }
+        },
+        {
+          "__guid": "29529db3-f693-4084-ae4d-736c732eb37f",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "1609.46997,-2785.49951,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.0376151912,0.999292314"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.20596647,2.20596647,2.20596647"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "29529db3-f693-4084-ae4d-736c732eb37f",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "c4d2e388-e84a-44f9-87e1-f689a5e8696d",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "b658ffd8-64d9-449f-a617-a7fe1aa6c111",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "63596403-8186-4962-a099-3408f12004d8",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "cd6f4620-3511-497b-ba2c-6e27c5954f8f",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "7b7f57d5-09dd-4131-9181-1f6f49dccfc3",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "4612ae9e-8099-47b0-8cb9-f44cfd0820b4"
+          }
+        },
+        {
+          "__guid": "4e94544c-19e0-47d7-9193-0c73ad3ba2a5",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "957.267944,655.664429,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.901515543,-0.432746738"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.05063319,2.05063319,2.05063319"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "4e94544c-19e0-47d7-9193-0c73ad3ba2a5",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "dedee588-2311-4919-a5e2-cc998fff0783",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "b41fdbb7-12bf-478e-a9ab-147818de1fb5",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "0735a798-0cf1-40b2-97b5-89c7ce2c4049",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "e3733a86-4d40-4f55-8487-f9df111d8570",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "e33224c9-2c6a-486d-aa73-f4f63c3609c7",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "50fc5afb-67b2-454d-8455-03ebc0f19018"
+          }
+        },
+        {
+          "__guid": "a3223467-557a-4060-b038-5a5a65182e18",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "957.267944,2703.66431,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.901515543,-0.432746738"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.05063319,2.05063319,2.05063319"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "a3223467-557a-4060-b038-5a5a65182e18",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "ba9617ec-83dc-4be8-8be8-0078c4c09329",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "2eb4d698-ab2a-4280-bda5-dc4f3413086d",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "d96d3f68-b764-421c-9eed-a80074677db3",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "47327a9e-5027-42d3-9516-59995751113a",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "da1ed29c-380b-4f4a-9982-a2237cf4ecd5",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "67b395c2-f060-4064-8dee-e6cb935eb9c3"
+          }
+        },
+        {
+          "__guid": "125a0cbd-8731-4500-917c-69a72b7b95fa",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "1807.89307,-1986.91455,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.586948514,-0.809624255"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.46766663,2.46766663,2.46766663"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "125a0cbd-8731-4500-917c-69a72b7b95fa",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "a5a7c63e-3546-4976-9bcc-d185d1a574fb",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "1540ac07-a0ab-4d4a-8024-b632d926b3b3",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "a4ac33e9-fdb9-426b-aedb-cd85a80a5fd7",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "e65cfbfa-125a-4ba0-a241-d04325323717",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "43ea7267-afde-4dd7-a940-a374948916a3",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "c88c3b36-c132-47c5-8018-b9106e5b75e2"
+          }
+        },
+        {
+          "__guid": "17fb9fcd-2fc9-4529-b3f2-b1fdf3703e06",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "1963.24097,1848.97168,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.807424307,0.589971185"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.48468161,2.48468161,2.48468161"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "17fb9fcd-2fc9-4529-b3f2-b1fdf3703e06",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "5d97708e-cdcd-4c23-aa17-126fe1144565",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "0619e362-d8fa-4f3e-9507-c1ca7dbf0c58",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "6ac6d629-40d7-4822-b2bc-644436052dde",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "18175cf1-5f66-4bef-904e-4b59af221593",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "447da6a2-13c0-4991-8a83-9ceadfd83e7c",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "7c60c6d2-1f8e-4b01-a649-1a4e24655f42"
+          }
+        },
+        {
+          "__guid": "d374135a-8787-4749-bdf4-ff470ed86b3f",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "3762.42725,-1901.51465,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.271472663,0.962446153"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.10021162,2.10021162,2.10021162"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "d374135a-8787-4749-bdf4-ff470ed86b3f",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "0bd5b677-1abf-4176-aae5-c029281b800b",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "870a67c6-c6f8-4bff-a32b-4a49d11ae579",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "9eec53f2-a232-4476-a914-1b4ef61978d1",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "9361175b-581e-4bd8-a987-bb7880938f6e",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "4fdbd4ce-50c4-42fe-b517-84c9d0083b57",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "280d9a0b-2380-4181-af31-1edad586101f"
+          }
+        },
+        {
+          "__guid": "ccb93228-cc14-44c3-bf6d-b63e04180bfd",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "3762.42725,2194.4856,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.271472663,0.962446153"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.10021162,2.10021162,2.10021162"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "ccb93228-cc14-44c3-bf6d-b63e04180bfd",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "99907c5b-bb77-4328-944f-a54403233910",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "8984441e-e3a0-4a98-a6a9-1fcf5e6f28e7",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "eae5ab33-8bad-4a02-946e-f5a278e114bf",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "1f516968-02a2-4a1b-90c7-50a82406d160",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "cc1b30ed-4859-4ce2-aa0a-c306474efeb9",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "8350cdfb-5c00-4522-9271-661247fc1877"
+          }
+        },
+        {
+          "__guid": "36bfce92-8c2f-4974-ab3e-0bbddc3ad749",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "4940.50635,-1172.10864,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.213110328,0.977028131"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.46621037,2.46621037,2.46621037"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "36bfce92-8c2f-4974-ab3e-0bbddc3ad749",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "7c46144a-20a1-462d-8465-d3b54f006a43",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "aac00e58-ba52-4997-acf2-8dc87fe3af94",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "ec979cf8-f7b5-46ba-89f5-637361606eff",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "d7efa2d5-0e3f-433f-89ba-3057ef2642e6",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "527092c6-94bf-4443-9142-bc701fe656de",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "bcdf738f-295b-4e2d-9256-d289ba3e4136"
+          }
+        },
+        {
+          "__guid": "2de4516e-7984-4e41-b2d6-7d3b085ff2cf",
+          "__version": 2,
+          "__Prefab": "models/cactus/cactus.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Position",
+                "Value": "4940.50635,2864.0249,-19.7646065"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Rotation",
+                "Value": "0,0,0.213110328,0.977028131"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Scale",
+                "Value": "2.46621037,2.46621037,2.46621037"
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "30749d94-1979-4e13-88b4-1eafb95ece54"
+                },
+                "Property": "Tags",
+                "Value": "clutter"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "30749d94-1979-4e13-88b4-1eafb95ece54": "2de4516e-7984-4e41-b2d6-7d3b085ff2cf",
+            "476037fe-a59d-42d2-abb7-6f0445b345ad": "18b1c724-eb56-41a4-bc87-40c98f8773cd",
+            "2d1343ae-5f9d-4e2b-9590-8ee70f0c4598": "32385169-f999-4827-a9fb-17e702af821d",
+            "f545afc2-517b-46c2-9f62-be49029adfe7": "e0258f44-815a-410a-b799-5c26aca9ded2",
+            "f1dcc966-bb79-4b6a-9d04-0e41948c9b0c": "a66f0375-03cd-4ba8-84fc-fd367cadcc73",
+            "db094493-7f11-4a38-b576-5d4650d2a74f": "9814d811-a133-445a-9ef2-105a40a5bf0f",
+            "030aec0a-caa4-4b99-ab1e-cf56d5ca88b7": "0975fd22-849e-4654-bb95-82dc47964bfd"
+          }
+        }
+      ]
     }
   ],
   "SceneProperties": {
@@ -648,9 +1550,6 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "8af6728e-3dd7-44ef-9204-15a622ceaa74"
@@ -660,6 +1559,9 @@
         "Data": {
           "SelectionSets": []
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },
