@@ -48,7 +48,7 @@ public sealed class PlayerData
 
             if (ClientChecksum == VerifyHash) return Data;
             
-            Log.Error( "CRITICAL: Save file tampered with! Deleting progress." );
+            Log.Error("CRITICAL: Save file tampered with! Deleting progress.");
             FileSystem.Data.DeleteFile( "save.dat" );
             return new PlayerData();
 

@@ -8,14 +8,15 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private bool IsOwnerHolding { get; set; }
 	[Sync] private float LastOwnerTime { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
-	private bool IsPulled { get; set; }
-	private int PoolingHandle;
+	private bool IsPulled;
 	private int ClearOwnerIdHandle;
 	private float MoneyAmount = 1f;
+	private const float BeamPullSpeed = 600.0f; 
 	private const float ClearTime = 8f;
 	private const float PushForceMultiplier = 200000f;
-	private TimeSince LastPushTime;
 	private Rigidbody Rigidbody;
+	private GameObject AlienShipRef;
+	private Player.Player OwnerPlayer;
 	
 	public bool GetIsPulled() { return IsPulled; }
 	public bool IsInAir() { return !IsInAirCheckRequired || MathF.Abs(Rigidbody.Velocity.z) > 0.1f; }
@@ -54,48 +55,48 @@ public class PullableComponent : Component, Component.ICollisionListener
 		if (OtherPullableComponent.GetLastOwnerTime().AlmostEqual(LastOwnerTime) && OtherPullableComponent.IsOwnerHolding) return;
 		OtherPullableComponent.SetOwnerId(LastOwnedBy, false);
 	}
+	public void SetOwnerPlayer(Player.Player InOwnerPlayer) { OwnerPlayer = InOwnerPlayer; }
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart() { Rigidbody = GetComponent<Rigidbody>(); }
 	protected override void OnUpdate()
 	{
 		if (!IsOwnerHolding) LastOwnerTime -= Time.Delta;
 	}
+	protected override void OnFixedUpdate()
+	{
+		if (IsProxy) return;
+		if (!IsPulled && Tags.Has("player"))
+		{
+		//	Log.Info("ROTATE " + Id);
+			WorldRotation = Rotation.FromYaw(OwnerPlayer.GetCurrentCameraRotationYaw());
+			return;
+		}
+		if (AlienShipRef == null) return;
+		//Log.Info("STOP ROTATE " + Id);
+		Vector3 PullVelocity = (AlienShipRef.WorldPosition - WorldPosition) * 10.0f;
+		Rigidbody.Velocity = PullVelocity.WithZ(BeamPullSpeed);
+	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetIsOwnerHoldingState(bool InState) { IsOwnerHolding = InState; }
-	private void PullingLogic()
-	{
-		Rigidbody?.Velocity = Vector3.Up * 500f;
-	}
 	private void SetClearOwnerIdTimerInternally()
 	{
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
 	}
-	[Rpc.Host]
-	private void ApplyPushForce(Vector3 InVelocity)
-	{
-		if (LastPushTime < 0.1f) return;
-		LastPushTime = 0;
-		GameObject.GetComponent<Player.Player>()?.GiveImpulseForce(InVelocity);
-	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
+	[Rpc.Owner]
+	public void SetAlienShipRef(Guid InAlienShipWhoPulls) { AlienShipRef = Scene.Directory.FindByGuid(InAlienShipWhoPulls); }
 	[Rpc.Broadcast]
 	public void SetIsPulled(bool State)
 	{
+		Log.Info("IS PULLED STATE: " + State);
 		IsPulled = State;
-		if (IsPulled)
-		{
-			Rigidbody?.Gravity = false;
-			PoolingHandle = TimerManager.AddTimer(PoolingHandle, 1f / 60f, true, PullingLogic);
-		}
+		if (IsPulled) Rigidbody?.Gravity = false;
 		else
 		{
-			if (Rigidbody != null)
-			{
-				Rigidbody.Gravity = true;
-				Rigidbody.Velocity = 0f;
-			}
-			TimerManager.ClearTimer(PoolingHandle);
+			if (Rigidbody == null) return;
+			Rigidbody.Gravity = true;
+			Rigidbody.Velocity = 0f;
 		}
 	}
 }

@@ -8,21 +8,23 @@ namespace Sandbox.AI;
 
 public sealed class AlienShip : Component, IPoolObject
 {
-	private bool IsLogicInitialized = false;
+	[Sync] private int TimesToFlyUpwards { get; set; }
+	[Property] private GameObject BeamVfx { get; set; }
+	private bool IsLogicInitialized;
 	private int MoveHandle;
 	private int CheckIsInAirObjectsHandle;
-	private int PullObjectsTowardsCenterHandle;
 	private int FlyUpwardsHandle;
+	private int SmallFlyUpwardsHandle;
 	private const float MoveSpeed = 50f;
 	private const float MoveUpwardsSpeed = 2000f;
+	private const float SmallMoveUpwardsSpeed = 300f;
 	private const float FpsTime = 1f / 60f;
-	private const float ScaleIncrease = 1f;
+	private const float ScaleIncrease = 0.1f;
 	private const float MaxScale = 4f;
 	private float ChangeDirectionTimer;
 	private Vector2 Direction;
 	private BoxCollider Collider;
 	private CapsuleCollider BeamCollider;
-	private GameObject BeamVfx;
 	private readonly HashSet<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 
@@ -30,16 +32,10 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		Collider?.Enabled = true;
 		BeamCollider?.Enabled = true;
-		ChangeBeamVfxState(true);
+		SetupBeamVfx();
 		WorldScale = new Vector3(1f);
 	}
-
-	protected override void OnStart()
-	{
-		base.OnStart();
-		BeamVfx = GameObject.Children.FirstOrDefault(OutGameObject => OutGameObject.Name == "BeamShader");
-		ChangeBeamVfxState(true);
-	}
+	
 	protected override void OnUpdate()
 	{
 		if (Networking.IsHost && !IsLogicInitialized) SetupHostLogic();
@@ -52,16 +48,7 @@ public sealed class AlienShip : Component, IPoolObject
 		SetupBeamCollider();
 		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
 		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
-		PullObjectsTowardsCenterHandle = TimerManager.AddTimer(PullObjectsTowardsCenterHandle, 0.025f, true, PullObjectsTowardsCenter);
-	}
-	private void PullObjectsTowardsCenter()
-	{
-		foreach (PullableComponent Pullable in InsideBeamObjects)
-		{
-			if (!Pullable.IsInAir()) continue;
-			Vector3 TargetPos = new (WorldPosition.x, WorldPosition.y, Pullable.WorldPosition.z);
-			Pullable.WorldPosition = Vector3.Lerp(Pullable.WorldPosition, TargetPos, 0.1f);
-		}
+		SmallFlyUpwardsHandle = TimerManager.AddTimer(SmallFlyUpwardsHandle, 0.25f, true, SmallFlyUpProcess);
 	}
 	protected override void OnDestroy()
 	{
@@ -70,6 +57,8 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider?.OnTriggerEnter -= BeamEntered;
 		BeamCollider?.OnTriggerExit -= BeamExit;
 		TimerManager.ClearTimer(MoveHandle);
+		TimerManager.ClearTimer(CheckIsInAirObjectsHandle);
+		TimerManager.ClearTimer(SmallFlyUpwardsHandle);
 		base.OnDestroy();
 	}
 
@@ -100,20 +89,24 @@ public sealed class AlienShip : Component, IPoolObject
 		if (InCollider.Tags.Has("collectible"))
 		{
 			InCollider.GameObject.Root.GetComponent<CollectibleCube>()?.RequestReturnToPoolObject();
-			GameObject.WorldScale += new Vector3(ScaleIncrease);
-			if (GameObject.WorldScale.x >= MaxScale) FlyAway();
+			AddScale();
 		}
 		else if (InCollider.Tags.Has("player"))
 		{
 			InCollider.GameObject.Root.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
-			GameObject.WorldScale += new Vector3(ScaleIncrease);
-			if (GameObject.WorldScale.x >= MaxScale) FlyAway();
+			AddScale();
 		}
 		else
 		{
 			Direction *= -1;
 			ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
 		}
+	}
+	private void AddScale()
+	{
+		GameObject.WorldScale += new Vector3(ScaleIncrease);
+		TimesToFlyUpwards += 5;
+		if (GameObject.WorldScale.x >= MaxScale) FlyAway();
 	}
 	private void FlyAway()
 	{
@@ -126,12 +119,18 @@ public sealed class AlienShip : Component, IPoolObject
 		Collider?.Enabled = false;
 		BeamCollider?.Enabled = false;
 		ChangeBeamVfxState(false);
-		FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime,  true, FlyUpProcess);
+		FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime, true, FlyUpProcess);
+	}
+	private void SmallFlyUpProcess()
+	{
+		if (TimesToFlyUpwards < 1) return;
+		TimesToFlyUpwards--;
+		WorldPosition += new Vector3(Vector3.Up * SmallMoveUpwardsSpeed * FpsTime);
 	}
 	private void FlyUpProcess()
 	{
 		WorldPosition += new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
-		if (WorldPosition.z >= 5000f) ReturnToPool();
+		if (WorldPosition.z >= 7000f) ReturnToPool();
 	}
 	private void ReturnToPool()
 	{
@@ -144,8 +143,8 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>(true);
 		if (Pullable == null) return;
-		InsideBeamObjects.Remove(Pullable);
 		ImmovableBeamObjects.Remove(Pullable);
+		InsideBeamObjects.Remove(Pullable);
 		SetPullOnObject(Pullable, false);
 	}
 	private void BeamEntered(Collider InCollider)
@@ -155,6 +154,7 @@ public sealed class AlienShip : Component, IPoolObject
 		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
 		else SetPullOnObject(Pullable, true);
 		InsideBeamObjects.Add(Pullable);
+		Pullable.SetAlienShipRef(GameObject.Id);
 	}
 	private void SetupBoxCollider()
 	{
@@ -169,7 +169,7 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		GameObject BeamObject = new() { Parent = GameObject };
 		BeamCollider = BeamObject.AddComponent<CapsuleCollider>();
-		BeamCollider.End = new Vector3(0f, 0f, -1000f);
+		BeamCollider.End = new Vector3(0f, 0f, -2000f);
 		BeamCollider.Radius = 100f;
 		BeamCollider.IsTrigger = true;
 		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreTraces;
@@ -180,6 +180,14 @@ public sealed class AlienShip : Component, IPoolObject
 	private void SetPullOnObject(PullableComponent InPullable, bool InState)
 	{
 		InPullable?.SetIsPulled(InState);
+	}
+
+	private void SetupBeamVfx()
+	{
+		if (BeamVfx == null) return;
+		BeamVfx.LocalPosition = new Vector3(0f, 0f, GameObject.WorldPosition.z * -0.5f);
+		BeamVfx.LocalScale = new Vector3(1f, 1f, GameObject.WorldPosition.z * 0.005f);
+		ChangeBeamVfxState(true);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]

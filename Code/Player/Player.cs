@@ -20,12 +20,10 @@ public sealed class Player : Component, Component.INetworkListener
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 800f;
 	private readonly float ThrowForce = 2000f;
-	private readonly float MovementFriction = 5f;
 	private float MoneyMultiplier = 1f;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
 	private CameraComponent Camera;
-	private CharacterController Controller;
 	private PullableComponent PullComp;
 	private PlayerData PlayerData;
 	private Rigidbody PlayerRigidbody;
@@ -55,6 +53,8 @@ public sealed class Player : Component, Component.INetworkListener
 		public void SetupClearOwnerIdTimer() { PullableComp?.SetClearOwnerIdTimer(); }
 	}
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
+	
 	public void OnConnected(Connection InChannel)
 	{
 		//EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(InChannel.Id, InChannel.Name, 0), true);
@@ -84,7 +84,7 @@ public sealed class Player : Component, Component.INetworkListener
 		base.OnStart();
 		EventManager.OnKill += OnKillEventListener;
 		PullComp = GetComponent<PullableComponent>();
-		Controller = GetComponent<CharacterController>();
+		PullComp.SetOwnerPlayer(this);
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
@@ -92,7 +92,6 @@ public sealed class Player : Component, Component.INetworkListener
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		PlayerRigidbody = GetComponent<Rigidbody>();
-		Controller.BoundingBox.AddBBox(new BBox(new Vector3(-5f, -5f, -50f / 2f), new Vector3(5f, 5f, 50f / 2f)));
 	}
 	private void UpdateClientsForHost()
 	{
@@ -137,10 +136,12 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
 		Camera.WorldPosition = PlayerPosition + CameraOffset;
 		Camera.WorldRotation = NextCameraRotation;
-		WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
+		//if (PullComp != null && !PullComp.GetIsPulled()) WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
 	}
+
 	private void ProcessMovementInput()
 	{
+		if (PullComp != null && PullComp.GetIsPulled()) return;
 		Vector3 Forward = WorldRotation.Forward;
 		Vector3 Right = WorldRotation.Right;
 
@@ -154,10 +155,10 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Input.Down("Left")) MovementVelocity -= Right;
 		if (Input.Down("Right")) MovementVelocity += Right;
 
-		Controller.ApplyFriction(MovementFriction);
-		Controller.Accelerate(MovementVelocity.Normal * (MovementVelocity.Length > 0 ? Speed : 0));
-		Controller.Move();
+		float WishSpeed = MovementVelocity.Length > 0f ? Speed : 0f;
+		PlayerRigidbody.Velocity += MovementVelocity.Normal * WishSpeed * Time.Delta;
 	}
+	
 	private void ProcessKeyboardInput()
 	{
 		ProcessMovementInput();
@@ -226,16 +227,6 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
-	[Rpc.Host]
-	private void ReturnAuthorityToHost(GameObject InHeldObject, Vector3 InThrownVelocity)
-	{
-		if (InHeldObject == null) return;
-		InHeldObject.Network.TakeOwnership();
-		if (InThrownVelocity != Vector3.Zero && InHeldObject.Components.TryGet(out Rigidbody Rigidbody))
-		{
-			Rigidbody.Velocity = InThrownVelocity;
-		}
-	}
 	private void AddMoney(float InMoneyAmount)
 	{
 		PlayerData.Money += InMoneyAmount;
@@ -298,5 +289,15 @@ public sealed class Player : Component, Component.INetworkListener
 	private void SendBackMoney(float InMoney)
 	{
 		EventManager.TriggerOnKill(PullComp.GetOwnerId(), true, InMoney);
+	}
+	[Rpc.Host]
+	private void ReturnAuthorityToHost(GameObject InHeldObject, Vector3 InThrownVelocity)
+	{
+		if (InHeldObject == null) return;
+		InHeldObject.Network.TakeOwnership();
+		if (InThrownVelocity != Vector3.Zero && InHeldObject.Components.TryGet(out Rigidbody Rigidbody))
+		{
+			Rigidbody.Velocity = InThrownVelocity;
+		}
 	}
 }

@@ -21,8 +21,8 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		Guid ObjectGuid = PoolData.Objects[LastIndex];
 		PoolData.Objects.RemoveAt(LastIndex);
 		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectGuid);
-		PoolObject.LocalPosition = InLocation;
-		PoolObject.LocalRotation = InRotation;
+		PoolObject.WorldPosition = InLocation;
+		PoolObject.WorldRotation = InRotation;
 		PoolObject.Enabled = true;
 		PoolObject.GetComponent<IPoolObject>().Init();
 		PoolData.ActiveCount++;

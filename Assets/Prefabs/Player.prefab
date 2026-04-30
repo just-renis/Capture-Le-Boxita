@@ -62,7 +62,7 @@
           "component_type": "BoxCollider"
         },
         "Sensitivity": 0.2,
-        "Speed": 600,
+        "Speed": 5000,
         "Sword": {
           "_type": "component",
           "component_id": "aa6ef62d-fece-4223-a702-587672172ddd",
@@ -79,15 +79,15 @@
         "EnableImpactDamage": false,
         "EnhancedCcd": false,
         "Gravity": true,
-        "GravityScale": 1,
+        "GravityScale": 2,
         "ImpactDamage": 0,
-        "LinearDamping": 0,
+        "LinearDamping": 3,
         "Locking": {
           "X": false,
           "Y": false,
           "Z": false,
           "Pitch": true,
-          "Yaw": true,
+          "Yaw": false,
           "Roll": true
         },
         "MassCenterOverride": "0,0,0",
@@ -101,28 +101,8 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "OverrideMassCenter": false,
-        "RigidbodyFlags": 0,
+        "RigidbodyFlags": "DisableCollisionSounds",
         "StartAsleep": false
-      },
-      {
-        "__type": "Sandbox.CharacterController",
-        "__guid": "b2fa8c5c-5122-4510-a72d-5bae6a339ae9",
-        "__enabled": true,
-        "Flags": 0,
-        "Acceleration": 10,
-        "Bounciness": 0,
-        "GroundAngle": 45,
-        "Height": 20,
-        "IgnoreLayers": "",
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Radius": 25,
-        "StepHeight": 0,
-        "UseCollisionRules": false
       },
       {
         "__type": "Sandbox.Components.PullableComponent",

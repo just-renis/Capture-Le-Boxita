@@ -47,6 +47,10 @@
         "__guid": "1294d8ba-52fe-422b-8f82-19a9a43cd538",
         "__enabled": true,
         "Flags": 0,
+        "BeamVfx": {
+          "_type": "gameobject",
+          "go": "e00fba19-b4b2-4c9b-8ab9-244ac161ceaa"
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -82,7 +86,11 @@
             "LodOverride": null,
             "MaterialGroup": null,
             "MaterialOverride": null,
-            "Materials": null,
+            "Materials": {
+              "indexed": {
+                "0": "models/ufo/beam.vmat"
+              }
+            },
             "Model": "models/ufo/beam.vmdl",
             "OnComponentDestroy": null,
             "OnComponentDisabled": null,

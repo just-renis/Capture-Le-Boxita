@@ -7,9 +7,10 @@ namespace Sandbox.Collectibles;
 
 public sealed class CollectibleCube : Component, IPoolObject
 {
-	[Property] private Dictionary<ECubeMaterial, Material> Materials = [];
+	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
 	[Property] private ModelRenderer CubeModelRenderer { get; set; }
 	private int SetMaterialHandle;
+	private int CheckOutOfBoundsHandle;
 	private PullableComponent PullComp;
 	private Rigidbody Rigidbody;
 
@@ -28,10 +29,16 @@ public sealed class CollectibleCube : Component, IPoolObject
 	{
 		base.OnStart();
 		SetMaterialHandle = TimerManager.AddTimer(SetMaterialHandle, 0.1f, true, SetMaterial);
+		CheckOutOfBoundsHandle = TimerManager.AddTimer(CheckOutOfBoundsHandle, 5f, true, CheckOutOfBounds);
 		PullComp = GetComponent<PullableComponent>();
 		Rigidbody = GetComponent<Rigidbody>();
 	}
-	
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(CheckOutOfBoundsHandle);
+		base.OnDestroy();
+	}
+
 	private void SetMaterial()
 	{
 		PlayerData Data = EventManager.TriggerGetPlayerData();
@@ -42,6 +49,11 @@ public sealed class CollectibleCube : Component, IPoolObject
 		}
 		else CubeModelRenderer?.SetMaterial(Materials[ECubeMaterial.Cardboard]);
 		TimerManager.ClearTimer(SetMaterialHandle);
+	}
+	private void CheckOutOfBounds()
+	{
+		if (WorldPosition.z < 5000f || PullComp == null) return;
+		if (PullComp.GetIsPulled()) PullComp.SetIsPulled(false);
 	}
 	
 	[Rpc.Broadcast]
