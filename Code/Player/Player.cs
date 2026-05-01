@@ -75,6 +75,7 @@ public sealed class Player : Component, Component.INetworkListener
 		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
 		if (PullComp == null || !PullComp.GetIsPulled()) return;
 		Guid LastOwnedId = PullComp.GetOwnerId();
+		PullComp.SetIsPulled(false);
 		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
 		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
@@ -84,7 +85,6 @@ public sealed class Player : Component, Component.INetworkListener
 		base.OnStart();
 		EventManager.OnKill += OnKillEventListener;
 		PullComp = GetComponent<PullableComponent>();
-		PullComp.SetOwnerPlayer(this);
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
@@ -136,7 +136,7 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
 		Camera.WorldPosition = PlayerPosition + CameraOffset;
 		Camera.WorldRotation = NextCameraRotation;
-		//if (PullComp != null && !PullComp.GetIsPulled()) WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
+		WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
 	}
 
 	private void ProcessMovementInput()

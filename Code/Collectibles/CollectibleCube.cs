@@ -13,7 +13,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	private int CheckOutOfBoundsHandle;
 	private PullableComponent PullComp;
 	private Rigidbody Rigidbody;
-
+	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void RequestReturnToPoolObject()
 	{
 		if (!Networking.IsHost) return;
@@ -24,7 +24,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		Rigidbody.Velocity = 0f;
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);
 	}
-
+	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
 		base.OnStart();
@@ -38,7 +38,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		TimerManager.ClearTimer(CheckOutOfBoundsHandle);
 		base.OnDestroy();
 	}
-
+	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetMaterial()
 	{
 		PlayerData Data = EventManager.TriggerGetPlayerData();
@@ -55,7 +55,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		if (WorldPosition.z < 5000f || PullComp == null) return;
 		if (PullComp.GetIsPulled()) PullComp.SetIsPulled(false);
 	}
-	
+	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
 	public void Init()
 	{

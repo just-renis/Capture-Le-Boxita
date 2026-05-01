@@ -27,7 +27,7 @@ public sealed class AlienShip : Component, IPoolObject
 	private CapsuleCollider BeamCollider;
 	private readonly HashSet<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
-
+	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void Init()
 	{
 		Collider?.Enabled = true;
@@ -35,20 +35,14 @@ public sealed class AlienShip : Component, IPoolObject
 		SetupBeamVfx();
 		WorldScale = new Vector3(1f);
 	}
-	
+	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnUpdate()
 	{
 		if (Networking.IsHost && !IsLogicInitialized) SetupHostLogic();
 	}
-	private void SetupHostLogic()
+	protected override void OnFixedUpdate()
 	{
-		IsLogicInitialized = true;
-		SetupBoxCollider();
-		ChangeDirection();
-		SetupBeamCollider();
-		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
-		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
-		SmallFlyUpwardsHandle = TimerManager.AddTimer(SmallFlyUpwardsHandle, 0.25f, true, SmallFlyUpProcess);
+		foreach (PullableComponent Pullable in InsideBeamObjects.ToList().Where(Pullable => Pullable.IsValid())) Pullable.SetLastBeamExit(0);
 	}
 	protected override void OnDestroy()
 	{
@@ -61,7 +55,17 @@ public sealed class AlienShip : Component, IPoolObject
 		TimerManager.ClearTimer(SmallFlyUpwardsHandle);
 		base.OnDestroy();
 	}
-
+	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
+	private void SetupHostLogic()
+	{
+		IsLogicInitialized = true;
+		SetupBoxCollider();
+		ChangeDirection();
+		SetupBeamCollider();
+		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
+		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
+		SmallFlyUpwardsHandle = TimerManager.AddTimer(SmallFlyUpwardsHandle, 0.25f, true, SmallFlyUpProcess);
+	}
 	private void Move()
 	{
 		ChangeDirectionTimer -= 0.05f;
@@ -145,7 +149,6 @@ public sealed class AlienShip : Component, IPoolObject
 		if (Pullable == null) return;
 		ImmovableBeamObjects.Remove(Pullable);
 		InsideBeamObjects.Remove(Pullable);
-		SetPullOnObject(Pullable, false);
 	}
 	private void BeamEntered(Collider InCollider)
 	{
@@ -154,6 +157,7 @@ public sealed class AlienShip : Component, IPoolObject
 		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
 		else SetPullOnObject(Pullable, true);
 		InsideBeamObjects.Add(Pullable);
+		Pullable.SetLastBeamExit(0);
 		Pullable.SetAlienShipRef(GameObject.Id);
 	}
 	private void SetupBoxCollider()
@@ -177,11 +181,7 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider.OnTriggerEnter += BeamEntered;
 		BeamCollider.OnTriggerExit += BeamExit;
 	}
-	private void SetPullOnObject(PullableComponent InPullable, bool InState)
-	{
-		InPullable?.SetIsPulled(InState);
-	}
-
+	private void SetPullOnObject(PullableComponent InPullable, bool InState) { InPullable?.SetIsPulled(InState); }
 	private void SetupBeamVfx()
 	{
 		if (BeamVfx == null) return;
