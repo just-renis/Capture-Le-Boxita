@@ -51,68 +51,16 @@
         "__guid": "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb",
         "__enabled": true,
         "Flags": 0,
-        "Collision": {
-          "_type": "component",
-          "component_id": "422a5cd5-3929-4a2f-83a0-cce9885b19ec",
-          "go": "568a1886-ef74-4cb4-9801-3b9f5b9686d4",
-          "component_type": "BoxCollider"
-        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "PushForce": 100
+        "PushForce": 1500000
       }
     ],
-    "Children": [
-      {
-        "__guid": "568a1886-ef74-4cb4-9801-3b9f5b9686d4",
-        "__version": 2,
-        "Flags": 0,
-        "Name": "Collision",
-        "Position": "0,0,23",
-        "Rotation": "0,0,0,1",
-        "Scale": "1,1,1",
-        "Tags": "",
-        "Enabled": true,
-        "NetworkMode": 2,
-        "NetworkFlags": 0,
-        "NetworkOrphaned": 0,
-        "NetworkTransmit": true,
-        "OwnerTransfer": 1,
-        "Components": [
-          {
-            "__type": "Sandbox.BoxCollider",
-            "__guid": "422a5cd5-3929-4a2f-83a0-cce9885b19ec",
-            "__enabled": true,
-            "Flags": 0,
-            "Center": "0,0,0",
-            "ColliderFlags": "IgnoreTraces, IgnoreMass",
-            "Elasticity": null,
-            "Friction": null,
-            "IsTrigger": true,
-            "OnComponentDestroy": null,
-            "OnComponentDisabled": null,
-            "OnComponentEnabled": null,
-            "OnComponentFixedUpdate": null,
-            "OnComponentStart": null,
-            "OnComponentUpdate": null,
-            "OnObjectTriggerEnter": null,
-            "OnObjectTriggerExit": null,
-            "OnTriggerEnter": null,
-            "OnTriggerExit": null,
-            "RollingResistance": null,
-            "Scale": "30,10,107",
-            "Static": false,
-            "Surface": null,
-            "SurfaceVelocity": "0,0,0"
-          }
-        ],
-        "Children": []
-      }
-    ],
+    "Children": [],
     "__properties": {
       "NetworkInterpolation": true,
       "TimeScale": 1,

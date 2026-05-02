@@ -13,6 +13,7 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
+	[Sync] private TimeSince CooldownAfterAlienPullDeath { get; set; }
 
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
@@ -54,6 +55,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
+	public float GetCooldownAfterAlienPullDeath() { return CooldownAfterAlienPullDeath; }
 	
 	public void OnConnected(Connection InChannel)
 	{
@@ -70,19 +72,9 @@ public sealed class Player : Component, Component.INetworkListener
 		InImpulseForce.z = 0f;
 		PlayerRigidbody?.ApplyImpulse(InImpulseForce);
 	}
-	public void ReturnToSpawnLocation()
-	{
-		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
-		if (PullComp == null || !PullComp.GetIsPulled()) return;
-		Guid LastOwnedId = PullComp.GetOwnerId();
-		PullComp.SetIsPulled(false);
-		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
-		RequestMoneyTransfer(PullComp.Network.OwnerId);
-	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
-		base.OnStart();
 		EventManager.OnKill += OnKillEventListener;
 		PullComp = GetComponent<PullableComponent>();
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
@@ -115,7 +107,6 @@ public sealed class Player : Component, Component.INetworkListener
 			ClearHeldObjectData();
 			EventManager.OnPlayerDataRequired -= GetPlayerData;
 		}
-		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private PlayerData GetPlayerData() { return PlayerData; }
@@ -136,9 +127,8 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
 		Camera.WorldPosition = PlayerPosition + CameraOffset;
 		Camera.WorldRotation = NextCameraRotation;
-		WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
+		if (PullComp != null && !PullComp.GetIsPulled()) WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
 	}
-
 	private void ProcessMovementInput()
 	{
 		if (PullComp != null && PullComp.GetIsPulled()) return;
@@ -178,7 +168,7 @@ public sealed class Player : Component, Component.INetworkListener
 			Vector3 Start = Ray.Position;
 			Vector3 End = Start + Ray.Forward * GrabDistance;
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
-			DebugOverlay.Line(Start, End, Color.Red, 2f);
+		//	DebugOverlay.Line(Start, End, Color.Red, 2f);
 			if (!Trace.Hit) return;
 			GameObject GrabbedObject = Trace.GameObject;
 			GrabbedObject.Network.TakeOwnership();
@@ -249,6 +239,11 @@ public sealed class Player : Component, Component.INetworkListener
 		if (!Networking.IsHost) return;
 		IncreaseMoney(InKillerId, InIsPlayerKill, InMoneyAmount);
 	}
+	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
+	{
+		if (IsProxy) return;
+		WorldPosition = InPosition;
+	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
 	public void ReceivePush(Guid InPusherId, Vector3 InPushForce)
@@ -279,10 +274,16 @@ public sealed class Player : Component, Component.INetworkListener
 		SendBackMoney(MoneyLoss);
 	}
 	[Rpc.Broadcast]
-	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
+	public void ReturnToSpawnLocation()
 	{
 		if (IsProxy) return;
-		WorldPosition = InPosition;
+		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
+		if (PullComp == null || !PullComp.GetIsPulled()) return;
+		Guid LastOwnedId = PullComp.GetOwnerId();
+		PullComp.SetIsPulled(false);
+		CooldownAfterAlienPullDeath = 0f;
+		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
+		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
 	
 	[Rpc.Host]

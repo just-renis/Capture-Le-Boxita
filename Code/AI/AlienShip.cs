@@ -27,6 +27,7 @@ public sealed class AlienShip : Component, IPoolObject
 	private CapsuleCollider BeamCollider;
 	private readonly HashSet<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
+	private readonly Dictionary<Guid, float> RecentlyTeleported = [];
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void Init()
 	{
@@ -40,10 +41,6 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		if (Networking.IsHost && !IsLogicInitialized) SetupHostLogic();
 	}
-	protected override void OnFixedUpdate()
-	{
-		foreach (PullableComponent Pullable in InsideBeamObjects.ToList().Where(Pullable => Pullable.IsValid())) Pullable.SetLastBeamExit(0);
-	}
 	protected override void OnDestroy()
 	{
 		if (!Networking.IsHost) return;
@@ -53,7 +50,6 @@ public sealed class AlienShip : Component, IPoolObject
 		TimerManager.ClearTimer(MoveHandle);
 		TimerManager.ClearTimer(CheckIsInAirObjectsHandle);
 		TimerManager.ClearTimer(SmallFlyUpwardsHandle);
-		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetupHostLogic()
@@ -97,7 +93,13 @@ public sealed class AlienShip : Component, IPoolObject
 		}
 		else if (InCollider.Tags.Has("player"))
 		{
-			InCollider.GameObject.Root.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
+			GameObject Root = InCollider.GameObject.Root;
+			if (RecentlyTeleported.TryGetValue(Root.Id, out float LastTime))
+			{
+				if (Time.Now - LastTime < 3f) return;
+			}
+			RecentlyTeleported[Root.Id] = Time.Now;
+			Root.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
 			AddScale();
 		}
 		else
@@ -157,7 +159,6 @@ public sealed class AlienShip : Component, IPoolObject
 		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
 		else SetPullOnObject(Pullable, true);
 		InsideBeamObjects.Add(Pullable);
-		Pullable.SetLastBeamExit(0);
 		Pullable.SetAlienShipRef(GameObject.Id);
 	}
 	private void SetupBoxCollider()
@@ -181,7 +182,6 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider.OnTriggerEnter += BeamEntered;
 		BeamCollider.OnTriggerExit += BeamExit;
 	}
-	private void SetPullOnObject(PullableComponent InPullable, bool InState) { InPullable?.SetIsPulled(InState); }
 	private void SetupBeamVfx()
 	{
 		if (BeamVfx == null) return;
@@ -192,4 +192,6 @@ public sealed class AlienShip : Component, IPoolObject
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
 	private void ChangeBeamVfxState(bool InState) { BeamVfx?.Enabled = InState; }
+	[Rpc.Broadcast]
+	private void SetPullOnObject(PullableComponent InPullable, bool InState) { InPullable?.SetIsPulled(InState); }
 }

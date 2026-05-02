@@ -10,11 +10,11 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private Guid LastOwnedBy { get; set; }
 	private bool IsPulled;
 	private int ClearOwnerIdHandle;
+	private int CheckOutOfBoundsHandle;
 	private float MoneyAmount = 1f;
 	private const float BeamPullSpeed = 600.0f; 
 	private const float ClearTime = 8f;
-	private const float PushForceMultiplier = 200000f;
-	private TimeSince LastBeamExit;
+	private const Int64 PushForceMultiplier = 1250000;
 	private Rigidbody Rigidbody;
 	private GameObject AlienShipRef;
 	
@@ -55,16 +55,24 @@ public class PullableComponent : Component, Component.ICollisionListener
 		OtherPullableComponent.SetOwnerId(LastOwnedBy, false);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
-	protected override void OnStart() { Rigidbody = GetComponent<Rigidbody>(); }
+	protected override void OnStart()
+	{
+		Rigidbody = GetComponent<Rigidbody>();
+		CheckOutOfBoundsHandle = TimerManager.AddTimer(CheckOutOfBoundsHandle, 5f, true, CheckOutOfBounds);
+	}
 	protected override void OnUpdate()
 	{
 		if (!IsOwnerHolding) LastOwnerTime -= Time.Delta;
 	}
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(CheckOutOfBoundsHandle);
+	}
 	protected override void OnFixedUpdate()
 	{
 		if (IsProxy) return;
-		if (IsPulled && LastBeamExit > 0.2f) SetIsPulled(false);
 		if (!IsPulled || AlienShipRef == null) return;
+		Rigidbody.AngularVelocity = Vector3.Zero;
 		Vector3 PullVelocity = (AlienShipRef.WorldPosition - WorldPosition) * 10.0f;
 		Rigidbody.Velocity = PullVelocity.WithZ(BeamPullSpeed);
 	}
@@ -77,12 +85,14 @@ public class PullableComponent : Component, Component.ICollisionListener
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
 	}
+	private void CheckOutOfBounds()
+	{
+		if (WorldPosition.z < 5000f) return;
+		if (GetIsPulled()) SetIsPulled(false);
+	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Owner]
 	public void SetAlienShipRef(Guid InAlienShipWhoPulls) { AlienShipRef = Scene.Directory.FindByGuid(InAlienShipWhoPulls); }
-	[Rpc.Owner]
-	public void SetLastBeamExit(float InLastBeamExit) { LastBeamExit = InLastBeamExit; }
-	[Rpc.Broadcast]
 	public void SetIsPulled(bool State)
 	{
 		IsPulled = State;

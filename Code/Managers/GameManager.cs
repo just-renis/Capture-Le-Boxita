@@ -13,7 +13,6 @@ public sealed class GameManager : Component
 	
 	protected override void OnStart()
 	{
-		base.OnStart();
 		CollectibleCubeManager = Scene.GetSystem<CollectibleCubeManager>();
 		CollectibleCubeManager.Init();
 		PoolingManager = Scene.GetSystem<PoolingManager>();
@@ -31,7 +30,6 @@ public sealed class GameManager : Component
 	{
 		EventManager.OnTeleportToSpawnLocation -= GetSpawnerLocation;
 		TimerManager.OnDestroy();
-		base.OnDestroy();
 	}
 	private Vector3 GetSpawnerLocation()
 	{

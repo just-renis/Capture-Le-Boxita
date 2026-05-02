@@ -10,7 +10,6 @@ public sealed class CollectibleCube : Component, IPoolObject
 	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
 	[Property] private ModelRenderer CubeModelRenderer { get; set; }
 	private int SetMaterialHandle;
-	private int CheckOutOfBoundsHandle;
 	private PullableComponent PullComp;
 	private Rigidbody Rigidbody;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
@@ -27,16 +26,9 @@ public sealed class CollectibleCube : Component, IPoolObject
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
-		base.OnStart();
 		SetMaterialHandle = TimerManager.AddTimer(SetMaterialHandle, 0.1f, true, SetMaterial);
-		CheckOutOfBoundsHandle = TimerManager.AddTimer(CheckOutOfBoundsHandle, 5f, true, CheckOutOfBounds);
 		PullComp = GetComponent<PullableComponent>();
 		Rigidbody = GetComponent<Rigidbody>();
-	}
-	protected override void OnDestroy()
-	{
-		TimerManager.ClearTimer(CheckOutOfBoundsHandle);
-		base.OnDestroy();
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetMaterial()
@@ -49,11 +41,6 @@ public sealed class CollectibleCube : Component, IPoolObject
 		}
 		else CubeModelRenderer?.SetMaterial(Materials[ECubeMaterial.Cardboard]);
 		TimerManager.ClearTimer(SetMaterialHandle);
-	}
-	private void CheckOutOfBounds()
-	{
-		if (WorldPosition.z < 5000f || PullComp == null) return;
-		if (PullComp.GetIsPulled()) PullComp.SetIsPulled(false);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]

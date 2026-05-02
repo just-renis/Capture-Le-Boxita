@@ -5,8 +5,7 @@ namespace Sandbox.Player;
 
 public sealed class Sword : Component
 {
-	[Property] private float PushForce { get; set; }
-	[Property] private BoxCollider Collision { get; set; }
+	[Property] private Int64 PushForce { get; set; }
 	private bool IsInAttackMode;
 	private int ProcessAttackHandle;
 	private int ProcessAttackTimes;
@@ -17,7 +16,7 @@ public sealed class Sword : Component
 	private void ProcessAttackForward()
 	{
 		LocalRotation *= Rotation.From(new Angles(SwordAttackRotationSpeed, 0f, 0f));
-		ApplyPushForce(Network.OwnerId);
+		CheckForHit(Network.OwnerId);
 		if (++ProcessAttackTimes <= SwordMaxProcessTimes) return;
 		ProcessAttackTimes = 0;
 		TimerManager.ClearTimer(ProcessAttackHandle);
@@ -32,16 +31,24 @@ public sealed class Sword : Component
 		IsInAttackMode = false;
 	}
 
-	[Rpc.Host]
-	private void ApplyPushForce(Guid InPusherId)
+	private void CheckForHit(Guid InPusherId)
 	{
-		foreach (Collider InTouchCollider in Collision.Touching)
-		{
-			GameObject Target = InTouchCollider.GameObject.Root;
-			if (!InTouchCollider.GameObject.Tags.Has("player") || !HitObjects.Add(Target)) continue;
-			Target.GetComponent<Player>()?.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * PushForce);
-			Target.GetComponent<PullableComponent>()?.SetOwnerId(Network.OwnerId, false);
-		}
+		Vector3 TraceSize = new (20f, 20f, 150f);
+		SceneTraceResult TraceResults = Scene.Trace.Box(TraceSize, WorldPosition, WorldPosition).WithTag("player").IgnoreGameObjectHierarchy(GameObject.Root).Rotated(WorldRotation).Run();
+		//DebugOverlay.Box(Vector3.Zero, TraceSize, Color.Red, 2f, WorldTransform);
+		if (!TraceResults.Hit) return;
+		GameObject Target = TraceResults.GameObject.Root;
+		if (!HitObjects.Add(Target)) return;
+		SendToHostAboutTheHit(Target, InPusherId);
+	}
+	[Rpc.Host]
+	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId)
+	{
+		if (!IsInAttackMode) return;
+		Player TargetPlayer = Target.GetComponent<Player>();
+		if (TargetPlayer == null) return;
+		TargetPlayer.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * PushForce);
+		Target.GetComponent<PullableComponent>()?.SetOwnerId(Network.OwnerId, false);
 	}
 	[Rpc.Broadcast]
 	public void Attack()
