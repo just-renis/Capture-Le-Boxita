@@ -77,14 +77,12 @@ UpgradesMenu .header-right {
 }
 
 UpgradesMenu .money-info {
-  display: flex;
   flex-direction: column;
   align-items: flex-end;
   margin-right: 24px;
 }
 
 UpgradesMenu .money-info span {
-  font-size: 10px;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
@@ -92,7 +90,6 @@ UpgradesMenu .money-info span {
 }
 
 UpgradesMenu .money-amount {
-  display: flex;
   align-items: center;
   font-size: 24px;
   font-weight: 900;
@@ -154,7 +151,6 @@ UpgradesMenu .lines {
 
 UpgradesMenu .line {
   position: absolute;
-  height: 0;
   transform-origin: 0 50%;
   border-top: 2px solid rgba(255, 255, 255, 0.1);
 }
@@ -179,8 +175,6 @@ UpgradesMenu .nodes {
 
 UpgradesMenu .node-wrapper {
   position: absolute;
-  transform: translate(-50%, -50%);
-  display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
@@ -200,15 +194,15 @@ UpgradesMenu .node {
   height: 64px;
   border-radius: 12px;
   border: 2px solid rgba(255, 255, 255, 0.1);
-  display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 1);
   position: relative;
 }
 
 UpgradesMenu .node i {
-  font-size: 32px;
+  font-size: 64px;
+  transform: scale(0.5);
   color: white;
 }
 
@@ -224,16 +218,6 @@ UpgradesMenu .node.available:not(.owned) {
   border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-UpgradesMenu .node.owned {
-  border-color: #facc15;
-  box-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
-}
-
-UpgradesMenu .node.combat.owned { background-color: #ef4444; }
-UpgradesMenu .node.mobility.owned { background-color: #3b82f6; }
-UpgradesMenu .node.resource.owned { background-color: #f59e0b; }
-UpgradesMenu .node.utility.owned { background-color: #10b981; }
-
 UpgradesMenu .node .check {
   position: absolute;
   top: -6px;
@@ -242,25 +226,26 @@ UpgradesMenu .node .check {
   border-radius: 50%;
   padding: 2px;
   display: flex;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+UpgradesMenu .level-badge {
+  font-size: 32px;
+  transform: scale(0.4);
+  transform-origin: bottom right;
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 UpgradesMenu .node .check i {
   font-size: 14px;
   color: black;
   font-weight: 900;
-}
-
-UpgradesMenu .node-label {
-  position: absolute;
-  top: 100%;
-  margin-top: 8px;
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 2px;
-  white-space: nowrap;
-  color: rgba(255, 255, 255, 0.4);
 }
 
 /* --- Sidebar --- */
@@ -270,12 +255,11 @@ UpgradesMenu .sidebar {
   right: 32px;
   top: 32px;
   bottom: 32px;
-  width: 320px;
+  width: 400px;
   background-color: rgba(0, 0, 0, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 24px;
   padding: 24px;
-  display: flex;
   flex-direction: column;
   z-index: 40;
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
@@ -286,9 +270,10 @@ UpgradesMenu .close-sidebar {
   top: 16px;
   right: 16px;
   padding: 8px;
-  border-radius: 50%;
+  border-radius: 12px;
   cursor: pointer;
   color: rgba(255,255,255,0.4);
+  z-index: 10;
 }
 
 UpgradesMenu .sidebar-icon {
@@ -296,15 +281,9 @@ UpgradesMenu .sidebar-icon {
   height: 64px;
   border-radius: 16px;
   margin-bottom: 24px;
-  display: flex;
   align-items: center;
   justify-content: center;
 }
-
-UpgradesMenu .sidebar-icon.combat { background-color: #ef4444; }
-UpgradesMenu .sidebar-icon.mobility { background-color: #3b82f6; }
-UpgradesMenu .sidebar-icon.resource { background-color: #f59e0b; }
-UpgradesMenu .sidebar-icon.utility { background-color: #10b981; }
 
 UpgradesMenu .sidebar h2 {
   font-size: 24px;
@@ -332,16 +311,14 @@ UpgradesMenu .badge.owned { color: #facc15; }
 
 UpgradesMenu .desc {
   color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 25px;
   margin-bottom: 32px;
 }
 
 UpgradesMenu .stat-row {
-  display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 24px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 12px;
@@ -374,14 +351,6 @@ UpgradesMenu footer {
   justify-content: space-between;
   align-items: center;
   z-index: 50;
-}
-
-UpgradesMenu .progress-bar {
-  display: flex;
-  height: 4px;
-  width: 128px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
 }
 
 UpgradesMenu .zoom-controls {
