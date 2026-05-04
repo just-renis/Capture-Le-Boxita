@@ -11,100 +11,129 @@
       "AssetName": "cactus"
     },
     {
-      "Prefab": null,
-      "Model": "models/cactus/cactus1.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/cactus/cactus1.prefab"
+      },
+      "Model": null,
       "Weight": 1,
       "HasAsset": true,
-      "AssetName": "models/cactus/cactus1.vmdl"
+      "AssetName": "cactus1"
     },
     {
-      "Prefab": null,
-      "Model": "models/cactus/cactus2.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/cactus/cactus2.prefab"
+      },
+      "Model": null,
       "Weight": 1,
       "HasAsset": true,
-      "AssetName": "models/cactus/cactus2.vmdl"
+      "AssetName": "cactus2"
     },
     {
-      "Prefab": null,
-      "Model": "models/cactus/cactus3.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/cactus/cactus4.prefab"
+      },
+      "Model": null,
       "Weight": 1,
       "HasAsset": true,
-      "AssetName": "models/cactus/cactus3.vmdl"
+      "AssetName": "cactus4"
     },
     {
-      "Prefab": null,
-      "Model": "models/rock/rock.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/tree/tree.prefab"
+      },
+      "Model": null,
+      "Weight": 0.15,
+      "HasAsset": true,
+      "AssetName": "tree"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/tree/tree1.prefab"
+      },
+      "Model": null,
+      "Weight": 0.15,
+      "HasAsset": true,
+      "AssetName": "tree1"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/tree/tree2.prefab"
+      },
+      "Model": null,
+      "Weight": 0.15,
+      "HasAsset": true,
+      "AssetName": "tree2"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/tree/tree3.prefab"
+      },
+      "Model": null,
+      "Weight": 0.15,
+      "HasAsset": true,
+      "AssetName": "tree3"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/tree/tree4.prefab"
+      },
+      "Model": null,
+      "Weight": 0.15,
+      "HasAsset": true,
+      "AssetName": "tree4"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/tree/trunk.prefab"
+      },
+      "Model": null,
+      "Weight": 0.15,
+      "HasAsset": true,
+      "AssetName": "trunk"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/rock/rock.prefab"
+      },
+      "Model": null,
       "Weight": 0.45,
       "HasAsset": true,
-      "AssetName": "models/rock/rock.vmdl"
+      "AssetName": "rock"
     },
     {
-      "Prefab": null,
-      "Model": "models/rock/rock1.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/rock/rock1.prefab"
+      },
+      "Model": null,
       "Weight": 0.45,
       "HasAsset": true,
-      "AssetName": "models/rock/rock1.vmdl"
+      "AssetName": "rock1"
     },
     {
-      "Prefab": null,
-      "Model": "models/rock/rock2.vmdl",
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/rock/rock3.prefab"
+      },
+      "Model": null,
       "Weight": 0.45,
       "HasAsset": true,
-      "AssetName": "models/rock/rock2.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/rock/rock3.vmdl",
-      "Weight": 0.45,
-      "HasAsset": true,
-      "AssetName": "models/rock/rock3.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/tree/tree.vmdl",
-      "Weight": 0.15,
-      "HasAsset": true,
-      "AssetName": "models/tree/tree.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/tree/tree1.vmdl",
-      "Weight": 0.15,
-      "HasAsset": true,
-      "AssetName": "models/tree/tree1.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/tree/tree2.vmdl",
-      "Weight": 0.15,
-      "HasAsset": true,
-      "AssetName": "models/tree/tree2.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/tree/tree3.vmdl",
-      "Weight": 0.15,
-      "HasAsset": true,
-      "AssetName": "models/tree/tree3.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/tree/tree4.vmdl",
-      "Weight": 0.15,
-      "HasAsset": true,
-      "AssetName": "models/tree/tree4.vmdl"
-    },
-    {
-      "Prefab": null,
-      "Model": "models/tree/trunk.vmdl",
-      "Weight": 0.15,
-      "HasAsset": true,
-      "AssetName": "models/tree/trunk.vmdl"
+      "AssetName": "rock3"
     }
   ],
   "IsEmpty": false,
   "TileSizeEnum": "Size1024",
-  "TileRadius": 10,
+  "TileRadius": 8,
   "Scatterer": {
     "Type": "SimpleScatterer",
     "Scale": "2 2.5",
