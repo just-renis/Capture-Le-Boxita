@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Sandbox.Managers;
 namespace Sandbox.Data;
 using System;
 using System.Text;
@@ -7,10 +8,35 @@ public sealed class PlayerData
 {
 	public float Money { get; set; }
 	public string Checksum { get; set; }
+	public Dictionary<int, int> OwnedUpgrades { get; set; }
 
-    private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69"; 
+    private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
+    
+    public float GetMoney() { return Money; }
+    public Dictionary<int, int> GetOwnedUpgrades() { return OwnedUpgrades; }
 
-   public static void Save(PlayerData InData)
+    public void AddMoney(float InAmount)
+    {
+	    Money += InAmount;
+	    Save(this);
+	    EventManager.TriggerMoneyChange(Money);
+    }
+    public void SubtractMoney(float InAmount)
+    {
+		Money -= InAmount;
+		Save(this);
+		EventManager.TriggerMoneyChange(Money);
+    }
+    public void BuyUpgrade(int InUpgradeId)
+    {
+	    if (!OwnedUpgrades.TryAdd(InUpgradeId, 1))
+	    {
+		    OwnedUpgrades[InUpgradeId]++;
+	    }
+	    Save(this);
+    }
+    
+    public static void Save(PlayerData InData)
     {
         InData.Checksum = "";
         string RawJson = Json.Serialize(InData);
@@ -27,10 +53,9 @@ public sealed class PlayerData
         string Obfuscated = XorInput(Base64, SECRET_KEY);
         FileSystem.Data.WriteAllText("save.dat", Obfuscated);
     }
-
     public static PlayerData Load()
     {
-        if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData();
+        if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData { OwnedUpgrades = new Dictionary<int, int>() };
         try
         {
 	        string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
@@ -50,13 +75,13 @@ public sealed class PlayerData
             
             Log.Error("CRITICAL: Save file tampered with! Deleting progress.");
             FileSystem.Data.DeleteFile( "save.dat" );
-            return new PlayerData();
+            return new PlayerData { OwnedUpgrades = new Dictionary<int, int>() };
 
         }
         catch (Exception Exception)
         {
             Log.Warning($"Save Corrupted: {Exception.Message}");
-            return new PlayerData();
+            return new PlayerData { OwnedUpgrades = new Dictionary<int, int>() };
         }
     }
 
@@ -66,7 +91,6 @@ public sealed class PlayerData
         for (int Index = 0; Index < InInput.Length; Index++) Output.Append((char)(InInput[Index] ^ InKey[Index % InKey.Length]));
         return Output.ToString();
     }
-
     private static string CreateMd5(string InInput)
     {
         using MD5 Md5 = MD5.Create();

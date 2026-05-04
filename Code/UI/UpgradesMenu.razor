@@ -3,137 +3,141 @@
 @using Sandbox.Managers
 @inherits PanelComponent
 @using System;
+@using Sandbox.Data
 
 <root>
-    <div class="wrapper">
-        <!-- Header -->
-        <header>
-            <div class="header-left">
-                <div class="logo-box">
-                    <i>emoji_events</i>
-                </div>
-                <div class="title-info">
-                    <h1>SKILL TREE</h1>
-                </div>
-            </div>
+	@if (PlayerData != null)
+	{
+		<div class="wrapper">
+			<!-- Header -->
+			<header>
+				<div class="header-left">
+					<div class="logo-box">
+						<i>emoji_events</i>
+					</div>
+					<div class="title-info">
+						<h1>SKILL TREE</h1>
+					</div>
+				</div>
 
-            <div class="header-right">
-                <div class="money-info">
-                    <span>AVAILABLE MONEY</span>
-                    <div class="money-amount">
-                        <i>savings</i>
-                        <span>$@Money</span>
-                    </div>
-                </div>
-                <div class="code-btn" @onclick=@CloseMenu>
-                    <i>close</i>
-                </div>
-            </div>
-        </header>
+				<div class="header-right">
+					<div class="money-info">
+						<span>AVAILABLE MONEY</span>
+						<div class="money-amount">
+							<i>savings</i>
+							<span>$@PlayerData.GetMoney().FloorToInt()</span>
+						</div>
+					</div>
+					<div class="code-btn" @onclick=@CloseMenu>
+						<i>close</i>
+					</div>
+				</div>
+			</header>
 
-        <!-- Canvas Workspace -->
-        <div class="canvas-container">
-            <!-- Background Drag Catcher (Removed mouse up/move from here, handled safely in OnUpdate) -->
-            <div class="canvas-bg" @onmousedown=@OnMouseDragged @onmouseup=@OnMouseReleased></div>
+			<!-- Canvas Workspace -->
+			<div class="canvas-container">
+				<!-- Background Drag Catcher (Removed mouse up/move from here, handled safely in OnUpdate) -->
+				<div class="canvas-bg" @onmousedown=@OnMouseDragged @onmouseup=@OnMouseReleased></div>
 
-            <!-- Transformable Canvas View -->
-            <div class="canvas" style="transform: translate(@(CanvasX)px, @(CanvasY)px) scale(@Scale);">
-                <!-- Connection Lines -->
-                <div class="lines">
-                    @foreach (Upgrade Node in Upgrades)
-                    {
-                        @foreach (int ParentId in Node.ParentsIds)
-                        {
-                            Upgrade Parent = Upgrades.FirstOrDefault(U => U.Id == ParentId);
-                            if (Parent == null) continue;
-                            float Dx = Node.X - Parent.X;
-                            float Dy = Node.Y - Parent.Y;
-                            float Length = MathF.Sqrt(Dx * Dx + Dy * Dy);
-                            float Angle = MathF.Atan2(Dy, Dx) * 180f / MathF.PI;
-                            bool IsOwnedPath = GetIsOwned(Node.Id) && GetIsOwned(Parent.Id);
-                            <div class="line @(IsOwnedPath ? "owned" : "unowned")" 
-                                 style="left: @(Parent.X + 32)px; top: @(Parent.Y + 32)px; width: @(Length)px; transform: rotate(@(Angle)deg);"></div>
-                        }
-                    }
-                </div>
-                <!-- Upgrade Nodes -->
-                <div class="nodes">
-                    @foreach (Upgrade Node in Upgrades)
-                    {
-                        bool IsSelected = SelectedId == Node.Id;
-                        bool IsOwned = GetIsOwned(Node.Id);
-                        string BackgroundStyle = IsOwned ? $"background-color: {Node.Color};" : "";
-                        bool IsAvailable = GetIsAvailable(Node.Id);
-                        <div class="node-wrapper @(IsSelected ? "selected" : "")" 
-                             style="left: @(Node.X)px; top: @(Node.Y)px;" 
-                             @onclick=@(() => SelectNode(Node.Id))>
-                            <div class="node @(IsOwned ? "owned" : "") @(IsAvailable ? "available" : "locked")" style="@BackgroundStyle">
-	                            <i>@Node.Icon</i>
-								@if (Node.MaxAmount > 1)
-								{
-									<div class="level-badge">@GetLevel(Node.Id)/@Node.MaxAmount</div>
-								}
-								@if (IsOwned && GetLevel(Node.Id) == Node.MaxAmount)
-								{
-									<div class="check"><i>check</i></div>
-								}
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
+				<!-- Transformable Canvas View -->
+				<div class="canvas" style="transform: translate(@(CanvasX)px, @(CanvasY)px) scale(@Scale);">
+					<!-- Connection Lines -->
+					<div class="lines">
+						@foreach (Upgrade Node in Upgrades)
+						{
+							@foreach (int ParentId in Node.ParentsIds)
+							{
+								Upgrade Parent = Upgrades.FirstOrDefault(U => U.Id == ParentId);
+								if (Parent == null) continue;
+								float Dx = Node.X - Parent.X;
+								float Dy = Node.Y - Parent.Y;
+								float Length = MathF.Sqrt(Dx * Dx + Dy * Dy);
+								float Angle = MathF.Atan2(Dy, Dx) * 180f / MathF.PI;
+								bool IsOwnedPath = GetIsOwned(Node.Id) && GetIsOwned(Parent.Id);
+								<div class="line @(IsOwnedPath ? "owned" : "unowned")"
+								     style="left: @(Parent.X + 32)px; top: @(Parent.Y + 32)px; width: @(Length)px; transform: rotate(@(Angle)deg);"></div>
+							}
+						}
+					</div>
+					<!-- Upgrade Nodes -->
+					<div class="nodes">
+						@foreach (Upgrade Node in Upgrades)
+						{
+							bool IsSelected = SelectedId == Node.Id;
+							bool IsOwned = GetIsOwned(Node.Id);
+							string BackgroundStyle = IsOwned ? $"background-color: {Node.BackgroundColor};" : "";
+							bool IsAvailable = GetIsAvailable(Node.Id);
+							<div class="node-wrapper @(IsSelected ? "selected" : "")"
+							     style="left: @(Node.X)px; top: @(Node.Y)px;"
+							     @onclick=@(() => SelectNode(Node.Id))>
+								<div class="node @(IsOwned ? "owned" : "") @(IsAvailable ? "available" : "locked")" style="@BackgroundStyle">
+									<i>@Node.Icon</i>
+									@if (Node.MaxAmount > 1)
+									{
+										<div class="level-badge">@GetLevel(Node.Id)/@Node.MaxAmount</div>
+									}
+									@if (IsOwned && GetLevel(Node.Id) == Node.MaxAmount)
+									{
+										<div class="check"><i>check</i></div>
+									}
+								</div>
+							</div>
+						}
+					</div>
+				</div>
 
-            <!-- Zoom Controls -->
-            <div class="zoom-controls" @onwheel="OnMouseWheel">
-                <div class="btn" @onclick="@(() => { Scale = Math.Min(Scale + 0.2f, 3f); })"><i>add</i></div>
-                <div class="btn" @onclick="@(() => { Scale = Math.Max(Scale - 0.2f, 0.2f); })"><i>remove</i></div>
-                <div class="btn text" @onclick="@(() => { Scale = 1f; })">@Scale.ToString("F1")x</div>
-                <div class="btn" @onclick="@(() => { CanvasX = -225f; CanvasY = 0f; Scale = 1f; })"><i>home</i></div>
-            </div>
+				<!-- Zoom Controls -->
+				<div class="zoom-controls" @onwheel="OnMouseWheel">
+					<div class="btn" @onclick="@(() => { Scale = Math.Min(Scale + 0.2f, 3f); })"><i>add</i></div>
+					<div class="btn" @onclick="@(() => { Scale = Math.Max(Scale - 0.2f, 0.2f); })"><i>remove</i></div>
+					<div class="btn text" @onclick="@(() => { Scale = 1f; })">@Scale.ToString("F1")x</div>
+					<div class="btn" @onclick="@(() => { CanvasX = -225f; CanvasY = 0f; Scale = 1f; })"><i>home</i></div>
+				</div>
 
-            <!-- Sidebar Info -->
-            @if (SelectedUpgrade != null)
-            {
-                <div class="sidebar">
-                    <div class="close-sidebar" @onclick=@(() => { SelectedId = -1; })><i>close</i></div>
-                    
-                    <h2>@SelectedUpgrade.Name</h2>
+				<!-- Sidebar Info -->
+				@if (SelectedUpgrade != null)
+				{
+					<div class="sidebar">
+						<div class="close-sidebar" @onclick=@(() => { SelectedId = -1; })><i>close</i></div>
 
-                    <p class="desc">@SelectedUpgrade.Description</p>
-                    <div class="stat-row">
-	                    <span>UPGRADE COST</span>
-	                    <span class="@(CanAfford || GetIsOwned(SelectedId) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedId)</span>
-                    </div>
-                    <div class="stat-row">
-	                    <span>LEVEL</span>
-	                    <span class="text-white">@GetLevel(SelectedId) / @SelectedUpgrade.MaxAmount</span>
-                    </div>
-                    <div class="divider"></div>
-                    <div class="stat-row">
-                        <span>REQUIREMENTS</span>
-                        <span class="text-white">@(SelectedUpgrade.ParentsIds.Count > 0 ? $"{SelectedUpgrade.ParentsIds.Count} Linked" : "None")</span>
-                    </div>
-                    <div class="buy-section">
-	                    @if (!CanBuyMore(SelectedId))
-	                    {
-		                    <div class="status-box owned">MAX LEVEL REACHED</div>
-	                    }
-	                    else
-	                    {
-		                    <div class="buy-btn @(CanAfford && GetIsAvailable(SelectedId) ? "active" : "disabled")" @onclick=@BuyUpgrade>
-			                    @(!GetIsAvailable(SelectedId) ? "LOCKED" : CanAfford ? "UPGRADE LEVEL" : "INSUFFICIENT CREDITS")
-		                    </div>
-	                    }
-                    </div>
-                </div>
-            }
-        </div>
-        <footer>
-            <div class="tips">
-                <div class="tip"><i>navigation</i> @Upgrades.Count UPGRADES AVAILABLE</div>
-            </div>
-        </footer>
-    </div>
+						<h2>@SelectedUpgrade.Name</h2>
+
+						<p class="desc">@SelectedUpgrade.Description</p>
+						<div class="stat-row">
+							<span>UPGRADE COST</span>
+							<span class="@(CanAfford || GetIsOwned(SelectedId) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedId)</span>
+						</div>
+						<div class="stat-row">
+							<span>LEVEL</span>
+							<span class="text-white">@GetLevel(SelectedId) / @SelectedUpgrade.MaxAmount</span>
+						</div>
+						<div class="divider"></div>
+						<div class="stat-row">
+							<span>REQUIREMENTS</span>
+							<span class="text-white">@(SelectedUpgrade.ParentsIds.Count > 0 ? $"{SelectedUpgrade.ParentsIds.Count} Linked" : "None")</span>
+						</div>
+						<div class="buy-section">
+							@if (!CanBuyMore(SelectedId))
+							{
+								<div class="status-box owned">MAX LEVEL REACHED</div>
+							}
+							else
+							{
+								<div class="buy-btn @(CanAfford && GetIsAvailable(SelectedId) ? "active" : "disabled")" @onclick=@BuyUpgrade>
+									@(!GetIsAvailable(SelectedId) ? "LOCKED" : CanAfford ? "UPGRADE LEVEL" : "INSUFFICIENT MONEY")
+								</div>
+							}
+						</div>
+					</div>
+				}
+			</div>
+			<footer>
+				<div class="tips">
+					<div class="tip"><i>navigation</i> @Upgrades.Count UPGRADES AVAILABLE</div>
+				</div>
+			</footer>
+		</div>
+	}
 </root>
 
 @code
@@ -141,7 +145,6 @@
 	public class Upgrade
 	{
 		public int Id;
-		public int Amount;
 		public int MaxAmount = 1;
 		public string Name;
 		public string Description;
@@ -150,19 +153,18 @@
 		public string Icon;
 		public float X;
 		public float Y;
-		public Color Color;
+		public Color BackgroundColor;
 	}
 	
 	private bool IsDragging;
-    private int Money = 1500;
+    private int SelectedId;
     private float CanvasX = -225f;
     private float CanvasY;
     private float Scale = 1f;
-    private int SelectedId;
     private Vector2 DragStartPos;
     private Vector2 DragStartOffset;
     private List<Upgrade> Upgrades = [];
-    private readonly Dictionary<int, int> OwnedUpgrades = new() { { 0, 1 } };
+    private PlayerData PlayerData; 
 
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsAvailable(int InId)
@@ -177,7 +179,7 @@
 		Upgrade Upgrade = Upgrades.FirstOrDefault(U => U.Id == InId);
 		return Upgrade != null && GetLevel(InId) < Upgrade.MaxAmount;
 	}
-	public int GetLevel(int InId) => OwnedUpgrades.GetValueOrDefault(InId, 0);
+	public int GetLevel(int InId) => PlayerData.GetOwnedUpgrades().GetValueOrDefault(InId, 0);
 	public int GetCurrentCost(int InId)
 	{
 		Upgrade Upgrade = Upgrades.FirstOrDefault(U => U.Id == InId);
@@ -197,22 +199,26 @@
     public void BuyUpgrade()
     {
 	    if (SelectedId == -1 || SelectedUpgrade == null || !CanBuyMore(SelectedId) || !CanAfford || !GetIsAvailable(SelectedId)) return;
-	    Money -= GetCurrentCost(SelectedId);
-	    if (!OwnedUpgrades.TryAdd(SelectedId, 1)) OwnedUpgrades[SelectedId]++;
+	    PlayerData.SubtractMoney(GetCurrentCost(SelectedId));
+	    PlayerData.BuyUpgrade(SelectedId);
     }
     public void CloseMenu() { UiManager.TriggerUiStateChange(EUi.UpgradesMenu); }
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
     protected override void OnMouseWheel(Vector2 InValue)
     {
-	    base.OnMouseWheel(InValue);
-	    if (InValue.y < 0) Scale = Math.Min(Scale + 0.2f, 3f);
+	    if (InValue.y < 0) Scale = Math.Min(Scale + 0.2f, 2.4f);
 	    else if (InValue.y > 0) Scale = Math.Max(Scale - 0.2f, 0.6f);
+    }
+    protected override void OnAwake()
+    {
+	    EventManager.OnUiStateChanged += UiStateChanged;
+	    Enabled = false;
     }
     protected override void OnStart()
     {
+	    PlayerData = EventManager.TriggerGetPlayerData(); 
+	    Log.Info(PlayerData.GetOwnedUpgrades().Count);
 	    GenerateUpgrades();
-	    EventManager.OnUiStateChanged += UiStateChanged;
-	    Enabled = false;
     }
     protected override void OnDestroy()
     {
@@ -220,7 +226,7 @@
     }
     protected override int BuildHash()
     {
-	    return HashCode.Combine(Money, SelectedId, Scale, CanvasX, CanvasY, OwnedUpgrades.Count, IsDragging);
+	    return HashCode.Combine(PlayerData.GetMoney(), SelectedId, Scale, CanvasX, CanvasY, PlayerData.GetOwnedUpgrades().Count, IsDragging);
     }
     protected override void OnUpdate()
     {
@@ -230,7 +236,7 @@
 	    CanvasY = DragStartOffset.y + Delta.y / Scale;
     }
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
-	private bool CanAfford => SelectedUpgrade != null && Money >= GetCurrentCost(SelectedId);
+	private bool CanAfford => SelectedUpgrade != null && PlayerData.GetMoney() >= GetCurrentCost(SelectedId);
 	private Upgrade SelectedUpgrade => Upgrades.FirstOrDefault(U => U.Id == SelectedId);
 	
 	private void UiStateChanged(EUi InUi, bool RenderState)
@@ -244,11 +250,11 @@
 		int IdIncrementer = 0;
 		Upgrades =
         [
-	        new Upgrade { Id = IdIncrementer++, Name = "Neural Link", Description = "The base connection to the upgrade network.", Costs = [0], Icon = "memory", X = 0, Y = 0, Color = Color.FromRgba(0xFF0000FF) },
-	        new Upgrade { Id = IdIncrementer++, MaxAmount = 3, Name = "1", Description = "The base connection to the upgrade network.", Costs = [100, 200, 400], Icon = "memory", X = 100, Y = 100, Color = Color.FromRgba(0x00FF00FF) },
-	        new Upgrade { Id = IdIncrementer++, MaxAmount = 2, Name = "2", Description = "The base connection to the upgrade network.", Costs = [200, 500], ParentsIds = [1], Icon = "memory", X = 200, Y = 0, Color = Color.FromRgba(0x00FF00FF) },
-	        new Upgrade { Id = IdIncrementer++, Name = "3", Description = "The base connection to the upgrade network.", Costs = [300], ParentsIds = [1], Icon = "memory", X = 200, Y = 200, Color = Color.FromRgba(0x00FF00FF) },
-	        new Upgrade { Id = IdIncrementer++, Name = "4", Description = "The base connection to the upgrade network.", Costs = [400], ParentsIds = [2, 3], Icon = "memory", X = 200, Y = 100, Color = Color.FromRgba(0x00FF00FF) }
+	        new Upgrade { Id = IdIncrementer++, Name = "Neural Link", Description = "The base connection to the upgrade network.", Costs = [0], Icon = "memory", X = 0, Y = 0, BackgroundColor = Color.FromRgba(0xFF0000FF) },
+	        new Upgrade { Id = IdIncrementer++, MaxAmount = 3, Name = "1", Description = "The base connection to the upgrade network.", Costs = [100, 200, 400], Icon = "memory", X = 100, Y = 100, BackgroundColor = Color.FromRgba(0x00FF00FF) },
+	        new Upgrade { Id = IdIncrementer++, MaxAmount = 2, Name = "2", Description = "The base connection to the upgrade network.", Costs = [200, 500], ParentsIds = [1], Icon = "memory", X = 200, Y = 0, BackgroundColor = Color.FromRgba(0x00FF00FF) },
+	        new Upgrade { Id = IdIncrementer++, Name = "3", Description = "The base connection to the upgrade network.", Costs = [300], ParentsIds = [1], Icon = "memory", X = 200, Y = 200, BackgroundColor = Color.FromRgba(0x00FF00FF) },
+	        new Upgrade { Id = IdIncrementer++, Name = "4", Description = "The base connection to the upgrade network.", Costs = [400], ParentsIds = [2, 3], Icon = "memory", X = 200, Y = 100, BackgroundColor = Color.FromRgba(0x00FF00FF) }
         ];
     }
 }

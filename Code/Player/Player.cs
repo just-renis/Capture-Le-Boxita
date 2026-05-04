@@ -148,7 +148,6 @@ public sealed class Player : Component, Component.INetworkListener
 		float WishSpeed = MovementVelocity.Length > 0f ? Speed : 0f;
 		PlayerRigidbody.Velocity += MovementVelocity.Normal * WishSpeed * Time.Delta;
 	}
-	
 	private void ProcessKeyboardInput()
 	{
 		ProcessMovementInput();
@@ -217,22 +216,12 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
-	private void AddMoney(float InMoneyAmount)
-	{
-		PlayerData.Money += InMoneyAmount;
-		PlayerData.Save(PlayerData);
-		EventManager.TriggerMoneyChange(PlayerData.Money);
-	}
-	private void SubtractMoney(float InMoneyAmount)
-	{
-		PlayerData.Money -= InMoneyAmount;
-		PlayerData.Save(PlayerData);
-		EventManager.TriggerMoneyChange(PlayerData.Money);
-	}
+	private void AddMoney(float InMoneyAmount) { PlayerData.AddMoney(InMoneyAmount); }
+	private void SubtractMoney(float InMoneyAmount) { PlayerData.SubtractMoney(InMoneyAmount); }
 	private void LoadSaveData()
 	{
 		PlayerData = PlayerData.Load();
-		EventManager.TriggerMoneyChange(PlayerData.Money);
+		EventManager.TriggerMoneyChange(PlayerData.GetMoney());
 	}
 	private void OnKillEventListener(Guid InKillerId, bool InIsPlayerKill, float InMoneyAmount)
 	{
@@ -269,7 +258,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private void RequestMoneyTransfer(Guid TargetId)
 	{
 		if (IsProxy || TargetId != Network.OwnerId) return;
-		float MoneyLoss = PlayerData.Money * 0.25f;
+		float MoneyLoss = PlayerData.GetMoney() * 0.25f;
 		SubtractMoney(MoneyLoss);
 		SendBackMoney(MoneyLoss);
 	}
