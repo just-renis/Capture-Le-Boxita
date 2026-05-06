@@ -54,6 +54,18 @@ public class PullableComponent : Component, Component.ICollisionListener
 		if (OtherPullableComponent.GetLastOwnerTime().AlmostEqual(LastOwnerTime) && OtherPullableComponent.IsOwnerHolding) return;
 		OtherPullableComponent.SetOwnerId(LastOwnedBy, false);
 	}
+	public void SetIsPulled(bool State)
+	{
+		IsPulled = State;
+		if (IsPulled) Rigidbody?.Gravity = false;
+		else
+		{
+			AlienShipRef = null;
+			if (Rigidbody == null) return;
+			Rigidbody.Gravity = true;
+			Rigidbody.Velocity = 0f;
+		}
+	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
@@ -70,8 +82,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	protected override void OnFixedUpdate()
 	{
-		if (IsProxy) return;
-		if (!IsPulled || AlienShipRef == null) return;
+		if (IsProxy || !IsPulled || AlienShipRef == null) return;
 		Rigidbody.AngularVelocity = Vector3.Zero;
 		Vector3 PullVelocity = (AlienShipRef.WorldPosition - WorldPosition) * 10.0f;
 		Rigidbody.Velocity = PullVelocity.WithZ(BeamPullSpeed);
@@ -93,15 +104,4 @@ public class PullableComponent : Component, Component.ICollisionListener
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Owner]
 	public void SetAlienShipRef(Guid InAlienShipWhoPulls) { AlienShipRef = Scene.Directory.FindByGuid(InAlienShipWhoPulls); }
-	public void SetIsPulled(bool State)
-	{
-		IsPulled = State;
-		if (IsPulled) Rigidbody?.Gravity = false;
-		else
-		{
-			if (Rigidbody == null) return;
-			Rigidbody.Gravity = true;
-			Rigidbody.Velocity = 0f;
-		}
-	}
 }

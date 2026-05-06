@@ -13,7 +13,6 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
-	[Sync] private TimeSince CooldownAfterAlienPullDeath { get; set; }
 
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
@@ -30,6 +29,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private Rigidbody PlayerRigidbody;
 	private Rotation LastRotation;
 	
+	private int TimerHandle;
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
 	{
@@ -55,7 +55,6 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
-	public float GetCooldownAfterAlienPullDeath() { return CooldownAfterAlienPullDeath; }
 	
 	public void OnConnected(Connection InChannel)
 	{
@@ -121,7 +120,7 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector2 MouseInput = Input.MouseDelta;
 		CurrentCameraRotation.yaw -= MouseInput.x * Sensitivity;
 		CurrentCameraRotation.pitch += MouseInput.y * Sensitivity;
-		CurrentCameraRotation.pitch = CurrentCameraRotation.pitch.Clamp(-40f, 60f);
+		CurrentCameraRotation.pitch = CurrentCameraRotation.pitch.Clamp(-20f, 60f);
 		Rotation NextCameraRotation = Rotation.From(CurrentCameraRotation);
 		Vector3 PlayerPosition = WorldPosition + Vector3.Up * CameraHeight;
 		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
@@ -230,8 +229,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
-		if (IsProxy) return;
-		WorldPosition = InPosition;
+		TimerHandle = TimerManager.AddTimer(TimerHandle, 0.03f, false, () => { PlayerRigidbody.PhysicsBody.Position = InPosition; });
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
@@ -247,6 +245,17 @@ public sealed class Player : Component, Component.INetworkListener
 		if (IsProxy) return;
 		PlayerRigidbody?.ApplyImpulse(InPushForce);
 	}
+	[Rpc.Broadcast]
+	public void ReturnToSpawnLocation()
+	{
+		if (IsProxy) return;
+		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
+		if (PullComp == null || !PullComp.GetIsPulled()) return;
+		PullComp.SetIsPulled(false);
+		Guid LastOwnedId = PullComp.GetOwnerId();
+		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
+		RequestMoneyTransfer(PullComp.Network.OwnerId);
+	}
 	
 	[Rpc.Broadcast]
 	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, float InMoneyAmount)
@@ -261,18 +270,6 @@ public sealed class Player : Component, Component.INetworkListener
 		float MoneyLoss = PlayerData.GetMoney() * 0.25f;
 		SubtractMoney(MoneyLoss);
 		SendBackMoney(MoneyLoss);
-	}
-	[Rpc.Broadcast]
-	public void ReturnToSpawnLocation()
-	{
-		if (IsProxy) return;
-		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
-		if (PullComp == null || !PullComp.GetIsPulled()) return;
-		Guid LastOwnedId = PullComp.GetOwnerId();
-		PullComp.SetIsPulled(false);
-		CooldownAfterAlienPullDeath = 0f;
-		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
-		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
 	
 	[Rpc.Host]

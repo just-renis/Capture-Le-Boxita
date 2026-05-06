@@ -6,9 +6,9 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Platform",
-      "Position": "-35.7073402,5.10791016,-25.571785",
+      "Position": "-5204.69775,6190.43164,-25.571785",
       "Rotation": "0,0,0,1",
-      "Scale": "1000,1000,1",
+      "Scale": "300,300,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -53,7 +53,7 @@
           "__guid": "1f1784f2-eb56-4253-ab50-b01ea8b318b1",
           "__enabled": true,
           "Flags": 0,
-          "Center": "0,0.00173568726,-0.0633659363",
+          "Center": "0,0,0",
           "ColliderFlags": "IgnoreMass",
           "Elasticity": null,
           "Friction": null,
@@ -69,7 +69,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "50,50.0034714,50.5127411",
+          "Scale": "50,50,50",
           "Static": false,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -108,38 +108,6 @@
             {
               "_type": "gameobject",
               "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
-            },
-            {
-              "_type": "gameobject",
-              "go": "4ddd2493-88f0-4ba1-a084-6aaf1a4ad590"
-            },
-            {
-              "_type": "gameobject",
-              "go": "3e8e6e2e-93a8-4dea-ab3f-949d81dbddb2"
-            },
-            {
-              "_type": "gameobject",
-              "go": "09dae8dd-c7a7-489c-9a81-1674caca1f74"
-            },
-            {
-              "_type": "gameobject",
-              "go": "a3954b12-5f1f-48e2-9a0b-2b8c840e3536"
-            },
-            {
-              "_type": "gameobject",
-              "go": "4634f208-c6ea-4115-9ee7-7a26ef147122"
-            },
-            {
-              "_type": "gameobject",
-              "go": "a08f3b15-7920-43f3-a99a-e62c61d4ff56"
-            },
-            {
-              "_type": "gameobject",
-              "go": "62810ad0-2a71-4bc4-913a-2df8afa8fc54"
-            },
-            {
-              "_type": "gameobject",
-              "go": "5a9d27a7-94ad-4c2b-894e-f94f99d124c0"
             }
           ],
           "Prefabs": {
@@ -157,7 +125,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 5,
+              "MaxAmountActive": 2,
               "Objects": [],
               "ActiveCount": 0
             }
@@ -262,38 +230,6 @@
             {
               "_type": "gameobject",
               "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
-            },
-            {
-              "_type": "gameobject",
-              "go": "4ddd2493-88f0-4ba1-a084-6aaf1a4ad590"
-            },
-            {
-              "_type": "gameobject",
-              "go": "3e8e6e2e-93a8-4dea-ab3f-949d81dbddb2"
-            },
-            {
-              "_type": "gameobject",
-              "go": "09dae8dd-c7a7-489c-9a81-1674caca1f74"
-            },
-            {
-              "_type": "gameobject",
-              "go": "a3954b12-5f1f-48e2-9a0b-2b8c840e3536"
-            },
-            {
-              "_type": "gameobject",
-              "go": "4634f208-c6ea-4115-9ee7-7a26ef147122"
-            },
-            {
-              "_type": "gameobject",
-              "go": "a08f3b15-7920-43f3-a99a-e62c61d4ff56"
-            },
-            {
-              "_type": "gameobject",
-              "go": "62810ad0-2a71-4bc4-913a-2df8afa8fc54"
-            },
-            {
-              "_type": "gameobject",
-              "go": "5a9d27a7-94ad-4c2b-894e-f94f99d124c0"
             }
           ],
           "StartServer": true
@@ -304,164 +240,34 @@
     {
       "__guid": "12383a2e-23a8-40d0-b204-0f95e967961d",
       "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint1",
-      "Position": "-405.576385,-222.859802,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "4ddd2493-88f0-4ba1-a084-6aaf1a4ad590",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint2",
-      "Position": "879.497314,-222.859802,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "3e8e6e2e-93a8-4dea-ab3f-949d81dbddb2",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint3",
-      "Position": "-2111.98706,-222.859802,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "09dae8dd-c7a7-489c-9a81-1674caca1f74",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint4",
-      "Position": "-405.576385,1784.51367,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "a3954b12-5f1f-48e2-9a0b-2b8c840e3536",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint5",
-      "Position": "-405.576385,-2830.97607,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "4634f208-c6ea-4115-9ee7-7a26ef147122",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint6",
-      "Position": "-1813.79407,-1949.84229,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "a08f3b15-7920-43f3-a99a-e62c61d4ff56",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint7",
-      "Position": "634.473267,-2290.03101,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "62810ad0-2a71-4bc4-913a-2df8afa8fc54",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint8",
-      "Position": "557.57251,1376.16064,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
-    },
-    {
-      "__guid": "5a9d27a7-94ad-4c2b-894e-f94f99d124c0",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "SpawnPoint9",
-      "Position": "-1483.58276,1376.16064,250",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [],
-      "Children": []
+      "__Prefab": "prefabs/spawnpoint.prefab",
+      "__PrefabInstancePatch": {
+        "AddedObjects": [],
+        "RemovedObjects": [],
+        "PropertyOverrides": [
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
+            },
+            "Property": "Name",
+            "Value": "SpawnPoint"
+          },
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
+            },
+            "Property": "Position",
+            "Value": "-4750,5500,67.1775818"
+          }
+        ],
+        "MovedObjects": []
+      },
+      "__PrefabIdToInstanceId": {
+        "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "12383a2e-23a8-40d0-b204-0f95e967961d",
+        "0f93a686-207a-4820-8e27-e7c1154e98a2": "33e24e06-3d8a-4193-a788-fc7d748a7d07"
+      }
     },
     {
       "__guid": "4954a249-06a2-41e7-9d00-acd3339b1143",
@@ -487,7 +293,7 @@
           "BackgroundColor": "0.33333,0.46275,0.52157,1",
           "ClearFlags": "All",
           "EnablePostProcessing": true,
-          "FieldOfView": 60,
+          "FieldOfView": 90,
           "FovAxis": "Horizontal",
           "IsMainCamera": true,
           "OnComponentDestroy": null,
@@ -505,7 +311,7 @@
           "RenderTexture": null,
           "TargetEye": "None",
           "Viewport": "0,0,1,1",
-          "ZFar": 10000,
+          "ZFar": 21000,
           "ZNear": 10
         }
       ],
@@ -591,7 +397,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Clutter",
-      "Position": "-594.686157,-713.149475,19.3858299",
+      "Position": "-5974.50293,5229.07764,19.3858299",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -630,7 +436,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone1",
-      "Position": "-35.7073402,-25235,3759.2439",
+      "Position": "-4481.21924,-1530,3112.33716",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -662,7 +468,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "50000,500,9616.38281",
+          "Scale": "20000,500,9616.38281",
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -675,7 +481,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone2",
-      "Position": "-35,25250,3759.2439",
+      "Position": "-5281.70117,13919,3759.2439",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -707,7 +513,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "50000,500,10000",
+          "Scale": "20000,500,10000",
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -720,7 +526,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone3",
-      "Position": "-25189.2383,0,3759.2439",
+      "Position": "-12851,6397.83594,3543.69141",
       "Rotation": "0.00617059227,0.00617059227,0.707079828,0.707079828",
       "Scale": "1,1,1",
       "Tags": "",
@@ -736,7 +542,7 @@
           "__guid": "dbe376b7-127d-4808-806d-1e6724caf43f",
           "__enabled": true,
           "Flags": 0,
-          "Center": "-41.5214844,0,0",
+          "Center": "0,0,0",
           "ColliderFlags": "IgnoreMass",
           "Elasticity": null,
           "Friction": null,
@@ -752,7 +558,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "49966.957,500,10000",
+          "Scale": "20000,500,10000",
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -765,7 +571,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone4",
-      "Position": "25270,0,3759.24414",
+      "Position": "2579,6364.60742,4155.72656",
       "Rotation": "0.00617059227,0.00617059227,0.707079828,0.707079828",
       "Scale": "1,1,1",
       "Tags": "",
@@ -797,7 +603,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "50050,500,10000",
+          "Scale": "20000,500,10000",
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -850,9 +656,9 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Walls",
-      "Position": "-20960.8848,24997.0977,-1.5",
+      "Position": "-11503.6182,13693.1592,-1.5",
       "Rotation": "0,0,0.707106769,0.707106769",
-      "Scale": "1,1,1",
+      "Scale": "0.300000012,0.300000012,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -11018,13 +10824,13 @@
           "SelectionSets": []
         }
       },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "8a63f842-8b69-4a88-a9fa-44dc2835b03c"
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },

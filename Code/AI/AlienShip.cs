@@ -94,17 +94,18 @@ public sealed class AlienShip : Component, IPoolObject
 		else if (InCollider.Tags.Has("player"))
 		{
 			GameObject Root = InCollider.GameObject.Root;
+			Root.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
 			if (RecentlyTeleported.TryGetValue(Root.Id, out float LastTime))
 			{
 				if (Time.Now - LastTime < 3f) return;
 			}
 			RecentlyTeleported[Root.Id] = Time.Now;
-			Root.GetComponent<Player.Player>()?.ReturnToSpawnLocation();
 			AddScale();
 		}
 		else
 		{
 			Direction *= -1;
+			WorldPosition += new Vector3(Direction * 10f);
 			ChangeDirectionTimer = Random.Shared.Float(5f, 10f);
 		}
 	}

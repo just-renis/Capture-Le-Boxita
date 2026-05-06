@@ -26,7 +26,7 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 		CubeSpawnTimer += Time.Delta;
 		if (CubeSpawnTimer < CubeSpawnTime) return;
 		CubeSpawnTimer = 0f;
-		PoolingManager.SpawnObjectFromPool(EPoolObject.CollectibleCube, new Vector3(Random.Shared.Float(100f, 500f), Random.Shared.Float(100f, 500f), 200f));
+		PoolingManager.SpawnObjectFromPool(EPoolObject.CollectibleCube, new Vector3(Random.Shared.Float(-5000f, -4500f), Random.Shared.Float(5000f, 6000f), 200f));
 	}
 	private void HandleAlienShipSpawning()
 	{
@@ -34,6 +34,6 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 		AlienShipSpawnTimer += Time.Delta;
 		if (AlienShipSpawnTimer < AlienShipSpawnTime) return;
 		AlienShipSpawnTimer = 0f;
-		PoolingManager.SpawnObjectFromPool(EPoolObject.AlienShip, new Vector3(Random.Shared.Float(-1000f, 1000f), Random.Shared.Float(-1000f, 1000f), Random.Shared.Float(500f, 1100f)));
+		PoolingManager.SpawnObjectFromPool(EPoolObject.AlienShip, new Vector3(Random.Shared.Float(-5100f, -5200f), Random.Shared.Float(5000f, 5100f), Random.Shared.Float(500f, 1100f)));
 	}
 }

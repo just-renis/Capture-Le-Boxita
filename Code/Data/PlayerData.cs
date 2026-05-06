@@ -6,11 +6,13 @@ using System.Text;
 
 public sealed class PlayerData
 {
+	public int CurrentVersion { get; set; } = LiveVersion;
 	public float Money { get; set; }
 	public string Checksum { get; set; }
 	public Dictionary<int, int> OwnedUpgrades { get; set; }
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
+    private const int LiveVersion = 1;
     
     public float GetMoney() { return Money; }
     public Dictionary<int, int> GetOwnedUpgrades() { return OwnedUpgrades; }
@@ -55,33 +57,35 @@ public sealed class PlayerData
     }
     public static PlayerData Load()
     {
-        if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData { OwnedUpgrades = new Dictionary<int, int>() };
+        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<int, int>(), CurrentVersion = LiveVersion };
+        if (!FileSystem.Data.FileExists("save.dat")) return DefaultData;
         try
         {
-	        string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
-	        string Base64 = XorInput(Obfuscated, SECRET_KEY);
-	        string Decrypted = Encoding.UTF8.GetString(Convert.FromBase64String(Base64));
-
+            string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
+            string Base64 = XorInput(Obfuscated, SECRET_KEY);
+            string Decrypted = Encoding.UTF8.GetString(Convert.FromBase64String(Base64));
             if (!int.TryParse(Decrypted[..2], out int NoiseLength)) throw new Exception("Header Corrupt");
-
             string JsonData = Decrypted[(2 + NoiseLength)..];
-            PlayerData Data = Json.Deserialize<PlayerData>(JsonData);
-            string ClientChecksum = Data.Checksum;
-
-            Data.Checksum = "";
-            string VerifyHash = CreateMd5(Json.Serialize(Data) + SECRET_KEY);
-
-            if (ClientChecksum == VerifyHash) return Data;
-            
-            Log.Error("CRITICAL: Save file tampered with! Deleting progress.");
-            FileSystem.Data.DeleteFile( "save.dat" );
-            return new PlayerData { OwnedUpgrades = new Dictionary<int, int>() };
-
+            Dictionary<string, object> RawDataMap = Json.Deserialize<Dictionary<string, object>>(JsonData);
+            if (RawDataMap == null || !RawDataMap.TryGetValue("Checksum", out object OutValue)) throw new Exception("Invalid Save Structure");
+            string StoredChecksum = OutValue?.ToString();
+            RawDataMap["Checksum"] = "";
+            string VerificationJson = Json.Serialize(RawDataMap);
+            string CalculatedHash = CreateMd5(VerificationJson + SECRET_KEY);
+            if (StoredChecksum != CalculatedHash)
+            {
+                Log.Error("CRITICAL: Save file tampered with! Hash mismatch.");
+                FileSystem.Data.DeleteFile("save.dat");
+                return DefaultData;
+            }
+            PlayerData ValidData = Json.Deserialize<PlayerData>(JsonData);
+            Migrate(ValidData);
+            return ValidData;
         }
         catch (Exception Exception)
         {
             Log.Warning($"Save Corrupted: {Exception.Message}");
-            return new PlayerData { OwnedUpgrades = new Dictionary<int, int>() };
+            return DefaultData;
         }
     }
 
@@ -97,5 +101,15 @@ public sealed class PlayerData
         byte[] InputBytes = Encoding.ASCII.GetBytes(InInput);
         byte[] HashBytes = Md5.ComputeHash(InputBytes);
         return Convert.ToHexString(HashBytes);
+    }
+    private static void Migrate(PlayerData InData)
+    {
+	    bool NeedsSave = false;
+	    if (InData.CurrentVersion < LiveVersion)
+	    {
+		    InData.CurrentVersion = LiveVersion;
+		    NeedsSave = true;
+	    }
+	    if (NeedsSave) Save(InData);
     }
 }
