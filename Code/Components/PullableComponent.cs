@@ -1,4 +1,6 @@
 ﻿using System;
+using Sandbox.Data;
+using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Components;
 
@@ -11,7 +13,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private bool IsPulled;
 	private int ClearOwnerIdHandle;
 	private int CheckOutOfBoundsHandle;
-	private float MoneyAmount = 1f;
 	private const float BeamPullSpeed = 600.0f; 
 	private const float ClearTime = 8f;
 	private const Int64 PushForceMultiplier = 1250000;
@@ -20,7 +21,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	
 	public bool GetIsPulled() { return IsPulled; }
 	public bool IsInAir() { return !IsInAirCheckRequired || MathF.Abs(Rigidbody.Velocity.z) > 0.1f; }
-	public float GetMoneyAmount() { return MoneyAmount; }
 	public Guid GetOwnerId() { return LastOwnedBy; }
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)

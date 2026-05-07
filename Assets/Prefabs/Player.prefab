@@ -62,7 +62,7 @@
           "component_type": "BoxCollider"
         },
         "Sensitivity": 0.2,
-        "Speed": 5000,
+        "Speed": 2500,
         "Sword": {
           "_type": "component",
           "component_id": "aa6ef62d-fece-4223-a702-587672172ddd",

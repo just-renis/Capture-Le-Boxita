@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Data;
 using System;
@@ -9,13 +10,14 @@ public sealed class PlayerData
 	public int CurrentVersion { get; set; } = LiveVersion;
 	public float Money { get; set; }
 	public string Checksum { get; set; }
-	public Dictionary<int, int> OwnedUpgrades { get; set; }
+	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
     private const int LiveVersion = 1;
     
     public float GetMoney() { return Money; }
-    public Dictionary<int, int> GetOwnedUpgrades() { return OwnedUpgrades; }
+    public int GetUpgradeAmount(EUpgradeName InUpgradeName) { return OwnedUpgrades?.GetValueOrDefault(InUpgradeName, 0) ?? 0; }
+    public Dictionary<EUpgradeName, int> GetOwnedUpgrades() { return OwnedUpgrades; }
 
     public void AddMoney(float InAmount)
     {
@@ -29,12 +31,9 @@ public sealed class PlayerData
 		Save(this);
 		EventManager.TriggerMoneyChange(Money);
     }
-    public void BuyUpgrade(int InUpgradeId)
+    public void BuyUpgrade(EUpgradeName InUpgradeName)
     {
-	    if (!OwnedUpgrades.TryAdd(InUpgradeId, 1))
-	    {
-		    OwnedUpgrades[InUpgradeId]++;
-	    }
+	    if (!OwnedUpgrades.TryAdd(InUpgradeName, 1)) OwnedUpgrades[InUpgradeName]++;
 	    Save(this);
     }
     
@@ -57,7 +56,7 @@ public sealed class PlayerData
     }
     public static PlayerData Load()
     {
-        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<int, int>(), CurrentVersion = LiveVersion };
+        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<EUpgradeName, int>(), CurrentVersion = LiveVersion };
         if (!FileSystem.Data.FileExists("save.dat")) return DefaultData;
         try
         {

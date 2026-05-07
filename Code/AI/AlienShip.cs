@@ -14,6 +14,7 @@ public sealed class AlienShip : Component, IPoolObject
 	private int MoveHandle;
 	private int CheckIsInAirObjectsHandle;
 	private int FlyUpwardsHandle;
+	private int FlyDownwardsHandle;
 	private int SmallFlyUpwardsHandle;
 	private const float MoveSpeed = 50f;
 	private const float MoveUpwardsSpeed = 2000f;
@@ -22,6 +23,7 @@ public sealed class AlienShip : Component, IPoolObject
 	private const float ScaleIncrease = 0.1f;
 	private const float MaxScale = 4f;
 	private float ChangeDirectionTimer;
+	private float RandomDownwardsStopZ;
 	private Vector2 Direction;
 	private BoxCollider Collider;
 	private CapsuleCollider BeamCollider;
@@ -33,8 +35,10 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		Collider?.Enabled = true;
 		BeamCollider?.Enabled = true;
+		RandomDownwardsStopZ = Random.Shared.Float(500f, 1100f);
 		SetupBeamVfx();
 		WorldScale = new Vector3(1f);
+		FlyDownwardsHandle = TimerManager.AddTimer(FlyDownwardsHandle, FpsTime, true, FlyDownProcess);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnUpdate()
@@ -50,6 +54,8 @@ public sealed class AlienShip : Component, IPoolObject
 		TimerManager.ClearTimer(MoveHandle);
 		TimerManager.ClearTimer(CheckIsInAirObjectsHandle);
 		TimerManager.ClearTimer(SmallFlyUpwardsHandle);
+		TimerManager.ClearTimer(FlyUpwardsHandle);
+		TimerManager.ClearTimer(FlyDownwardsHandle);
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetupHostLogic()
@@ -139,9 +145,15 @@ public sealed class AlienShip : Component, IPoolObject
 		WorldPosition += new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
 		if (WorldPosition.z >= 7000f) ReturnToPool();
 	}
+	private void FlyDownProcess()
+	{
+		WorldPosition -= new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
+		if (WorldPosition.z <= RandomDownwardsStopZ) TimerManager.ClearTimer(FlyDownwardsHandle);
+	}
 	private void ReturnToPool()
 	{
 		if (!Networking.IsHost) return;
+		RecentlyTeleported.Clear();
 		TimerManager.ClearTimer(FlyUpwardsHandle);
 		GameObject.Network.TakeOwnership();
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.AlienShip, GameObject);
@@ -186,8 +198,8 @@ public sealed class AlienShip : Component, IPoolObject
 	private void SetupBeamVfx()
 	{
 		if (BeamVfx == null) return;
-		BeamVfx.LocalPosition = new Vector3(0f, 0f, GameObject.WorldPosition.z * -0.5f);
-		BeamVfx.LocalScale = new Vector3(1f, 1f, GameObject.WorldPosition.z * 0.005f);
+		BeamVfx.LocalPosition = new Vector3(0f, 0f, RandomDownwardsStopZ * -0.5f);
+		BeamVfx.LocalScale = new Vector3(1f, 1f, RandomDownwardsStopZ * 0.005f);
 		ChangeBeamVfxState(true);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------

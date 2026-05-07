@@ -7,7 +7,7 @@ namespace Sandbox.Player;
 
 public sealed class Player : Component, Component.INetworkListener
 {
-	[Property] private float Speed { get; set; } = 600f;
+	[Property] private float Speed { get; set; } = 2500f;
 	[Property] private float Sensitivity { get; set; } = 0.2f;
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
@@ -16,9 +16,10 @@ public sealed class Player : Component, Component.INetworkListener
 
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
+	private int PhysicsFrameWaitTimerHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
-	private readonly float GrabDistance = 800f;
+	private readonly float GrabDistance = 600f;
 	private readonly float ThrowForce = 2000f;
 	private float MoneyMultiplier = 1f;
 	private Angles CurrentCameraRotation;
@@ -29,7 +30,6 @@ public sealed class Player : Component, Component.INetworkListener
 	private Rigidbody PlayerRigidbody;
 	private Rotation LastRotation;
 	
-	private int TimerHandle;
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
 	{
@@ -79,7 +79,7 @@ public sealed class Player : Component, Component.INetworkListener
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
-		MoneyMultiplier = Random.Shared.Float(2f, 60f);
+		MoneyMultiplier = 4f;
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		PlayerRigidbody = GetComponent<Rigidbody>();
@@ -143,8 +143,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Input.Down("Backward")) MovementVelocity -= Forward;
 		if (Input.Down("Left")) MovementVelocity -= Right;
 		if (Input.Down("Right")) MovementVelocity += Right;
-
-		float WishSpeed = MovementVelocity.Length > 0f ? Speed : 0f;
+		float WishSpeed = MovementVelocity.Length > 0f ? Speed + Speed * PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.3f : 0f;
 		PlayerRigidbody.Velocity += MovementVelocity.Normal * WishSpeed * Time.Delta;
 	}
 	private void ProcessKeyboardInput()
@@ -164,7 +163,7 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			Ray Ray = Camera.ScreenPixelToRay(new Vector2(Screen.Width / 2, Screen.Height / 2));
 			Vector3 Start = Ray.Position;
-			Vector3 End = Start + Ray.Forward * GrabDistance;
+			Vector3 End = Start + Ray.Forward * (GrabDistance + GrabDistance * PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 0.4f);
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
 		//	DebugOverlay.Line(Start, End, Color.Red, 2f);
 			if (!Trace.Hit) return;
@@ -229,7 +228,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
-		TimerHandle = TimerManager.AddTimer(TimerHandle, 0.03f, false, () => { PlayerRigidbody.PhysicsBody.Position = InPosition; });
+		PhysicsFrameWaitTimerHandle = TimerManager.AddTimer(PhysicsFrameWaitTimerHandle, 0.03f, false, () => { PlayerRigidbody.PhysicsBody.Position = InPosition; });
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
@@ -261,13 +260,14 @@ public sealed class Player : Component, Component.INetworkListener
 	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, float InMoneyAmount)
 	{
 		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
-		AddMoney(InMoneyAmount * (InIsPlayerKill ? 1f : MoneyMultiplier));
+		if (InIsPlayerKill) AddMoney(InMoneyAmount);
+		else AddMoney((InMoneyAmount + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1)) * MoneyMultiplier);
 	}
 	[Rpc.Broadcast]
 	private void RequestMoneyTransfer(Guid TargetId)
 	{
 		if (IsProxy || TargetId != Network.OwnerId) return;
-		float MoneyLoss = PlayerData.GetMoney() * 0.25f;
+		float MoneyLoss = PlayerData.GetMoney() * (0.25f - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLossToPlayers1) * 0.025f);
 		SubtractMoney(MoneyLoss);
 		SendBackMoney(MoneyLoss);
 	}

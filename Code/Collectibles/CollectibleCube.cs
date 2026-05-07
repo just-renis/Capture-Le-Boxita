@@ -18,7 +18,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		if (!Networking.IsHost) return;
 		GameObject.Network.TakeOwnership();
 		PullComp.SetIsPulled(false);
-		EventManager.TriggerOnKill(PullComp.GetOwnerId(), false, PullComp.GetMoneyAmount());
+		EventManager.TriggerOnKill(PullComp.GetOwnerId(), false, 1f);
 		PullComp.ClearOwnerId();
 		Rigidbody.Velocity = 0f;
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);

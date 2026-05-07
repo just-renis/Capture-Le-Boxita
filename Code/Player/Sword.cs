@@ -1,5 +1,6 @@
 using System;
 using Sandbox.Components;
+using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Player;
 
@@ -39,15 +40,17 @@ public sealed class Sword : Component
 		if (!TraceResults.Hit) return;
 		GameObject Target = TraceResults.GameObject.Root;
 		if (!HitObjects.Add(Target)) return;
-		SendToHostAboutTheHit(Target, InPusherId);
+		Log.Info(EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1));
+		SendToHostAboutTheHit(Target, InPusherId, EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1));
 	}
-	[Rpc.Host]
-	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId)
+	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId, int InPushForceUpgradeAmount)
 	{
-		if (!IsInAttackMode) return;
+		if (!Network.IsOwner || !IsInAttackMode) return;
 		Player TargetPlayer = Target.GetComponent<Player>();
 		if (TargetPlayer == null) return;
-		TargetPlayer.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * PushForce);
+		Int64 Force = (long)(PushForce + PushForce * (float)InPushForceUpgradeAmount * 0.2f);
+		Log.Info("RECEIVED PUSH: " + Force);
+		TargetPlayer.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force);
 		Target.GetComponent<PullableComponent>()?.SetOwnerId(Network.OwnerId, false);
 	}
 	[Rpc.Broadcast]
