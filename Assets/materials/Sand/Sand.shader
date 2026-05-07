@@ -82,12 +82,12 @@ PS
 	
 	SamplerState g_sSampler0 < Filter( ANISOTROPIC ); AddressU( WRAP ); AddressV( WRAP ); AddressW( WRAP ); MaxAniso( 16 ); >;
 	SamplerState g_sSampler1 < Filter( ANISOTROPIC ); AddressU( WRAP ); AddressV( WRAP ); AddressW( WRAP ); MaxAniso( 16 ); >;
-	CreateInputTexture2D( MaterialParameter1, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/sand/14131-normal.jpg" ) );
-	CreateInputTexture2D( MaterialParameter2, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/sand/sand1_n.jpg" ) );
-	Texture2D g_tMaterialParameter1 < Channel( RGBA, Box( MaterialParameter1 ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
-	Texture2D g_tMaterialParameter2 < Channel( RGBA, Box( MaterialParameter2 ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
-	float g_flSparkleAngle < UiType( Slider ); UiStep( 0.2 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 1.6 ); Range1( 0, 10 ); >;
-	float g_flSparkleAmount < UiType( Slider ); UiStep( 1 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 196 ); Range1( 0, 500 ); >;
+	CreateInputTexture2D( WaveNormal, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/sand/14131-normal.jpg" ) );
+	CreateInputTexture2D( GrainNormal, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/sand/sand1_n.jpg" ) );
+	Texture2D g_tWaveNormal < Channel( RGBA, Box( WaveNormal ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
+	Texture2D g_tGrainNormal < Channel( RGBA, Box( GrainNormal ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
+	float g_flSparkleAngle < UiType( Slider ); UiStep( 0.2 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 3.6 ); Range1( 0, 10 ); >;
+	float g_flSparkleAmount < UiType( Slider ); UiStep( 1 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 182 ); Range1( 0, 500 ); >;
 	float g_flWaveScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/0" ); Default1( 5 ); Range1( 0, 100 ); >;
 	float g_flGrainScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/1" ); Default1( 35 ); Range1( 0, 100 ); >;
 		
@@ -120,18 +120,18 @@ PS
 		float l_3 = g_flSparkleAngle;
 		float l_4 = g_flSparkleAmount;
 		float l_5 = VoronoiNoise( l_2.xy, l_3, l_4 );
-		float l_6 = step( 0.999, l_5 );
+		float l_6 = step( 0.9990002, l_5 );
 		float3 l_7 = CalculatePositionToCameraDirWs( i.vPositionWithOffsetWs.xyz + g_vHighPrecisionLightingOffsetWs.xyz );
 		float l_8 = dot( i.vNormalWs, l_7 );
 		float l_9 = l_6 * l_8;
-		float l_10 = l_9 * 5;
+		float l_10 = l_9 * 10;
 		float l_11 = g_flWaveScale;
 		float2 l_12 = (i.vTextureCoords.xy * l_11);
-		float4 l_13 = g_tMaterialParameter1.Sample( g_sSampler0,l_12 );
+		float4 l_13 = g_tWaveNormal.Sample( g_sSampler0,l_12 );
 		float3 l_14 = float3( l_13.r, l_13.g, l_13.b );
 		float l_15 = g_flGrainScale;
 		float2 l_16 = (i.vTextureCoords.xy * l_15);
-		float4 l_17 = g_tMaterialParameter2.Sample( g_sSampler1,l_16 );
+		float4 l_17 = g_tGrainNormal.Sample( g_sSampler1,l_16 );
 		float3 l_18 = float3( l_17.r, l_17.g, l_17.b );
 		float3 l_19 = ReorientedNormalBlendVector( l_14, l_18 );
 		

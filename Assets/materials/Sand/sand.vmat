@@ -6,13 +6,13 @@ Layer0
 
 	g_flGrainScale "35"
 	g_flWaveScale "5"
-	MaterialParameter1 "materials/sand/14131-normal.jpg"
-	MaterialParameter2 "materials/sand/sand1_n.jpg"
+	GrainNormal "materials/sand/sand_grain.jpg"
+	WaveNormal "materials/sand/sand_wave.jpg"
 
 	//---- Fog ----
 	g_bFogEnabled "1"
 
 	//---- Sand sparkle ----
-	g_flSparkleAmount "182"
-	g_flSparkleAngle "1.6"
+	g_flSparkleAmount "189"
+	g_flSparkleAngle "3.6"
 }

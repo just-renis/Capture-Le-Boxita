@@ -6,7 +6,7 @@
         "prefab": "models/cactus/cactus.prefab"
       },
       "Model": null,
-      "Weight": 1,
+      "Weight": 0.8,
       "HasAsset": true,
       "AssetName": "cactus"
     },
@@ -16,7 +16,7 @@
         "prefab": "models/cactus/cactus1.prefab"
       },
       "Model": null,
-      "Weight": 1,
+      "Weight": 0.8,
       "HasAsset": true,
       "AssetName": "cactus1"
     },
@@ -26,9 +26,19 @@
         "prefab": "models/cactus/cactus2.prefab"
       },
       "Model": null,
-      "Weight": 1,
+      "Weight": 0.8,
       "HasAsset": true,
       "AssetName": "cactus2"
+    },
+    {
+      "Prefab": {
+        "_type": "gameobject",
+        "prefab": "models/cactus/cactus3.prefab"
+      },
+      "Model": null,
+      "Weight": 0.8,
+      "HasAsset": true,
+      "AssetName": "cactus3"
     },
     {
       "Prefab": {
@@ -36,7 +46,7 @@
         "prefab": "models/cactus/cactus4.prefab"
       },
       "Model": null,
-      "Weight": 1,
+      "Weight": 0.8,
       "HasAsset": true,
       "AssetName": "cactus4"
     },
@@ -138,7 +148,7 @@
     "Type": "SimpleScatterer",
     "Scale": "2 2.5",
     "Density": 0.025,
-    "PlaceOnGround": true,
+    "PlaceOnGround": false,
     "HeightOffset": 0,
     "AlignToNormal": false
   },

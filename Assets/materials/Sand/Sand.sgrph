@@ -80,7 +80,7 @@
     {
       "_class": "Step",
       "DefaultInput": 0,
-      "DefaultEdge": 0.999,
+      "DefaultEdge": 0.9990002,
       "Identifier": "3",
       "Position": "-468,-12",
       "HandleOffsets": {},
@@ -174,7 +174,7 @@
     {
       "_class": "Multiply",
       "DefaultA": 0,
-      "DefaultB": 5,
+      "DefaultB": 10,
       "Identifier": "10",
       "Position": "-120,24",
       "HandleOffsets": {},
@@ -390,7 +390,7 @@
     {
       "_class": "Texture2DParameter",
       "Value": {
-        "Name": "MaterialParameter1",
+        "Name": "Wave Normal",
         "IsAttribute": false,
         "DefaultColor": "0,0,0,0",
         "DefaultTexture": "materials/sand/14131-normal.jpg",
@@ -412,12 +412,12 @@
         }
       },
       "Identifier": "1cb48cde-7173-4865-a22a-9bb6a826542e",
-      "Name": "MaterialParameter1"
+      "Name": "Wave Normal"
     },
     {
       "_class": "Texture2DParameter",
       "Value": {
-        "Name": "MaterialParameter2",
+        "Name": "Grain Normal",
         "IsAttribute": false,
         "DefaultColor": "0,0,0,0",
         "DefaultTexture": "materials/sand/sand1_n.jpg",
@@ -439,7 +439,7 @@
         }
       },
       "Identifier": "1e28d39f-8a7a-4c78-850a-ea9732bd49c6",
-      "Name": "MaterialParameter2"
+      "Name": "Grain Normal"
     },
     {
       "_class": "FloatParameter",
@@ -489,7 +489,7 @@
       "_class": "FloatParameter",
       "Min": 0,
       "Max": 10,
-      "Value": 1.6,
+      "Value": 3.6,
       "UI": {
         "Type": "Slider",
         "Step": 0.2,
@@ -511,7 +511,7 @@
       "_class": "FloatParameter",
       "Min": 0,
       "Max": 500,
-      "Value": 196,
+      "Value": 182,
       "UI": {
         "Type": "Slider",
         "Step": 1,
