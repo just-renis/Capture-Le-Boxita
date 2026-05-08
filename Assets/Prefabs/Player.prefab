@@ -160,6 +160,14 @@
               },
               "Property": "Position",
               "Value": "0,-30,0"
+            },
+            {
+              "Target": {
+                "Type": "Component",
+                "IdValue": "d1409ccb-7cb6-4a22-ad9d-cb267c7af4bb"
+              },
+              "Property": "PushForce",
+              "Value": 1200000
             }
           ],
           "MovedObjects": [

@@ -65,10 +65,15 @@
 						{
 							bool IsSelected = SelectedUpgradeName == Node.UpgradeName;
 							bool IsOwned = GetIsOwned(Node.UpgradeName);
-							string BackgroundStyle = IsOwned ? $"background-color: {Node.BackgroundColor};" : "";
 							bool IsAvailable = GetIsAvailable(Node.UpgradeName);
-							<div class="node-wrapper @(IsSelected ? "selected" : "")"
-							     style="left: @(Node.X)px; top: @(Node.Y)px;"
+							string BackgroundStyle = "";
+							if (IsAvailable)
+							{
+								if (!CanBuyMore(Node)) BackgroundStyle = "background-color: #FFFF00BF;";
+								else if (CanAfford(Node)) BackgroundStyle = "background-color: #41D34D;";
+								else BackgroundStyle = "background-color: #C92121;";
+							}
+							<div class="node-wrapper @(IsSelected ? "selected" : "")" style="left: @(Node.X)px; top: @(Node.Y)px;"
 							     @onclick=@(() => SelectNode(Node.UpgradeName))>
 								<div class="node @(IsOwned ? "owned" : "") @(IsAvailable ? "available" : "locked")" style="@BackgroundStyle">
 									<i>@Node.Icon</i>
@@ -90,7 +95,7 @@
 				<div class="zoom-controls" @onwheel="OnMouseWheel">
 					<div class="btn" @onclick="@(() => { Scale = Math.Min(Scale + 0.2f, 3f); })"><i>add</i></div>
 					<div class="btn" @onclick="@(() => { Scale = Math.Max(Scale - 0.2f, 0.2f); })"><i>remove</i></div>
-					<div class="btn text" @onclick="@(() => { Scale = 1f; })">@Scale.ToString("F1")x</div>
+					<div class="btn zoom-scale" @onclick="@(() => { Scale = 1f; })">@Scale.ToString("F1")x</div>
 					<div class="btn" @onclick="@(() => { CanvasX = -225f; CanvasY = 0f; Scale = 1f; })"><i>home</i></div>
 				</div>
 
@@ -105,7 +110,7 @@
 						<p class="desc">@SelectedUpgrade.Description</p>
 						<div class="stat-row">
 							<span>UPGRADE COST</span>
-							<span class="@(CanAfford || GetIsOwned(SelectedUpgradeName) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedUpgradeName)</span>
+							<span class="@(CanAfford(SelectedUpgrade) || GetIsOwned(SelectedUpgradeName) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
 						</div>
 						<div class="stat-row">
 							<span>LEVEL</span>
@@ -114,17 +119,17 @@
 						<div class="divider"></div>
 						<div class="stat-row">
 							<span>REQUIREMENTS</span>
-							<span class="text-white">@(SelectedUpgrade.ParentsUpgradeNames.Count > 0 ? $"{SelectedUpgrade.ParentsUpgradeNames.Count} Linked" : "None")</span>
+							<span class="text-white">@(SelectedUpgrade.ParentsUpgradeNames.Count > 0 ? $"{SelectedUpgrade.ParentsUpgradeNames.Count} Links" : "None")</span>
 						</div>
 						<div class="buy-section">
-							@if (!CanBuyMore(SelectedUpgradeName))
+							@if (!CanBuyMore(SelectedUpgrade))
 							{
 								<div class="status-box owned">MAX LEVEL REACHED</div>
 							}
 							else
 							{
-								<div class="buy-btn @(CanAfford && GetIsAvailable(SelectedUpgradeName) ? "active" : "disabled")" @onclick=@BuyUpgrade>
-									@(!GetIsAvailable(SelectedUpgradeName) ? "LOCKED" : CanAfford ? "UPGRADE LEVEL" : "INSUFFICIENT MONEY")
+								<div class="buy-btn @(CanAfford(SelectedUpgrade) && GetIsAvailable(SelectedUpgradeName) ? "active" : "disabled")" @onclick=@BuyUpgrade>
+									@(!GetIsAvailable(SelectedUpgradeName) ? "LOCKED" : CanAfford(SelectedUpgrade) ? "UPGRADE LEVEL" : "INSUFFICIENT MONEY")
 								</div>
 							}
 						</div>
@@ -133,7 +138,8 @@
 			</div>
 			<footer>
 				<div class="tips">
-					<div class="tip"><i>navigation</i> @Upgrades.Count UPGRADES AVAILABLE</div>
+					<div class="tip">Left Click = Attack</div>
+					<div class="tip">, Right Click = Pick Up Box</div>
 				</div>
 			</footer>
 		</div>
@@ -142,20 +148,7 @@
 
 @code
 {
-	public class Upgrade
-	{
-		public EUpgradeName UpgradeName;
-		public int MaxAmount = 1;
-		public string Name;
-		public string Description;
-		public List<int> Costs;
-		public List<EUpgradeName> ParentsUpgradeNames = [];
-		public string Icon;
-		public float X;
-		public float Y;
-		public Color BackgroundColor;
-	}
-	
+	[Property] private List<Upgrade> Upgrades { get; set; } = [];
 	private bool IsDragging;
     private EUpgradeName SelectedUpgradeName;
     private float CanvasX = -225f;
@@ -163,46 +156,7 @@
     private float Scale = 1f;
     private Vector2 DragStartPos;
     private Vector2 DragStartOffset;
-    private List<Upgrade> Upgrades = [];
     private PlayerData PlayerData; 
-
-	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
-	public bool GetIsAvailable(EUpgradeName InUpgradeName)
-	{
-		Upgrade Upgrade = Upgrades.FirstOrDefault(U => U.UpgradeName == InUpgradeName);
-		if (Upgrade == null) return false;
-		return Upgrade.ParentsUpgradeNames.Count == 0 || Upgrade.ParentsUpgradeNames.All(GetIsOwned);
-	}
-	public bool GetIsOwned(EUpgradeName InUpgradeName) => GetLevel(InUpgradeName) > 0;
-	public bool CanBuyMore(EUpgradeName InUpgradeName) 
-	{
-		Upgrade Upgrade = Upgrades.FirstOrDefault(U => U.UpgradeName == InUpgradeName);
-		return Upgrade != null && GetLevel(InUpgradeName) < Upgrade.MaxAmount;
-	}
-	public int GetLevel(EUpgradeName InUpgradeName) => PlayerData.GetOwnedUpgrades().GetValueOrDefault(InUpgradeName, 0);
-	public int GetCurrentCost(EUpgradeName InUpgradeName)
-	{
-		Upgrade Upgrade = Upgrades.FirstOrDefault(U => U.UpgradeName == InUpgradeName);
-		if (Upgrade?.Costs == null || Upgrade.Costs.Count == 0) return 0;
-		int CurrentLevel = GetLevel(InUpgradeName);
-		return CurrentLevel >= Upgrade.MaxAmount ? Upgrade.Costs.Last() : Upgrade.Costs[CurrentLevel];
-	}
-	
-	public void OnMouseDragged()
-    {
-        IsDragging = true;
-        DragStartPos = Mouse.Position;
-        DragStartOffset = new Vector2(CanvasX, CanvasY);
-    }
-    public void OnMouseReleased() { IsDragging = false; }
-    public void SelectNode(EUpgradeName InUpgradeName) { SelectedUpgradeName = InUpgradeName; }
-    public void BuyUpgrade()
-    {
-	    if (SelectedUpgradeName == EUpgradeName.None || SelectedUpgrade == null || !CanBuyMore(SelectedUpgradeName) || !CanAfford || !GetIsAvailable(SelectedUpgradeName)) return;
-	    PlayerData.SubtractMoney(GetCurrentCost(SelectedUpgradeName));
-	    PlayerData.BuyUpgrade(SelectedUpgradeName);
-    }
-    public void CloseMenu() { UiManager.TriggerUiStateChange(EUi.UpgradesMenu); }
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
     protected override void OnMouseWheel(Vector2 InValue)
     {
@@ -217,7 +171,6 @@
     protected override void OnStart()
     {
 	    PlayerData = EventManager.TriggerGetPlayerData(); 
-	    GenerateUpgrades();
     }
     protected override void OnDestroy()
     {
@@ -235,24 +188,72 @@
 	    CanvasY = DragStartOffset.y + Delta.y / Scale;
     }
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
-	private bool CanAfford => SelectedUpgrade != null && PlayerData.GetMoney() >= GetCurrentCost(SelectedUpgradeName);
+	private bool CanAfford(Upgrade InUpgrade)
+	{
+		return InUpgrade != null && PlayerData.GetMoney() >= GetCurrentCost(InUpgrade);
+	}
+
 	private Upgrade SelectedUpgrade => Upgrades.FirstOrDefault(U => U.UpgradeName == SelectedUpgradeName);
+	private bool GetIsAvailable(EUpgradeName InUpgradeName)
+	{
+		Upgrade Upgrade = Upgrades.FirstOrDefault(U => U.UpgradeName == InUpgradeName);
+		if (Upgrade == null) return false;
+		return Upgrade.ParentsUpgradeNames.Count == 0 || Upgrade.ParentsUpgradeNames.All(GetIsOwned);
+	}
+	private bool GetIsOwned(EUpgradeName InUpgradeName) => GetLevel(InUpgradeName) > 0;
+	private bool CanBuyMore(Upgrade InUpgrade) 
+	{
+		return InUpgrade != null && GetLevel(InUpgrade.UpgradeName) < InUpgrade.MaxAmount;
+	}
+	private int GetLevel(EUpgradeName InUpgradeName) => PlayerData.GetOwnedUpgrades().GetValueOrDefault(InUpgradeName, 0);
+	private int GetCurrentCost(Upgrade InUpgrade)
+	{
+		if (InUpgrade?.Costs == null || InUpgrade.Costs.Count == 0) return 0;
+		int CurrentLevel = GetLevel(InUpgrade.UpgradeName);
+		return CurrentLevel >= InUpgrade.MaxAmount ? InUpgrade.Costs.Last() : InUpgrade.Costs[CurrentLevel];
+	}
 	
+	private void OnMouseDragged()
+	{
+		IsDragging = true;
+		DragStartPos = Mouse.Position;
+		DragStartOffset = new Vector2(CanvasX, CanvasY);
+	}
+	private void OnMouseReleased() { IsDragging = false; }
+	private void SelectNode(EUpgradeName InUpgradeName) { SelectedUpgradeName = InUpgradeName; }
+	private void BuyUpgrade()
+	{
+		if (SelectedUpgradeName == EUpgradeName.None || SelectedUpgrade == null || !CanBuyMore(SelectedUpgrade) || !CanAfford(SelectedUpgrade) || !GetIsAvailable(SelectedUpgradeName)) return;
+		PlayerData.SubtractMoney(GetCurrentCost(SelectedUpgrade));
+		PlayerData.BuyUpgrade(SelectedUpgradeName);
+	}
+	private void CloseMenu() { UiManager.TriggerUiStateChange(EUi.UpgradesMenu); }
 	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
 		if (InUi != EUi.UpgradesMenu) return;
 		Enabled = RenderState;
 		Panel?.Style.PointerEvents = Enabled ? PointerEvents.All : PointerEvents.None;
 	}
-    private void GenerateUpgrades()
-    {
-		Upgrades =
-        [
-	        new Upgrade { UpgradeName = EUpgradeName.MoreMoney1, MaxAmount = 5, Name = "More Money", Description = "Increases +1 more money from boxes per upgrade.", Costs = [5, 10, 25, 50, 100], Icon = "memory", X = 0, Y = 0, BackgroundColor = Color.FromRgba(0xFF0000FF) },
-	        new Upgrade { UpgradeName = EUpgradeName.MovementSpeed1, MaxAmount = 3, Name = "Movement Speed", Description = "Increases movement speed by 30% per upgrade.", Costs = [10, 70, 200], ParentsUpgradeNames = [0], Icon = "memory", X = 100, Y = 0, BackgroundColor = Color.FromRgba(0x00FF00FF) },
-	        new Upgrade { UpgradeName = EUpgradeName.BoxGrabRange1, MaxAmount = 2, Name = "Longer Box Grab Range", Description = "Increases box grab range by 35% per upgrade", Costs = [40, 150], ParentsUpgradeNames = [0], Icon = "memory", X = -100, Y = 0, BackgroundColor = Color.FromRgba(0x00FF00FF) },
-	        new Upgrade { UpgradeName = EUpgradeName.SwordPower1, MaxAmount = 3, Name = "Sword Power", Description = "Increases sword power by 20% per upgrade.", Costs = [20, 80, 200], ParentsUpgradeNames = [0], Icon = "memory", X = 0, Y = 100, BackgroundColor = Color.FromRgba(0x00FF00FF) },
-	        new Upgrade { UpgradeName = EUpgradeName.LessMoneyLossToPlayers1, MaxAmount = 2, Name = "Money Defense", Description = "Lose 2.5% less money to other players.", Costs = [90, 400], ParentsUpgradeNames = [0], Icon = "memory", X = 0, Y = -100, BackgroundColor = Color.FromRgba(0x00FF00FF) }
-        ];
-    }
+	
+	[Button("Reset Save File"), Group("Dev Tools")]
+	public void ResetSave()
+	{
+		if (!Game.IsEditor) return;
+		if (FileSystem.Data.FileExists("save.dat")) FileSystem.Data.DeleteFile("save.dat");
+		else Log.Warning("No save file found to delete.");
+	}
+	[Property, Group("Dev Tools")] 
+	private float DebugMoneyAmount { get; set; } = 1000f;
+	[Button("Add Money"), Group("Dev Tools")]
+	public void AddMoney()
+	{
+		if (!Game.IsEditor || PlayerData == null) return;
+		PlayerData.AddMoney(DebugMoneyAmount);
+	}
+	[Button("Remove Money"), Group("Dev Tools")]
+	public void SubtractMoney()
+	{
+		if (!Game.IsEditor || PlayerData == null) return;
+		PlayerData.SubtractMoney(DebugMoneyAmount);
+	}
 }

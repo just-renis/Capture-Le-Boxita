@@ -232,13 +232,6 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
-	public void ReceivePush(Guid InPusherId, Vector3 InPushForce)
-	{
-		if (IsProxy) return;
-		PullComp.SetOwnerId(InPusherId, false);
-		PlayerRigidbody?.ApplyImpulse(InPushForce);
-	}
-	[Rpc.Broadcast]
 	public void ReceivePush(Vector3 InPushForce)
 	{
 		if (IsProxy) return;

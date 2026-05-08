@@ -217,12 +217,98 @@
           "__guid": "2e7713f4-f662-4d73-89a0-bf19cdd61224",
           "__enabled": true,
           "Flags": 0,
+          "DebugMoneyAmount": 1000,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Upgrades": [
+            {
+              "UpgradeName": "MoreMoney1",
+              "MaxAmount": 5,
+              "Name": "More Money",
+              "Description": "Increases +1 more money from boxes per upgrade.",
+              "Costs": [
+                5,
+                10,
+                25,
+                50,
+                100
+              ],
+              "ParentsUpgradeNames": [],
+              "Icon": "memory",
+              "X": 0,
+              "Y": 0
+            },
+            {
+              "UpgradeName": "MovementSpeed1",
+              "MaxAmount": 3,
+              "Name": "Movement Speed",
+              "Description": "Increases movement speed by 30% per upgrade.",
+              "Costs": [
+                10,
+                70,
+                200
+              ],
+              "ParentsUpgradeNames": [
+                "MoreMoney1"
+              ],
+              "Icon": "memory",
+              "X": 100,
+              "Y": 0
+            },
+            {
+              "UpgradeName": "BoxGrabRange1",
+              "MaxAmount": 2,
+              "Name": "Longer Box Grab Range",
+              "Description": "Increases box grab range by 35% per upgrade",
+              "Costs": [
+                40,
+                150
+              ],
+              "ParentsUpgradeNames": [
+                "MoreMoney1"
+              ],
+              "Icon": "memory",
+              "X": -100,
+              "Y": 0
+            },
+            {
+              "UpgradeName": "SwordPower1",
+              "MaxAmount": 3,
+              "Name": "Sword Power",
+              "Description": "Increases sword power by 20% per upgrade.",
+              "Costs": [
+                20,
+                80,
+                200
+              ],
+              "ParentsUpgradeNames": [
+                "MoreMoney1"
+              ],
+              "Icon": "memory",
+              "X": 0,
+              "Y": 100
+            },
+            {
+              "UpgradeName": "LessMoneyLossToPlayers1",
+              "MaxAmount": 2,
+              "Name": "Money Defense",
+              "Description": "Lose 2.5% less money to other players.",
+              "Costs": [
+                90,
+                400
+              ],
+              "ParentsUpgradeNames": [
+                "MoreMoney1"
+              ],
+              "Icon": "memory",
+              "X": 0,
+              "Y": -100
+            }
+          ]
         }
       ],
       "Children": []
@@ -323,7 +409,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "454.697998,-690.432007,67.1775818"
+            "Value": "-6889.90576,-6558.93262,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -355,7 +441,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "-4545.30176,-690.432007,67.1775818"
+            "Value": "-4500,-500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -387,7 +473,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "5454.69824,-690.432007,67.1775818"
+            "Value": "5500,-500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -419,7 +505,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "454.697998,-5690.43213,67.1775818"
+            "Value": "500,-5500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -451,7 +537,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "454.697998,4309.56787,67.1775818"
+            "Value": "500,4500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -483,7 +569,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "-4545.30176,-5690.43213,67.1775818"
+            "Value": "-4500,-5500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -515,7 +601,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "-4545.30176,4309.56787,67.1775818"
+            "Value": "-4500,4500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -547,7 +633,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "5454.69824,-5690.43213,67.1775818"
+            "Value": "5500,-5500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -579,7 +665,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "5454.69824,4309.56787,67.1775818"
+            "Value": "5500,4500,67.1775818"
           }
         ],
         "MovedObjects": []
@@ -756,7 +842,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone1",
-      "Position": "723.479004,-7720.43213,3112.33716",
+      "Position": "723,-7738,4200",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -788,7 +874,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Scale": "20000,500,9616.38281",
+          "Scale": "20000,500,10000",
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
@@ -801,7 +887,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone2",
-      "Position": "-77.0029984,7694.88477,3759.2439",
+      "Position": "-77,7685,4200",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -846,7 +932,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone3",
-      "Position": "-7709.86182,207.404007,3543.69141",
+      "Position": "-7672,207,4200",
       "Rotation": "0.00617059227,0.00617059227,0.707079828,0.707079828",
       "Scale": "1,1,1",
       "Tags": "",
@@ -891,7 +977,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone4",
-      "Position": "7783.69824,174.175003,4155.72656",
+      "Position": "7813,174,4200",
       "Rotation": "0.00617059227,0.00617059227,0.707079828,0.707079828",
       "Scale": "1,1,1",
       "Tags": "",
@@ -993,7 +1079,7 @@
           "__version": 2,
           "Flags": 0,
           "Name": "wall",
-          "Position": "-0,0,0",
+          "Position": "0,0,0",
           "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
           "Tags": "",
@@ -4403,13 +4489,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {

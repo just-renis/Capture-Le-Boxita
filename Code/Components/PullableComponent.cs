@@ -104,4 +104,12 @@ public class PullableComponent : Component, Component.ICollisionListener
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Owner]
 	public void SetAlienShipRef(Guid InAlienShipWhoPulls) { AlienShipRef = Scene.Directory.FindByGuid(InAlienShipWhoPulls); }
+	
+	[Rpc.Broadcast]
+	public void ReceivePush(Guid InPusherId, Vector3 InPushForce)
+	{
+		if (IsProxy) return;
+		SetOwnerId(InPusherId, false);
+		Rigidbody?.ApplyImpulse(InPushForce);
+	}
 }

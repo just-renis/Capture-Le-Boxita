@@ -1,4 +1,5 @@
 using System;
+using Sandbox.Collectibles;
 using Sandbox.Components;
 using Sandbox.Enums;
 using Sandbox.Managers;
@@ -7,6 +8,7 @@ namespace Sandbox.Player;
 public sealed class Sword : Component
 {
 	[Property] private Int64 PushForce { get; set; }
+	[Property] private float BoxPushMultiplier { get; set; } = 7f;
 	private bool IsInAttackMode;
 	private int ProcessAttackHandle;
 	private int ProcessAttackTimes;
@@ -35,23 +37,22 @@ public sealed class Sword : Component
 	private void CheckForHit(Guid InPusherId)
 	{
 		Vector3 TraceSize = new (20f, 20f, 150f);
-		SceneTraceResult TraceResults = Scene.Trace.Box(TraceSize, WorldPosition, WorldPosition).WithTag("player").IgnoreGameObjectHierarchy(GameObject.Root).Rotated(WorldRotation).Run();
+		SceneTraceResult TraceResults = Scene.Trace.Box(TraceSize, WorldPosition, WorldPosition).WithAnyTags("player", "collectible").IgnoreGameObjectHierarchy(GameObject.Root).Rotated(WorldRotation).Run();
 		//DebugOverlay.Box(Vector3.Zero, TraceSize, Color.Red, 2f, WorldTransform);
 		if (!TraceResults.Hit) return;
 		GameObject Target = TraceResults.GameObject.Root;
 		if (!HitObjects.Add(Target)) return;
-		Log.Info(EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1));
 		SendToHostAboutTheHit(Target, InPusherId, EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1));
 	}
 	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId, int InPushForceUpgradeAmount)
 	{
 		if (!Network.IsOwner || !IsInAttackMode) return;
-		Player TargetPlayer = Target.GetComponent<Player>();
-		if (TargetPlayer == null) return;
+		PullableComponent TargetPullableComponent = Target.GetComponent<PullableComponent>();
+		if (TargetPullableComponent == null) return;
+		float MassForceMultiplier = TargetPullableComponent.Tags.Has("collectible") ? BoxPushMultiplier : 1f;
 		Int64 Force = (long)(PushForce + PushForce * (float)InPushForceUpgradeAmount * 0.2f);
-		Log.Info("RECEIVED PUSH: " + Force);
-		TargetPlayer.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force);
-		Target.GetComponent<PullableComponent>()?.SetOwnerId(Network.OwnerId, false);
+		TargetPullableComponent.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force * MassForceMultiplier);
+		TargetPullableComponent.SetOwnerId(Network.OwnerId, false);
 	}
 	[Rpc.Broadcast]
 	public void Attack()
