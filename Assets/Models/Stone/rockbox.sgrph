@@ -1,0 +1,638 @@
+{
+  "IsSubgraph": false,
+  "Path": "models/stone/rockbox.sgrph",
+  "Model": "models/dev/box.vmdl",
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Opaque",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": true,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.9043202,
+      "DefaultMetalness": 0,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "22",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Normal": {
+        "Identifier": "15",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Roughness": {
+        "Identifier": "16",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "AmbientOcclusion": {
+        "Identifier": "17",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ObjectPosition",
+      "Identifier": "1",
+      "Position": "-2364,72",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "2",
+      "Position": "-1968,120",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "UVScaleNode",
+      "DefaultScale": "1,1",
+      "Identifier": "3",
+      "Position": "-2172,120",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Scale": {
+        "Identifier": "24",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Add",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "4",
+      "Position": "-1752,72",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "1",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SplitVector",
+      "Identifier": "5",
+      "Position": "-1644,72",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 10,
+      "Identifier": "6",
+      "Position": "-1404,120",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "5",
+        "Output": "Z",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Sine",
+      "Identifier": "7",
+      "Position": "-1296,120",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "6",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "RemapValue",
+      "In": 0.5,
+      "InMin": -1,
+      "InMax": 1,
+      "OutMin": 0,
+      "OutMax": 1,
+      "Clamp": true,
+      "Identifier": "8",
+      "Position": "-1176,120",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "9",
+      "Position": "-876,48",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "8",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "045220e9-47ed-405d-98e5-34a0f229942e",
+      "Identifier": "10",
+      "Position": "-1260,-96",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "5791d9d4-07e3-434e-9ce4-b214509faccc",
+      "Identifier": "11",
+      "Position": "-1260,-252",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "8da0303e-66f9-4ccd-ae70-a68ee9bd90dd",
+      "Identifier": "12",
+      "Position": "-828,1212",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "c64db7f3-fb84-443a-a5c3-8c677ac26379",
+      "Identifier": "13",
+      "Position": "-828,420",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "4db3bc34-b68d-49bc-8065-682b57bb1888",
+      "Identifier": "14",
+      "Position": "-828,684",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Bilinear",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 8,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "15",
+      "Position": "-612,420",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "13",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Bilinear",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 8,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "16",
+      "Position": "-612,684",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "14",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Bilinear",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 8,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "17",
+      "Position": "-612,1212",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "12",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ObjectPosition",
+      "Identifier": "18",
+      "Position": "-1392,228",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SimplexNoise",
+      "Identifier": "19",
+      "Position": "-1008,300",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "20",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "UVScaleNode",
+      "DefaultScale": "50,50",
+      "Identifier": "20",
+      "Position": "-1212,300",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "18",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Scale": {
+        "Identifier": "23",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "c89ad1ce-7558-4539-8fac-91069e322d6c",
+      "Identifier": "21",
+      "Position": "-828,348",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Blend",
+      "DefaultA": "0,0,0,1",
+      "DefaultB": "1,1,1,1",
+      "Fraction": 0.14379096,
+      "BlendMode": "Multiply",
+      "Clamp": true,
+      "Identifier": "22",
+      "Position": "-612,240",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "19",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "21",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "a13d7aeb-0722-40cc-94b5-98a4221b5e86",
+      "Identifier": "23",
+      "Position": "-1536,336",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "b1a8f0aa-6546-4fd0-ad4d-44f6c78fb687",
+      "Identifier": "24",
+      "Position": "-2376,144",
+      "HandleOffsets": {}
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "ColorParameter",
+      "Value": "0.16744,0.16744,0.16744,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "045220e9-47ed-405d-98e5-34a0f229942e",
+      "Name": "Rock Primary Color"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.24186,0.1373,0.05175,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "5791d9d4-07e3-434e-9ce4-b214509faccc",
+      "Name": "Rock Secondary Color"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "Ambient Occlusion",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/rock/rock_ao.jpg",
+        "Extension": "AO",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "8da0303e-66f9-4ccd-ae70-a68ee9bd90dd",
+      "Name": "Ambient Occlusion"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "Normal Map",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "models/rock/rock_normal.jpg",
+        "Extension": "Normal",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "c64db7f3-fb84-443a-a5c3-8c677ac26379",
+      "Name": "Normal Map"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "Roughness Map",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "models/rock/rock_rough.jpg",
+        "Extension": "Rough",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Linear",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "4db3bc34-b68d-49bc-8065-682b57bb1888",
+      "Name": "Roughness Map"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.1,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.05,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "c89ad1ce-7558-4539-8fac-91069e322d6c",
+      "Name": "Rock Speckles"
+    },
+    {
+      "_class": "Float3Parameter",
+      "Min": "-1,-1,-1",
+      "Max": "1,1,1",
+      "Value": "0,0,1",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "9ad8e50f-ba52-46b8-ac71-32e3514ece09",
+      "Name": "Sand Dust Direction"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0.5,0.850000024",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "eea94ced-4c01-422d-9ccf-58ba57a91012",
+      "Name": "Sand Dust Smooth Step"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.93953,0.68084,0.29279,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "dee5e9cb-6e0f-49af-920c-8377482a67bf",
+      "Name": "Sand Color"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 1,
+      "Value": 0.8,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0.05,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "cf0e2670-6461-41a4-9118-9cd06a7bd23f",
+      "Name": "Normal Streangth"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 10,
+      "Value": 4.6411,
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "b1a8f0aa-6546-4fd0-ad4d-44f6c78fb687",
+      "Name": "UV Scale"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": 0,
+      "Max": 100,
+      "Value": 50,
+      "UI": {
+        "Type": "Slider",
+        "Step": 1,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "a13d7aeb-0722-40cc-94b5-98a4221b5e86",
+      "Name": "Grit Stone Detail Scale"
+    }
+  ],
+  "__version": 5
+}

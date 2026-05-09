@@ -1,7 +1,7 @@
 {
   "IsSubgraph": false,
-  "Path": null,
-  "Model": null,
+  "Path": "models/ufo/beam.shdrgrph",
+  "Model": "models/dev/box.vmdl",
   "Title": null,
   "Description": null,
   "Category": null,
@@ -27,31 +27,134 @@
       "DefaultMetalness": 0,
       "DefaultAmbientOcclusion": 0,
       "Identifier": "0",
-      "Position": "-0,0",
+      "Position": "0,0",
       "HandleOffsets": {},
       "Albedo": {
-        "Identifier": "2",
+        "Identifier": "7",
         "Output": "Result"
       },
       "Emission": {
-        "Identifier": "2",
+        "Identifier": "7",
         "Output": "Result"
       },
       "Opacity": {
+        "Identifier": "4",
+        "Output": "Result"
+      }
+    },
+    {
+      "_class": "Float2",
+      "Min": "0.400000006,0.400000006",
+      "Max": "0.5,0.5",
+      "Value": "0.409999996,0.439999998",
+      "Name": "Beam Fade",
+      "IsAttribute": false,
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "1",
+      "Position": "-804,240",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SplitVector",
+      "Identifier": "2",
+      "Position": "-864,96",
+      "HandleOffsets": {},
+      "Input": {
         "Identifier": "5",
         "Output": "Result"
       }
     },
     {
-      "_class": "WorldPosition",
-      "Identifier": "1",
-      "Position": "-972,108",
+      "_class": "RemapValue",
+      "In": 0,
+      "InMin": -50,
+      "InMax": 50,
+      "OutMin": 0.41,
+      "OutMax": 0.44,
+      "Clamp": true,
+      "Identifier": "3",
+      "Position": "-576,144",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "2",
+        "Output": "Z"
+      },
+      "D": {
+        "Identifier": "1",
+        "Output": "X"
+      },
+      "E": {
+        "Identifier": "1",
+        "Output": "Y"
+      }
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0.4,
+      "DefaultEdge2": 0.5,
+      "Identifier": "4",
+      "Position": "-204,132",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "3",
+        "Output": "Result"
+      },
+      "Edge1": {
+        "Identifier": "6",
+        "Output": "X"
+      },
+      "Edge2": {
+        "Identifier": "6",
+        "Output": "Y"
+      }
+    },
+    {
+      "_class": "ObjectPosition",
+      "Identifier": "5",
+      "Position": "-1128,36",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2",
+      "Min": "0.349999994,0.349999994",
+      "Max": "0.600000024,0.600000024",
+      "Value": "0.400000006,0.5",
+      "Name": "Beam Fade Smoothness",
+      "IsAttribute": false,
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "6",
+      "Position": "-384,192",
       "HandleOffsets": {}
     },
     {
       "_class": "Float4",
-      "Value": "1,0.06977,0.06977,1",
-      "Name": "",
+      "Value": "1,0.06667,0.06667,1",
+      "Name": "Beam Color",
       "IsAttribute": false,
       "UI": {
         "Type": "Color",
@@ -66,53 +169,8 @@
           "Priority": 0
         }
       },
-      "Identifier": "2",
-      "Position": "-336,-96",
-      "HandleOffsets": {}
-    },
-    {
-      "_class": "SplitVector",
-      "Identifier": "3",
-      "Position": "-708,108",
-      "HandleOffsets": {},
-      "Input": {
-        "Identifier": "6",
-        "Output": "Result"
-      }
-    },
-    {
-      "_class": "RemapValue",
-      "In": 0,
-      "InMin": -50,
-      "InMax": 50,
-      "OutMin": 0.41,
-      "OutMax": 0.44,
-      "Clamp": true,
-      "Identifier": "4",
-      "Position": "-468,108",
-      "HandleOffsets": {},
-      "A": {
-        "Identifier": "3",
-        "Output": "Z"
-      }
-    },
-    {
-      "_class": "SmoothStep",
-      "DefaultInput": 0,
-      "DefaultEdge1": 0.4,
-      "DefaultEdge2": 0.5,
-      "Identifier": "5",
-      "Position": "-240,120",
-      "HandleOffsets": {},
-      "Input": {
-        "Identifier": "4",
-        "Output": "Result"
-      }
-    },
-    {
-      "_class": "ObjectPosition",
-      "Identifier": "6",
-      "Position": "-972,48",
+      "Identifier": "7",
+      "Position": "-336,-60",
       "HandleOffsets": {}
     }
   ]

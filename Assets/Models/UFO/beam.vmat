@@ -1,6 +1,13 @@
+// THIS FILE IS AUTO-GENERATED
 
 Layer0
 {
-	shader "models/ufo/beam.shader_c"
+	shader "models/ufo/beam.shader"
 
+	g_vBeamColor "[1.000000 0.066667 0.066667 1.000000]"
+	g_vBeamFade "[0.416 0.430]"
+	g_vBeamFadeSmoothness "[0.398 0.490]"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
 }

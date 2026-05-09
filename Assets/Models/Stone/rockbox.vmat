@@ -1,0 +1,18 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "models/stone/rockbox.shader"
+
+	AmbientOcclusion "models/rock/rock_ao.jpg"
+	g_flGritStoneDetailScale "50"
+	g_flRockSpeckles "0.10"
+	g_flUVScale "4.641"
+	g_vRockPrimaryColor "[0.168627 0.168627 0.168627 1.000000]"
+	g_vRockSecondaryColor "[0.239216 0.141176 0.050980 1.000000]"
+	NormalMap "models/rock/rock_normal.jpg"
+	RoughnessMap "models/rock/rock_rough.jpg"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+}

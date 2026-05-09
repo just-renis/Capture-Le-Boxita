@@ -74,6 +74,10 @@ PS
 {
 	#include "common/pixel.hlsl"
 	RenderState( CullMode, F_RENDER_BACKFACES ? NONE : DEFAULT );
+		
+	float4 g_vBeamColor < UiType( Color ); UiGroup( ",0/,0/0" ); Default4( 1.00, 0.07, 0.07, 1.00 ); >;
+	float2 g_vBeamFadeSmoothness < UiGroup( ",0/,0/0" ); Default2( 0.4,0.5 ); Range2( 0.35,0.35, 0.6,0.6 ); >;
+	float2 g_vBeamFade < UiGroup( ",0/,0/0" ); Default2( 0.41,0.44 ); Range2( 0.4,0.4, 0.5,0.5 ); >;
 	
 	float4 MainPs( PixelInput i ) : SV_Target0
 	{
@@ -89,15 +93,17 @@ PS
 		m.Emission = float3( 0, 0, 0 );
 		m.Transmission = 0;
 		
-		float4 l_0 = float4( 1, 0.069767416, 0.069767416, 1 );
-		float3 l_1 = i.vPositionOs;
-		float l_2 = l_1.z;
-		float l_3 = saturate( ( l_2 - -50 ) / ( 50 - -50 ) ) * ( 0.44 - 0.41 ) + 0.41;
-		float l_4 = smoothstep( 0.4, 0.5, l_3 );
+		float4 l_0 = g_vBeamColor;
+		float2 l_1 = g_vBeamFadeSmoothness;
+		float3 l_2 = i.vPositionOs;
+		float l_3 = l_2.z;
+		float2 l_4 = g_vBeamFade;
+		float l_5 = saturate( ( l_3 - -50 ) / ( 50 - -50 ) ) * ( l_4.y - l_4.x ) + l_4.x;
+		float l_6 = smoothstep( l_1.x, l_1.y, l_5 );
 		
 		m.Albedo = l_0.xyz;
 		m.Emission = l_0.xyz;
-		m.Opacity = l_4;
+		m.Opacity = l_6;
 		m.Roughness = 0;
 		m.Metalness = 0;
 		m.AmbientOcclusion = 0;
