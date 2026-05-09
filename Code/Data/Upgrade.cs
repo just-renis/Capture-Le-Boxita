@@ -19,4 +19,8 @@ public class Upgrade
 		while (Costs.Count < MaxAmount) Costs.Add(0);
 		while (Costs.Count > MaxAmount) Costs.RemoveAt(Costs.Count - 1);
 	}
+	public override string ToString()
+	{
+		return UpgradeName == EUpgradeName.None ? "New Upgrade" : UpgradeName.ToString();
+	}
 }

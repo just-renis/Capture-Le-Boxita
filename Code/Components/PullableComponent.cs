@@ -39,11 +39,11 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public void ClearOwnerId() { LastOwnedBy = Guid.Empty; }
 	public void OnCollisionStart(Collision InCollision)
 	{
-		if (GameObject.Tags.Has("player") || LastOwnedBy == Guid.Empty) return;
+		if (GameObject.Tags.HasAny("player") || !IsOwnerHolding) return;
 		GameObject CollisionObject = InCollision.Other.GameObject;
-		if (!CollisionObject.Tags.Has("player") && !CollisionObject.Tags.Has("collectible")) return;
+		if (!CollisionObject.Tags.HasAny("player", "collectible")) return;
 		PullableComponent OtherPullableComponent = CollisionObject.GetComponent<PullableComponent>();
-		if (OtherPullableComponent == null) return;
+		if (OtherPullableComponent == null || !OtherPullableComponent.IsOwnerHolding) return;
 		if (OtherPullableComponent.Tags.Has("player") && OtherPullableComponent.Network.OwnerId != LastOwnedBy)
 		{
 			Vector3 PushDir = (OtherPullableComponent.WorldPosition - WorldPosition).Normal;

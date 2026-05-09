@@ -55,7 +55,15 @@
         },
         "Materials": {
           "Cardboard": "models/cardboard box/cardboard box.fbm/cardboard.vmat",
-          "Metal": "models/metal box/metal.vmat"
+          "Wood": "models/wood/wood.vmat",
+          "Rock": null,
+          "Metal": "models/metal box/metal.vmat",
+          "Gold": "models/gold/gold.vmat",
+          "Diamond": "models/diamond/diamond.vmat",
+          "Ruby": "models/ruby/ruby.vmat",
+          "Emerald": "models/emerald/emerald.vmat",
+          "Amethyst": "models/amethyst/amethyst.vmat",
+          "Obsidian": "models/obsidian/obsidian.vmat"
         },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,

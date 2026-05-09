@@ -3,5 +3,14 @@
 public enum ECubeMaterial
 {
 	Cardboard,
-	Metal
+	Wood,
+	Rock,
+	Metal,
+	Gold,
+	Diamond,
+	Ruby,
+	Emerald,
+	Amethyst,
+	Obsidian,
+	None
 }

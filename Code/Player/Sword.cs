@@ -46,11 +46,11 @@ public sealed class Sword : Component
 	}
 	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId, int InPushForceUpgradeAmount)
 	{
-		if (!Network.IsOwner || !IsInAttackMode) return;
+		if (!Network.IsOwner || !IsInAttackMode || Target.Tags.Has("safe")) return;
 		PullableComponent TargetPullableComponent = Target.GetComponent<PullableComponent>();
 		if (TargetPullableComponent == null) return;
 		float MassForceMultiplier = TargetPullableComponent.Tags.Has("collectible") ? BoxPushMultiplier : 1f;
-		Int64 Force = (long)(PushForce + PushForce * (float)InPushForceUpgradeAmount * 0.2f);
+		Int64 Force = (long)(PushForce + PushForce * (float)InPushForceUpgradeAmount * 0.1f);
 		TargetPullableComponent.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force * MassForceMultiplier);
 		TargetPullableComponent.SetOwnerId(Network.OwnerId, false);
 	}

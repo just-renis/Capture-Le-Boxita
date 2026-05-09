@@ -9,6 +9,7 @@ public sealed class PlayerData
 {
 	public int CurrentVersion { get; set; } = LiveVersion;
 	public float Money { get; set; }
+	public float TotalMoneyEarned { get; set; }
 	public string Checksum { get; set; }
 	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
 
@@ -16,18 +17,21 @@ public sealed class PlayerData
     private const int LiveVersion = 1;
     
     public float GetMoney() { return Money; }
+    public float GetTotalMoneyEarned() { return TotalMoneyEarned; }
     public int GetUpgradeAmount(EUpgradeName InUpgradeName) { return OwnedUpgrades?.GetValueOrDefault(InUpgradeName, 0) ?? 0; }
     public Dictionary<EUpgradeName, int> GetOwnedUpgrades() { return OwnedUpgrades; }
 
     public void AddMoney(float InAmount)
     {
 	    Money += InAmount;
+	    TotalMoneyEarned += InAmount;
 	    Save(this);
 	    EventManager.TriggerMoneyChange(Money);
     }
     public void SubtractMoney(float InAmount)
     {
 		Money -= InAmount;
+		TotalMoneyEarned -= InAmount;
 		Save(this);
 		EventManager.TriggerMoneyChange(Money);
     }

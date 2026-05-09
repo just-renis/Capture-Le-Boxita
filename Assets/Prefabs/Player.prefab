@@ -49,6 +49,24 @@
         "Flags": 0,
         "CameraDistance": 200,
         "CameraHeight": 50,
+        "Materials": {
+          "Cardboard": "models/cardboard box/cardboard box.fbm/cardboard.vmat",
+          "Wood": "models/wood/wood.vmat",
+          "Rock": null,
+          "Metal": "models/metal box/metal.vmat",
+          "Gold": "models/gold/gold.vmat",
+          "Diamond": "models/diamond/diamond.vmat",
+          "Ruby": "models/ruby/ruby.vmat",
+          "Emerald": "models/emerald/emerald.vmat",
+          "Amethyst": "models/amethyst/amethyst.vmat",
+          "Obsidian": "models/obsidian/obsidian.vmat"
+        },
+        "Mesh": {
+          "_type": "component",
+          "component_id": "565e53b7-5ed6-4962-9638-114daebe0750",
+          "go": "31e9ff72-845f-4a0a-9ff5-d951bb07c897",
+          "component_type": "ModelRenderer"
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -87,7 +105,7 @@
           "Y": false,
           "Z": false,
           "Pitch": true,
-          "Yaw": false,
+          "Yaw": true,
           "Roll": true
         },
         "MassCenterOverride": "0,0,0",

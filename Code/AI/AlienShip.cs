@@ -160,6 +160,7 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void BeamExit(Collider InCollider)
 	{
+		if (InCollider.Tags.Has("safe")) return;
 		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>(true);
 		if (Pullable == null) return;
 		ImmovableBeamObjects.Remove(Pullable);
@@ -167,6 +168,7 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void BeamEntered(Collider InCollider)
 	{
+		if (InCollider.Tags.Has("safe")) return;
 		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
 		if (Pullable == null) return;
 		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);

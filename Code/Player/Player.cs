@@ -7,12 +7,15 @@ namespace Sandbox.Player;
 
 public sealed class Player : Component, Component.INetworkListener
 {
+	[Sync, Change(nameof(OnCurrentMaterialChanged))] private ECubeMaterial CurrentMaterial { get; set; } = ECubeMaterial.None;
 	[Property] private float Speed { get; set; } = 2500f;
 	[Property] private float Sensitivity { get; set; } = 0.2f;
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
+	[Property] private ModelRenderer Mesh { get; set; }
+	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
 
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
@@ -83,14 +86,7 @@ public sealed class Player : Component, Component.INetworkListener
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		PlayerRigidbody = GetComponent<Rigidbody>();
-	}
-	private void UpdateClientsForHost()
-	{
-		if (!Networking.IsHost || !IsProxy || PlayerCollider == null) return;
-		if (WorldRotation == LastRotation) return;
-		PlayerCollider.Enabled = false;
-		PlayerCollider.Enabled = true;
-		LastRotation = WorldRotation;
+		SetMaterial();
 	}
 	protected override void OnUpdate()
 	{
@@ -108,6 +104,23 @@ public sealed class Player : Component, Component.INetworkListener
 		}
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
+	private ECubeMaterial GetCubeMaterialByTotalMoney()
+	{
+		if (PlayerData == null) return ECubeMaterial.Cardboard;
+		float TotalMoneyEarned = PlayerData.GetTotalMoneyEarned();
+		switch (TotalMoneyEarned)
+		{
+			case < 200f: return ECubeMaterial.Cardboard;
+			case < 800f: return ECubeMaterial.Wood;
+			case < 1500f: return ECubeMaterial.Rock;
+			case < 3000f: return ECubeMaterial.Metal;
+			case < 6900f: return ECubeMaterial.Gold;
+			case < 15000f: return ECubeMaterial.Diamond;
+			case < 35000f: return ECubeMaterial.Ruby;
+			case < 80000f: return ECubeMaterial.Emerald;
+			default: return TotalMoneyEarned < 200000f ? ECubeMaterial.Amethyst : ECubeMaterial.Obsidian;
+		}
+	}
 	private PlayerData GetPlayerData() { return PlayerData; }
 	
 	private void ProcessInput()
@@ -143,7 +156,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Input.Down("Backward")) MovementVelocity -= Forward;
 		if (Input.Down("Left")) MovementVelocity -= Right;
 		if (Input.Down("Right")) MovementVelocity += Right;
-		float WishSpeed = MovementVelocity.Length > 0f ? Speed + Speed * PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.3f : 0f;
+		float WishSpeed = MovementVelocity.Length > 0f ? Speed + Speed * PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.05f : 0f;
 		PlayerRigidbody.Velocity += MovementVelocity.Normal * WishSpeed * Time.Delta;
 	}
 	private void ProcessKeyboardInput()
@@ -163,7 +176,7 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			Ray Ray = Camera.ScreenPixelToRay(new Vector2(Screen.Width / 2, Screen.Height / 2));
 			Vector3 Start = Ray.Position;
-			Vector3 End = Start + Ray.Forward * (GrabDistance + GrabDistance * PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 0.4f);
+			Vector3 End = Start + Ray.Forward * (GrabDistance + GrabDistance * PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 0.15f);
 			SceneTraceResult Trace = Scene.Trace.WithTag("Collectible").Ray(Start, End).Run();
 		//	DebugOverlay.Line(Start, End, Color.Red, 2f);
 			if (!Trace.Hit) return;
@@ -185,6 +198,14 @@ public sealed class Player : Component, Component.INetworkListener
 			Vector3 ThrowVelocity = Camera.WorldRotation.Forward * ThrowForce;
 			ClearHeldObjectData(false, ThrowVelocity);
 		}
+	}
+	private void UpdateClientsForHost()
+	{
+		if (!Networking.IsHost || !IsProxy || PlayerCollider == null) return;
+		if (WorldRotation == LastRotation) return;
+		PlayerCollider.Enabled = false;
+		PlayerCollider.Enabled = true;
+		LastRotation = WorldRotation;
 	}
 	private void SetupGrabbedObjectTimer()
 	{
@@ -214,7 +235,11 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
 	}
-	private void AddMoney(float InMoneyAmount) { PlayerData.AddMoney(InMoneyAmount); }
+	private void AddMoney(float InMoneyAmount)
+	{
+		PlayerData.AddMoney(InMoneyAmount);
+		SetMaterial();
+	}
 	private void SubtractMoney(float InMoneyAmount) { PlayerData.SubtractMoney(InMoneyAmount); }
 	private void LoadSaveData()
 	{
@@ -229,6 +254,16 @@ public sealed class Player : Component, Component.INetworkListener
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
 		PhysicsFrameWaitTimerHandle = TimerManager.AddTimer(PhysicsFrameWaitTimerHandle, 0.03f, false, () => { PlayerRigidbody.PhysicsBody.Position = InPosition; });
+	}
+	private void SetMaterial()
+	{
+		ECubeMaterial CubeMaterialToApply = GetCubeMaterialByTotalMoney();
+		if (CubeMaterialToApply == CurrentMaterial) return;
+		CurrentMaterial = CubeMaterialToApply;
+	}
+	private void OnCurrentMaterialChanged(ECubeMaterial InOldMaterialValue, ECubeMaterial InNewMaterialValue)
+	{
+		Mesh?.SetMaterial(Materials[InNewMaterialValue]);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
@@ -249,22 +284,6 @@ public sealed class Player : Component, Component.INetworkListener
 		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
 	
-	[Rpc.Broadcast]
-	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, float InMoneyAmount)
-	{
-		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
-		if (InIsPlayerKill) AddMoney(InMoneyAmount);
-		else AddMoney((InMoneyAmount + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1)) * MoneyMultiplier);
-	}
-	[Rpc.Broadcast]
-	private void RequestMoneyTransfer(Guid TargetId)
-	{
-		if (IsProxy || TargetId != Network.OwnerId) return;
-		float MoneyLoss = PlayerData.GetMoney() * (0.25f - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLossToPlayers1) * 0.025f);
-		SubtractMoney(MoneyLoss);
-		SendBackMoney(MoneyLoss);
-	}
-	
 	[Rpc.Host]
 	private void SendBackMoney(float InMoney)
 	{
@@ -279,5 +298,21 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			Rigidbody.Velocity = InThrownVelocity;
 		}
+	}
+	
+	[Rpc.Broadcast]
+	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, float InMoneyAmount)
+	{
+		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
+		if (InIsPlayerKill) AddMoney(InMoneyAmount);
+		else AddMoney((InMoneyAmount + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1)) * MoneyMultiplier);
+	}
+	[Rpc.Broadcast]
+	private void RequestMoneyTransfer(Guid TargetId)
+	{
+		if (IsProxy || TargetId != Network.OwnerId) return;
+		float MoneyLoss = PlayerData.GetMoney() * (0.25f - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLossToPlayers1) * 0.025f);
+		SubtractMoney(MoneyLoss);
+		SendBackMoney(MoneyLoss);
 	}
 }
