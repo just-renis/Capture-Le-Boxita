@@ -157,7 +157,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 30,
+              "MaxAmountActive": 1,
               "Objects": [],
               "ActiveCount": 0
             }
@@ -227,6 +227,7 @@
           "Upgrades": [
             {
               "UpgradeName": "MoreMoney1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "More Money",
               "Description": "Increases +1 more money from boxes per upgrade.",
@@ -244,6 +245,7 @@
             },
             {
               "UpgradeName": "MovementSpeed1",
+              "UpgradeValue": "MovementSpeed",
               "MaxAmount": 10,
               "Name": "Movement Speed",
               "Description": "Increases movement speed by 5% per upgrade.",
@@ -266,6 +268,7 @@
             },
             {
               "UpgradeName": "BoxGrabRange1",
+              "UpgradeValue": "BoxGrabRange",
               "MaxAmount": 3,
               "Name": "Box Grab Range",
               "Description": "Increases box grab range by 15% per upgrade",
@@ -281,6 +284,7 @@
             },
             {
               "UpgradeName": "SwordPower1",
+              "UpgradeValue": "SwordPower",
               "MaxAmount": 5,
               "Name": "Sword Power",
               "Description": "Increases sword power by 10% per upgrade.",
@@ -297,13 +301,17 @@
               "Y": 0
             },
             {
-              "UpgradeName": "LessMoneyLossToPlayers1",
-              "MaxAmount": 2,
+              "UpgradeName": "LessMoneyLoss1",
+              "UpgradeValue": "MoneyLoss",
+              "MaxAmount": 5,
               "Name": "Money Defense",
-              "Description": "Lose 2.5% less money to other players.",
+              "Description": "Reduces money lost from Alien Probes by 1% (Does not apply to Player-initiated kills).",
               "Costs": [
                 90,
-                400
+                300,
+                1000,
+                3000,
+                10000
               ],
               "ParentsUpgradeNames": [
                 "MoreMoney1"
@@ -314,6 +322,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnWood1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Wood Box",
               "Description": "Adds 5% chance for wood box to spawn.",
@@ -333,6 +342,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnRock1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Rock Box",
               "Description": "Adds 5% chance to spawn rock box.",
@@ -352,6 +362,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnMetal1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Metal Box",
               "Description": "Adds 5% chance to spawn metal box.",
@@ -371,6 +382,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnGold1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Gold Box",
               "Description": "Adds 5% chance to spawn gold box.",
@@ -390,6 +402,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnDiamond1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 6,
               "Name": "Chance to spawn diamond box",
               "Description": "Adds 3% chance to spawn diamond box.",
@@ -410,6 +423,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnRuby1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 6,
               "Name": "Chance to spawn ruby box",
               "Description": "Adds 3% chance to spawn ruby box.",
@@ -430,6 +444,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnEmerald1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 6,
               "Name": "Chance to spawn emerald box",
               "Description": "Adds 3% chance to spawn emerald box.",
@@ -450,6 +465,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnAmethyst1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 7,
               "Name": "Chance to spawn amethysst box",
               "Description": "Adds 2% chance to spawn amethyst box.",
@@ -471,6 +487,7 @@
             },
             {
               "UpgradeName": "ChanceToSpawnObsidian1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 7,
               "Name": "Chance to spawn obsidian box",
               "Description": "Adds 2% chance to spawn obsidian box.",
@@ -492,6 +509,7 @@
             },
             {
               "UpgradeName": "UnlockDashAbility",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 1,
               "Name": "Unlock Dash Ability",
               "Description": "Unlocks ability to dash using [SHIFT]. Dash has 15 seconds cooldown.",
@@ -507,6 +525,7 @@
             },
             {
               "UpgradeName": "DashImpulseStrength1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Dash Impulse Strength",
               "Description": "Increases dash impulse strength by 5%.",
@@ -526,6 +545,7 @@
             },
             {
               "UpgradeName": "DashCooldown1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Reduce Dash Cooldown",
               "Description": "Reduces dash cooldown by 1 second.",
@@ -545,6 +565,7 @@
             },
             {
               "UpgradeName": "BoxThrowImpulseStrength1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 4,
               "Name": "Box throw impulse strength",
               "Description": "Increases box throw impulse strength by 8%.",
@@ -563,6 +584,7 @@
             },
             {
               "UpgradeName": "AlienComboMultiplier1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Alien Combo Multiplier",
               "Description": "Every box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds 0.5x maximum.",
@@ -582,6 +604,7 @@
             },
             {
               "UpgradeName": "BiggerAlienMoreMoneyMultiplier1",
+              "UpgradeValue": "MoneyAdded",
               "MaxAmount": 5,
               "Name": "Bigger Alien = More Money",
               "Description": "For each alien scale 0.5x size get multiplier of upgrade level. Each level grants 0.05x multiplier.",
@@ -1010,6 +1033,119 @@
           "Viewport": "0,0,1,1",
           "ZFar": 21000,
           "ZNear": 10
+        },
+        {
+          "__type": "Sandbox.ColorGrading",
+          "__guid": "2feec8ad-99bc-463c-be5e-bf3e65c897f8",
+          "__enabled": false,
+          "Flags": 0,
+          "BlendFactor": 1,
+          "BlueCurve": [
+            {
+              "x": 0,
+              "y": 0,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ],
+          "ColorSpace": "RGB",
+          "ColorTempK": 6500,
+          "GradingMethod": "None",
+          "GreenCurve": [
+            {
+              "x": 0,
+              "y": 0,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ],
+          "HueCurve": [
+            {
+              "x": 0,
+              "y": 0.5,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ],
+          "LookupTexture": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RedCurve": [
+            {
+              "x": 0,
+              "y": 0,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ],
+          "SaturationCurve": [
+            {
+              "x": 0,
+              "y": 0.5,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ],
+          "ValueCurve": [
+            {
+              "x": 0,
+              "y": 0.5,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ]
         }
       ],
       "Children": []
@@ -24811,7 +24947,8 @@
       "__PrefabIdToInstanceId": {
         "bf3ff7bb-65b2-4ba5-8138-e853b8773b3c": "19941830-7594-4f70-af91-77718ffbea0e",
         "fba42882-780f-45fc-a92f-0ddc4c662968": "729a4fb2-4194-442f-aecb-6d01a441d5ae",
-        "41f4ee7d-d4a8-468e-9bf4-dc9b20a1b4f0": "bd264665-4a1c-4480-b081-af6673fb8de4"
+        "41f4ee7d-d4a8-468e-9bf4-dc9b20a1b4f0": "bd264665-4a1c-4480-b081-af6673fb8de4",
+        "827f318f-3b03-4125-a1db-730930f43b95": "7443284e-ce0d-4024-9c55-82ffa2043937"
       }
     }
   ],
@@ -24837,6 +24974,11 @@
     "GameObjectSystems": {
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
+        }
       },
       "Sandbox.SelectionSetsSystem": {
         "Data": {

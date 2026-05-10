@@ -109,6 +109,10 @@
 
 						<p class="desc">@SelectedUpgrade.Description</p>
 						<div class="stat-row">
+							<span>CURRENT VALUE</span>
+							<span class="text-white">@GetFormattedUpgradeValue(SelectedUpgrade.UpgradeValue)</span>
+						</div>
+						<div class="stat-row">
 							<span>UPGRADE COST</span>
 							<span class="@(CanAfford(SelectedUpgrade) || GetIsOwned(SelectedUpgradeName) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
 						</div>
@@ -168,10 +172,7 @@
 	    EventManager.OnUiStateChanged += UiStateChanged;
 	    Enabled = false;
     }
-    protected override void OnStart()
-    {
-	    PlayerData = EventManager.TriggerGetPlayerData(); 
-    }
+    protected override void OnStart() { PlayerData = EventManager.TriggerGetPlayerData(); }
     protected override void OnDestroy()
     {
 	    EventManager.OnUiStateChanged -= UiStateChanged;
@@ -211,6 +212,26 @@
 		if (InUpgrade?.Costs == null || InUpgrade.Costs.Count == 0) return 0;
 		int CurrentLevel = GetLevel(InUpgrade.UpgradeName);
 		return CurrentLevel >= InUpgrade.MaxAmount ? InUpgrade.Costs.Last() : InUpgrade.Costs[CurrentLevel];
+	}
+	private int GetUpgradeValue(EUpgradeValue InUpgradeValue)
+	{
+		if (PlayerData == null) return 0;
+		Log.Info(InUpgradeValue);
+		switch (InUpgradeValue)
+		{
+			case EUpgradeValue.MoneyAdded: return 1 + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1);
+			case EUpgradeValue.MovementSpeed: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 5;
+			case EUpgradeValue.MoneyLoss: return 25 - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1);
+			case EUpgradeValue.SwordPower: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.SwordPower1) * 10;
+			case EUpgradeValue.BoxGrabRange: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 15;
+			default: return 0;
+		}
+	}
+	private string GetFormattedUpgradeValue(EUpgradeValue InUpgradeValue)
+	{
+		int Value = GetUpgradeValue(InUpgradeValue);
+		if (InUpgradeValue == EUpgradeValue.MoneyAdded) return Value.ToString();
+		return $"{Value}%";
 	}
 	
 	private void OnMouseDragged()

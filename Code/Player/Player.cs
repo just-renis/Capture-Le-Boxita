@@ -17,14 +17,27 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private ModelRenderer Mesh { get; set; }
 	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
 
+	private bool IsStuck
+	{
+		get;
+		set
+		{
+			if (field == value) return;
+			field = value;
+			EventManager.TriggerStuckPopupStateChange(field);
+		}
+	}
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
 	private int PhysicsFrameWaitTimerHandle;
+	private int CheckIfFallingOutOfWorldHandle;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private readonly float GrabDistance = 600f;
 	private readonly float ThrowForce = 2000f;
 	private float MoneyMultiplier = 1f;
+	private float StuckTimer;
+	private Vector3 LastFramePosition;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
 	private CameraComponent Camera;
@@ -82,6 +95,7 @@ public sealed class Player : Component, Component.INetworkListener
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
+		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		PlayerRigidbody = GetComponent<Rigidbody>();
@@ -96,11 +110,10 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		EventManager.OnKill -= OnKillEventListener;
 		TimerManager.ClearTimer(HostClientCollisionUpdateHandle);
-		if (!IsProxy)
-		{
-			ClearHeldObjectData();
-			EventManager.OnPlayerDataRequired -= GetPlayerData;
-		}
+		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
+		if (IsProxy) return;
+		ClearHeldObjectData();
+		EventManager.OnPlayerDataRequired -= GetPlayerData;
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private ECubeMaterial GetCubeMaterialByTotalMoney()
@@ -138,25 +151,38 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
 		Camera.WorldPosition = PlayerPosition + CameraOffset;
 		Camera.WorldRotation = NextCameraRotation;
-		if (PullComp != null && !PullComp.GetIsPulled()) WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
+		if (PullComp != null && !PullComp.GetIsPulled())
+		{
+			WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
+		}
 	}
 	private void ProcessMovementInput()
 	{
 		if (PullComp != null && PullComp.GetIsPulled()) return;
-		Vector3 Forward = WorldRotation.Forward;
-		Vector3 Right = WorldRotation.Right;
-
-		Forward = new Vector3(Forward.x, Forward.y, 0).Normal;
-		Right = new Vector3(Right.x, Right.y, 0).Normal;
-
-		Vector3 MovementVelocity = Vector3.Zero;
-
-		if (Input.Down("Forward")) MovementVelocity += Forward;
-		if (Input.Down("Backward")) MovementVelocity -= Forward;
-		if (Input.Down("Left")) MovementVelocity -= Right;
-		if (Input.Down("Right")) MovementVelocity += Right;
-		float WishSpeed = MovementVelocity.Length > 0f ? Speed + Speed * PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.05f : 0f;
-		PlayerRigidbody.Velocity += MovementVelocity.Normal * WishSpeed * Time.Delta;
+		Vector3 MovementInput = Input.AnalogMove; 
+		Vector3 WishDir = (WorldRotation * MovementInput).WithZ(0).Normal;
+		bool IsMovementHappening = MovementInput.LengthSquared > 0;
+		float WishSpeed = IsMovementHappening ? Speed * (1f + PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.05f) : 0f;
+		PlayerRigidbody.Velocity += WishDir * WishSpeed * Time.Delta;
+		CheckIsStuck(IsMovementHappening);
+	}
+	private void CheckIsStuck(bool InIsMovementHappening)
+	{
+		if (InIsMovementHappening)
+		{
+			float DistanceMoved = Vector3.DistanceBetweenSquared( WorldPosition, LastFramePosition );
+			if (DistanceMoved < 1f)
+			{
+				StuckTimer += Time.Delta;
+				if (StuckTimer > 10f && !IsStuck) IsStuck = true;
+			}
+			else
+			{
+				StuckTimer = 0f;
+				IsStuck = false;
+			}
+		}
+		LastFramePosition = WorldPosition;
 	}
 	private void ProcessKeyboardInput()
 	{
@@ -168,6 +194,14 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		ProcessMouseRightClickInput();
 		ProcessMouseLeftClickInput();
+		ProcessUnstuckInput();
+	}
+	private void ProcessUnstuckInput()
+	{
+		if (!IsStuck || !Input.Pressed("Unstuck")) return;
+		StuckTimer = 0f;
+		IsStuck = false;
+		TeleportToSafeZone();
 	}
 	private void ProcessMouseRightClickInput()
 	{
@@ -252,7 +286,11 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
-		PhysicsFrameWaitTimerHandle = TimerManager.AddTimer(PhysicsFrameWaitTimerHandle, 0.03f, false, () => { PlayerRigidbody.PhysicsBody.Position = InPosition; });
+		PhysicsFrameWaitTimerHandle = TimerManager.AddTimer(PhysicsFrameWaitTimerHandle, 0.03f, false, () =>
+		{
+			WorldPosition = InPosition;
+			PlayerRigidbody.PhysicsBody.Position = InPosition;
+		});
 	}
 	private void SetMaterial()
 	{
@@ -263,6 +301,14 @@ public sealed class Player : Component, Component.INetworkListener
 	private void OnCurrentMaterialChanged(ECubeMaterial InOldMaterialValue, ECubeMaterial InNewMaterialValue)
 	{
 		Mesh?.SetMaterial(Materials[InNewMaterialValue]);
+	}
+	private void CheckIfFallingOutOfWorld()
+	{
+		if (WorldPosition.z <= -1000f) TeleportToSafeZone();
+	}
+	private void TeleportToSafeZone()
+	{
+		WorldPosition = EventManager.TriggerGetSafeZoneLocation();
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
@@ -279,7 +325,12 @@ public sealed class Player : Component, Component.INetworkListener
 		if (PullComp == null || !PullComp.GetIsPulled()) return;
 		PullComp.SetIsPulled(false);
 		Guid LastOwnedId = PullComp.GetOwnerId();
-		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId) return;
+		if (LastOwnedId == Guid.Empty || Network.OwnerId == LastOwnedId)
+		{
+			float MoneyLoss = PlayerData.GetMoney() * (0.25f - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * 0.01f);
+			SubtractMoney(MoneyLoss);
+			return;
+		}
 		RequestMoneyTransfer(PullComp.Network.OwnerId);
 	}
 	
@@ -310,7 +361,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private void RequestMoneyTransfer(Guid TargetId)
 	{
 		if (IsProxy || TargetId != Network.OwnerId) return;
-		float MoneyLoss = PlayerData.GetMoney() * (0.25f - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLossToPlayers1) * 0.025f);
+		float MoneyLoss = PlayerData.GetMoney() * 0.25f;
 		SubtractMoney(MoneyLoss);
 		SendBackMoney(MoneyLoss);
 	}

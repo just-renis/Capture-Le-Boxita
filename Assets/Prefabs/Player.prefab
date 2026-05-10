@@ -52,7 +52,7 @@
         "Materials": {
           "Cardboard": "models/cardboard box/cardboard box.fbm/cardboard.vmat",
           "Wood": "models/wood/wood.vmat",
-          "Rock": null,
+          "Rock": "models/rock/rock.vmat",
           "Metal": "models/metal box/metal.vmat",
           "Gold": "models/gold/gold.vmat",
           "Diamond": "models/diamond/diamond.vmat",

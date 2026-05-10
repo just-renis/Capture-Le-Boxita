@@ -6,7 +6,7 @@
     "Name": "safezone",
     "Position": "0,0,0",
     "Rotation": "0,0,0,1",
-    "Scale": "1,1,1",
+    "Scale": "40,40,40",
     "Tags": "safezone",
     "Enabled": true,
     "NetworkMode": 2,
@@ -21,7 +21,7 @@
         "__enabled": true,
         "Flags": 0,
         "Center": "0,0,0",
-        "ColliderFlags": "IgnoreMass",
+        "ColliderFlags": "IgnoreTraces, IgnoreMass",
         "Elasticity": null,
         "Friction": null,
         "IsTrigger": false,
@@ -36,7 +36,7 @@
         "OnTriggerEnter": null,
         "OnTriggerExit": null,
         "RollingResistance": null,
-        "Scale": "2000,2000,2000",
+        "Scale": "50,50,50",
         "Static": true,
         "Surface": null,
         "SurfaceVelocity": "0,0,0"
@@ -57,6 +57,33 @@
         "TriggerTags": [
           "player"
         ]
+      },
+      {
+        "__type": "Sandbox.ModelRenderer",
+        "__guid": "827f318f-3b03-4125-a1db-730930f43b95",
+        "__enabled": true,
+        "Flags": 0,
+        "BodyGroups": 18446744073709551615,
+        "CreateAttachments": false,
+        "LodOverride": null,
+        "MaterialGroup": null,
+        "MaterialOverride": "models/safe area/safearea.vmat",
+        "Materials": null,
+        "Model": "models/dev/box.vmdl",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "RenderOptions": {
+          "GameLayer": true,
+          "OverlayLayer": false,
+          "BloomLayer": false,
+          "AfterUILayer": false
+        },
+        "RenderType": "Off",
+        "Tint": "1,1,1,1"
       }
     ],
     "Children": [],

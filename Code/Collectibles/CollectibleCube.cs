@@ -10,6 +10,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
 	[Property] private ModelRenderer CubeModelRenderer { get; set; }
 	private int SetMaterialHandle;
+	private int CheckIfFallingOutOfWorldHandle;
 	private PullableComponent PullComp;
 	private Rigidbody Rigidbody;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
@@ -29,6 +30,11 @@ public sealed class CollectibleCube : Component, IPoolObject
 		SetMaterialHandle = TimerManager.AddTimer(SetMaterialHandle, 0.1f, true, SetMaterial);
 		PullComp = GetComponent<PullableComponent>();
 		Rigidbody = GetComponent<Rigidbody>();
+		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
+	}
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetMaterial()
@@ -42,6 +48,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		else CubeModelRenderer?.SetMaterial(Materials[ECubeMaterial.Cardboard]);
 		TimerManager.ClearTimer(SetMaterialHandle);
 	}
+	private void CheckIfFallingOutOfWorld() { if (WorldPosition.z <= -1000f) RequestReturnToPoolObject(); }
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
 	public void Init()

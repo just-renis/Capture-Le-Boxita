@@ -42,4 +42,38 @@ PlayerHud
       font-size: 32px;
       font-weight: bolder;
     }
+    > .Unstuck
+    {
+      position: absolute;
+      font-size: 32px;
+      top: 50%;
+      left: 70%;
+      transform: translate(-50%, -50%);
+      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-shadow: 2px 2px 2px black;
+    }
+    > .crosshair-container 
+    {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      > .corner
+      {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border: 2px solid black;
+      }
+      > .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+      > .top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+      > .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+      > .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+    }
 }

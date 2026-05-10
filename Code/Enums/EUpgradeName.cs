@@ -6,7 +6,7 @@ public enum EUpgradeName
 	MovementSpeed1,
 	BoxGrabRange1,
 	SwordPower1,
-	LessMoneyLossToPlayers1,
+	LessMoneyLoss1,
 	ChanceToSpawnWood1,
 	ChanceToSpawnRock1,
 	ChanceToSpawnMetal1,

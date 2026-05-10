@@ -4,15 +4,27 @@
 @inherits PanelComponent
 
 <root>
-	<div class = "Money">
+	<div class="crosshair-container">
+		<div class="corner top-left"></div>
+		<div class="corner top-right"></div>
+		<div class="corner bottom-left"></div>
+		<div class="corner bottom-right"></div>
+	</div>
+	<div class="Money">
 		<p>MONEY: @Money.FloorToInt()</p>
 	</div>
-	<div class = "Leaderboard">
+	@if (IsStuckPopupEnabled)
+	{
+		<div class="Unstuck">
+			<p>PRESS [U] TO UNSTUCK</p>
+		</div>
+	}
+	<div class="Leaderboard">
 		@foreach (LeaderboardEntry Entry in Players)
 		{
-			<div class = "Entry">
-				<span class = "Name">@Entry.Name</span>
-				<span class = "Money">@Entry.Money</span>
+			<div class="Entry">
+				<span class="Name">@Entry.Name</span>
+				<span class="Money">@Entry.Money</span>
 			</div>
 		}
 	</div>
@@ -20,30 +32,32 @@
 
 @code
 {
+	private bool IsStuckPopupEnabled;
 	private float Money;
 	private List<LeaderboardEntry> Players = [];
+	
 	protected override void OnStart()
 	{
 		EventManager.OnPlayerConnectionChanged += HandleClickStateChange;
 		EventManager.OnMoneyChanged += SetMoneyAmount;
+		EventManager.OnStuckPopupStateChanged += StuckPopupStateChange;
 	}
 	protected override void OnDestroy()
 	{
 		EventManager.OnPlayerConnectionChanged -= HandleClickStateChange;
 		EventManager.OnMoneyChanged -= SetMoneyAmount;
+		EventManager.OnStuckPopupStateChanged -= StuckPopupStateChange;
 	}
-	void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
+	protected override int BuildHash()
+	{
+		return System.HashCode.Combine(Money, IsStuckPopupEnabled);
+	}
+	
+	private void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
 		if (InConnected) Players.Add(InLeaderboardEntry);
 		else Players.Remove(InLeaderboardEntry);
 	}
-
-	void SetMoneyAmount(float InMoney)
-	{
-		Money = InMoney;
-	}
-	protected override int BuildHash()
-	{
-		return System.HashCode.Combine(Money);
-	}
+	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
+	private void SetMoneyAmount(float InMoney) { Money = InMoney; }
 }

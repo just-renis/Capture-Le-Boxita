@@ -31,7 +31,6 @@ public sealed class PlayerData
     public void SubtractMoney(float InAmount)
     {
 		Money -= InAmount;
-		TotalMoneyEarned -= InAmount;
 		Save(this);
 		EventManager.TriggerMoneyChange(Money);
     }
