@@ -6,7 +6,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Platform",
-      "Position": "0,0,-25.571785",
+      "Position": "0,0,1025.85181",
       "Rotation": "0,0,0,1",
       "Scale": "300,300,1",
       "Tags": "",
@@ -82,7 +82,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "GameManager",
-      "Position": "-504.229797,90.5039368,181.854706",
+      "Position": "0,0,1051.42358",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -171,7 +171,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Screen",
-      "Position": "-659.310303,-12.0617399,278.113495",
+      "Position": "-659.310303,-12.0617399,1329.53711",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -239,7 +239,7 @@
                 100
               ],
               "ParentsUpgradeNames": [],
-              "Icon": "memory",
+              "Icon": "ui/moremoney1.png",
               "X": 0,
               "Y": -100
             },
@@ -262,7 +262,7 @@
                 5000
               ],
               "ParentsUpgradeNames": [],
-              "Icon": "memory",
+              "Icon": "ui/movementspeed1.png",
               "X": 100,
               "Y": 0
             },
@@ -278,7 +278,7 @@
                 350
               ],
               "ParentsUpgradeNames": [],
-              "Icon": "memory",
+              "Icon": "ui/boxgrabrange1.png",
               "X": 0,
               "Y": 100
             },
@@ -296,7 +296,7 @@
                 500
               ],
               "ParentsUpgradeNames": [],
-              "Icon": "memory",
+              "Icon": "ui/swordpower1.png",
               "X": -100,
               "Y": 0
             },
@@ -316,13 +316,13 @@
               "ParentsUpgradeNames": [
                 "MoreMoney1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/lessmoneylosstoplayers1.png",
               "X": -100,
               "Y": -100
             },
             {
               "UpgradeName": "ChanceToSpawnWood1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "ChanceToSpawnWood",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Wood Box",
               "Description": "Adds 5% chance for wood box to spawn.",
@@ -336,16 +336,16 @@
               "ParentsUpgradeNames": [
                 "MoreMoney1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnwood1.png",
               "X": 0,
               "Y": -200
             },
             {
               "UpgradeName": "ChanceToSpawnRock1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "ChanceToSpawnRock",
               "MaxAmount": 5,
-              "Name": "Chance To Spawn Rock Box",
-              "Description": "Adds 5% chance to spawn rock box.",
+              "Name": "Chance To Spawn Wood And Rock Box",
+              "Description": "Adds 5% chance to spawn wood and rock box.",
               "Costs": [
                 75,
                 100,
@@ -356,119 +356,125 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnWood1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnrock1.png",
               "X": 0,
               "Y": -300
             },
             {
               "UpgradeName": "ChanceToSpawnMetal1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 5,
-              "Name": "Chance To Spawn Metal Box",
-              "Description": "Adds 5% chance to spawn metal box.",
+              "UpgradeValue": "ChanceToSpawnMetal",
+              "MaxAmount": 6,
+              "Name": "Chance To Spawn Rock And Metal Box",
+              "Description": "Adds 4% chance to spawn rock and metal box.",
               "Costs": [
                 180,
                 275,
                 400,
                 550,
-                650
+                650,
+                800
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRock1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnmetal1.png",
               "X": 0,
               "Y": -400
             },
             {
               "UpgradeName": "ChanceToSpawnGold1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 5,
-              "Name": "Chance To Spawn Gold Box",
-              "Description": "Adds 5% chance to spawn gold box.",
+              "UpgradeValue": "ChanceToSpawnGold",
+              "MaxAmount": 6,
+              "Name": "Chance To Spawn Metal And Gold Box",
+              "Description": "Adds 4% chance to spawn metal and gold box.",
               "Costs": [
                 350,
                 700,
                 1150,
                 1400,
-                1800
+                1800,
+                2300
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnMetal1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawngold1.png",
               "X": 0,
               "Y": -500
             },
             {
               "UpgradeName": "ChanceToSpawnDiamond1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 6,
-              "Name": "Chance to spawn diamond box",
-              "Description": "Adds 3% chance to spawn diamond box.",
+              "UpgradeValue": "ChanceToSpawnDiamond",
+              "MaxAmount": 7,
+              "Name": "Chance to spawn gold and diamond box",
+              "Description": "Adds 3% chance to spawn gold and diamond box.",
               "Costs": [
                 800,
                 1300,
                 1800,
                 2500,
                 4000,
-                5500
+                5500,
+                7000
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnGold1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawndiamond1.png",
               "X": 0,
               "Y": -600
             },
             {
               "UpgradeName": "ChanceToSpawnRuby1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 6,
-              "Name": "Chance to spawn ruby box",
-              "Description": "Adds 3% chance to spawn ruby box.",
+              "UpgradeValue": "ChanceToSpawnRuby",
+              "MaxAmount": 7,
+              "Name": "Chance to spawn diamond and ruby box",
+              "Description": "Adds 3% chance to spawn diamond and ruby box.",
               "Costs": [
                 1500,
                 3000,
                 5000,
                 6900,
                 8000,
-                10000
+                10000,
+                13000
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnDiamond1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnruby1.png",
               "X": 0,
               "Y": -700
             },
             {
               "UpgradeName": "ChanceToSpawnEmerald1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 6,
-              "Name": "Chance to spawn emerald box",
-              "Description": "Adds 3% chance to spawn emerald box.",
+              "UpgradeValue": "ChanceToSpawnEmerald",
+              "MaxAmount": 8,
+              "Name": "Chance to spawn ruby and emerald box",
+              "Description": "Adds 2% chance to spawn ruby and emerald box.",
               "Costs": [
                 2750,
                 5000,
                 7500,
                 10000,
                 12500,
-                15000
+                15000,
+                19000,
+                25000
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRuby1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnemerald1.png",
               "X": 0,
               "Y": -800
             },
             {
               "UpgradeName": "ChanceToSpawnAmethyst1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 7,
-              "Name": "Chance to spawn amethysst box",
-              "Description": "Adds 2% chance to spawn amethyst box.",
+              "UpgradeValue": "ChanceToSpawnAmethyst",
+              "MaxAmount": 8,
+              "Name": "Chance to spawn emerald and amethysst box",
+              "Description": "Adds 2% chance to spawn emerald and amethyst box.",
               "Costs": [
                 5000,
                 8000,
@@ -476,40 +482,44 @@
                 15500,
                 20000,
                 25000,
-                27500
+                27500,
+                32000
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnEmerald1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnamethyst1.png",
               "X": 0,
               "Y": -900
             },
             {
               "UpgradeName": "ChanceToSpawnObsidian1",
-              "UpgradeValue": "MoneyAdded",
-              "MaxAmount": 7,
-              "Name": "Chance to spawn obsidian box",
-              "Description": "Adds 2% chance to spawn obsidian box.",
+              "UpgradeValue": "ChanceToSpawnObsidian",
+              "MaxAmount": 10,
+              "Name": "Chance to spawn amethyst and obsidian box",
+              "Description": "Adds 1% chance to spawn amethyst and obsidian box.",
               "Costs": [
                 8000,
-                16000,
+                15000,
                 25000,
                 35000,
                 45000,
                 55000,
-                66000
+                66000,
+                77000,
+                88000,
+                100000
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnAmethyst1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/chancetospawnobsidian1.png",
               "X": 0,
               "Y": -1000
             },
             {
               "UpgradeName": "UnlockDashAbility",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "BoxThrowStrength",
               "MaxAmount": 1,
               "Name": "Unlock Dash Ability",
               "Description": "Unlocks ability to dash using [SHIFT]. Dash has 15 seconds cooldown.",
@@ -519,53 +529,53 @@
               "ParentsUpgradeNames": [
                 "MovementSpeed1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/unlockdashability.png",
               "X": 200,
               "Y": -100
             },
             {
               "UpgradeName": "DashImpulseStrength1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "DashImpulseStrength",
               "MaxAmount": 5,
               "Name": "Dash Impulse Strength",
               "Description": "Increases dash impulse strength by 5%.",
               "Costs": [
                 200,
-                300,
-                350,
                 400,
-                450
+                550,
+                800,
+                1400
               ],
               "ParentsUpgradeNames": [
                 "UnlockDashAbility"
               ],
-              "Icon": "memory",
+              "Icon": "ui/dashimpulsestrength1.png",
               "X": 150,
               "Y": -200
             },
             {
               "UpgradeName": "DashCooldown1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "DashCooldown",
               "MaxAmount": 5,
               "Name": "Reduce Dash Cooldown",
-              "Description": "Reduces dash cooldown by 1 second.",
+              "Description": "Reduces dash cooldown by 0.5 seconds.",
               "Costs": [
                 500,
-                650,
                 800,
-                1000,
-                1500
+                1300,
+                3000,
+                5000
               ],
               "ParentsUpgradeNames": [
                 "UnlockDashAbility"
               ],
-              "Icon": "memory",
+              "Icon": "ui/dashcooldown.png",
               "X": 250,
               "Y": -200
             },
             {
               "UpgradeName": "BoxThrowImpulseStrength1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "BoxThrowStrength",
               "MaxAmount": 4,
               "Name": "Box throw impulse strength",
               "Description": "Increases box throw impulse strength by 8%.",
@@ -578,7 +588,7 @@
               "ParentsUpgradeNames": [
                 "BoxGrabRange1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/boxthrowimpulsestrength1.png",
               "X": 100,
               "Y": 100
             },
@@ -598,7 +608,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRock1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/aliencombomultiplier1.png",
               "X": 100,
               "Y": -300
             },
@@ -618,7 +628,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRock1"
               ],
-              "Icon": "memory",
+              "Icon": "ui/biggeralienmoremoneymultiplier1.png",
               "X": -100,
               "Y": -300
             }
@@ -632,7 +642,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "NetworkHelper",
-      "Position": "158.859207,260.051788,28.4206791",
+      "Position": "158.859207,260.051788,1079.84424",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -723,7 +733,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "500,-500,67.1775818"
+            "Value": "500,-500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -755,7 +765,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "-4500,-500,67.1775818"
+            "Value": "-4500,-500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -787,7 +797,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "5500,-500,67.1775818"
+            "Value": "5500,-500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -819,7 +829,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "500,-5500,67.1775818"
+            "Value": "500,-5500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -851,7 +861,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "500,4500,67.1775818"
+            "Value": "500,4500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -883,7 +893,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "-4500,-5500,67.1775818"
+            "Value": "-4500,-5500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -915,7 +925,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "-4500,4500,67.1775818"
+            "Value": "-4500,4500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -947,7 +957,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "5500,-5500,67.1775818"
+            "Value": "5500,-5500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -979,7 +989,7 @@
               "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
             },
             "Property": "Position",
-            "Value": "5500,4500,67.1775818"
+            "Value": "5500,4500,1201.42358"
           }
         ],
         "MovedObjects": []
@@ -994,7 +1004,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Camera",
-      "Position": "-801.380127,-661.231873,216.742599",
+      "Position": "-801.380127,-661.231873,1268.16614",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "maincamera",
@@ -1155,7 +1165,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "2D Skybox",
-      "Position": "-0,0,897.642944",
+      "Position": "0,0,1949.06653",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "skybox",
@@ -1189,7 +1199,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Sun",
-      "Position": "-0,0,452.62027",
+      "Position": "0,0,1504.04382",
       "Rotation": "-0.674684346,-0.011693025,0.657690287,-0.334825426",
       "Scale": "1,1,1",
       "Tags": "light_directional,light",
@@ -1230,7 +1240,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Clutter",
-      "Position": "0,0,19.3858299",
+      "Position": "0,0,1070.80945",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -21739,7 +21749,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone1",
-      "Position": "723,-7738,4200",
+      "Position": "723,-7738,5251.42383",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -21784,7 +21794,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone2",
-      "Position": "-77,7685,4200",
+      "Position": "-77,7685,5251.42383",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -21829,7 +21839,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone3",
-      "Position": "-7672,207,4200",
+      "Position": "-7672,207,5251.42383",
       "Rotation": "0.00617059227,0.00617059227,0.707079828,0.707079828",
       "Scale": "1,1,1",
       "Tags": "",
@@ -21874,7 +21884,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "EndZone4",
-      "Position": "7813,174,4200",
+      "Position": "7813,174,5251.42383",
       "Rotation": "0.00617059227,0.00617059227,0.707079828,0.707079828",
       "Scale": "1,1,1",
       "Tags": "",
@@ -21919,7 +21929,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Cubemap Fog",
-      "Position": "-0,0,1553.65796",
+      "Position": "0,0,2605.08154",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -21959,7 +21969,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Walls",
-      "Position": "-3619.021,7502.72705,-1.5",
+      "Position": "-3619.021,7502.72705,1049.92358",
       "Rotation": "0,0,0.707106769,0.707106769",
       "Scale": "1,1,1",
       "Tags": "",
@@ -24939,7 +24949,7 @@
               "IdValue": "bf3ff7bb-65b2-4ba5-8138-e853b8773b3c"
             },
             "Property": "Position",
-            "Value": "6514.90918,6601.05273,475.445618"
+            "Value": "6514.90918,6601.05273,1526.86914"
           }
         ],
         "MovedObjects": []
@@ -24972,6 +24982,9 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
@@ -24981,9 +24994,6 @@
         "Data": {
           "SelectionSets": []
         }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },

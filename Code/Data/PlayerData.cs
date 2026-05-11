@@ -8,27 +8,27 @@ using System.Text;
 public sealed class PlayerData
 {
 	public int CurrentVersion { get; set; } = LiveVersion;
-	public float Money { get; set; }
-	public float TotalMoneyEarned { get; set; }
+	public double Money { get; set; }
+	public double TotalMoneyEarned { get; set; }
 	public string Checksum { get; set; }
 	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
     private const int LiveVersion = 1;
     
-    public float GetMoney() { return Money; }
-    public float GetTotalMoneyEarned() { return TotalMoneyEarned; }
+    public double GetMoney() { return Money; }
+    public double GetTotalMoneyEarned() { return TotalMoneyEarned; }
     public int GetUpgradeAmount(EUpgradeName InUpgradeName) { return OwnedUpgrades?.GetValueOrDefault(InUpgradeName, 0) ?? 0; }
     public Dictionary<EUpgradeName, int> GetOwnedUpgrades() { return OwnedUpgrades; }
 
-    public void AddMoney(float InAmount)
+    public void AddMoney(double InAmount)
     {
 	    Money += InAmount;
 	    TotalMoneyEarned += InAmount;
 	    Save(this);
 	    EventManager.TriggerMoneyChange(Money);
     }
-    public void SubtractMoney(float InAmount)
+    public void SubtractMoney(double InAmount)
     {
 		Money -= InAmount;
 		Save(this);
@@ -38,6 +38,7 @@ public sealed class PlayerData
     {
 	    if (!OwnedUpgrades.TryAdd(InUpgradeName, 1)) OwnedUpgrades[InUpgradeName]++;
 	    Save(this);
+	    EventManager.TriggerUpgradePurchased(InUpgradeName);
     }
     
     public static void Save(PlayerData InData)

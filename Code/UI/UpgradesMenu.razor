@@ -25,7 +25,7 @@
 						<span>AVAILABLE MONEY</span>
 						<div class="money-amount">
 							<i>savings</i>
-							<span>$@PlayerData.GetMoney().FloorToInt()</span>
+							<span>$@PlayerData.GetMoney().ToString("F0")</span>
 						</div>
 					</div>
 					<div class="code-btn" @onclick=@CloseMenu>
@@ -76,7 +76,7 @@
 							<div class="node-wrapper @(IsSelected ? "selected" : "")" style="left: @(Node.X)px; top: @(Node.Y)px;"
 							     @onclick=@(() => SelectNode(Node.UpgradeName))>
 								<div class="node @(IsOwned ? "owned" : "") @(IsAvailable ? "available" : "locked")" style="@BackgroundStyle">
-									<i>@Node.Icon</i>
+									<img src="@Node.Icon" alt=""/>
 									@if (Node.MaxAmount > 1)
 									{
 										<div class="level-badge">@GetLevel(Node.UpgradeName)/@Node.MaxAmount</div>
@@ -108,10 +108,13 @@
 						<h2>@SelectedUpgrade.Name</h2>
 
 						<p class="desc">@SelectedUpgrade.Description</p>
-						<div class="stat-row">
-							<span>CURRENT VALUE</span>
-							<span class="text-white">@GetFormattedUpgradeValue(SelectedUpgrade.UpgradeValue)</span>
-						</div>
+						@if (SelectedUpgrade.UpgradeValue != EUpgradeValue.None)
+						{
+							<div class="stat-row">
+								<span>CURRENT VALUE</span>
+								<span class="text-white">@GetFormattedUpgradeValue(SelectedUpgrade.UpgradeValue)</span>
+							</div>
+						}
 						<div class="stat-row">
 							<span>UPGRADE COST</span>
 							<span class="@(CanAfford(SelectedUpgrade) || GetIsOwned(SelectedUpgradeName) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
@@ -193,7 +196,6 @@
 	{
 		return InUpgrade != null && PlayerData.GetMoney() >= GetCurrentCost(InUpgrade);
 	}
-
 	private Upgrade SelectedUpgrade => Upgrades.FirstOrDefault(U => U.UpgradeName == SelectedUpgradeName);
 	private bool GetIsAvailable(EUpgradeName InUpgradeName)
 	{
@@ -213,10 +215,9 @@
 		int CurrentLevel = GetLevel(InUpgrade.UpgradeName);
 		return CurrentLevel >= InUpgrade.MaxAmount ? InUpgrade.Costs.Last() : InUpgrade.Costs[CurrentLevel];
 	}
-	private int GetUpgradeValue(EUpgradeValue InUpgradeValue)
+	private float GetUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
 		if (PlayerData == null) return 0;
-		Log.Info(InUpgradeValue);
 		switch (InUpgradeValue)
 		{
 			case EUpgradeValue.MoneyAdded: return 1 + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1);
@@ -224,14 +225,31 @@
 			case EUpgradeValue.MoneyLoss: return 25 - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1);
 			case EUpgradeValue.SwordPower: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.SwordPower1) * 10;
 			case EUpgradeValue.BoxGrabRange: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 15;
+			case EUpgradeValue.DashCooldown: return 8f - PlayerData.GetUpgradeAmount(EUpgradeName.DashCooldown1) * 0.5f;
+			case EUpgradeValue.DashImpulseStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * 5;
+			case EUpgradeValue.BoxThrowStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * 8;
+			case EUpgradeValue.ChanceToSpawnWood: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnWood1) * 5 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRock1) * 5;
+			case EUpgradeValue.ChanceToSpawnRock: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRock1) * 5 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnMetal1) * 4;
+			case EUpgradeValue.ChanceToSpawnMetal: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnMetal1) * 4 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnGold1) * 4;
+			case EUpgradeValue.ChanceToSpawnGold: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnGold1) * 4 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnDiamond1) * 3;
+			case EUpgradeValue.ChanceToSpawnDiamond: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnDiamond1) * 3 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRuby1) * 3;
+			case EUpgradeValue.ChanceToSpawnRuby: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRuby1) * 3 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * 2;
+			case EUpgradeValue.ChanceToSpawnEmerald: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * 2 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2;
+			case EUpgradeValue.ChanceToSpawnAmethyst: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1);
+			case EUpgradeValue.ChanceToSpawnObsidian: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1);
 			default: return 0;
 		}
 	}
 	private string GetFormattedUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
-		int Value = GetUpgradeValue(InUpgradeValue);
-		if (InUpgradeValue == EUpgradeValue.MoneyAdded) return Value.ToString();
-		return $"{Value}%";
+		float Value = GetUpgradeValue(InUpgradeValue);
+		string Formatted = Value.ToString("G");
+		switch (InUpgradeValue)
+		{
+			case EUpgradeValue.MoneyAdded: return Formatted;
+			case EUpgradeValue.DashCooldown: return $"{Formatted}s";
+			default: return $"{Formatted}%";
+		}
 	}
 	
 	private void OnMouseDragged()

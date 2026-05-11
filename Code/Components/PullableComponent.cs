@@ -1,4 +1,5 @@
 ﻿using System;
+using Sandbox.Collectibles;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
@@ -9,6 +10,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Property] private bool IsInAirCheckRequired { get; set; }
 	[Sync] private bool IsOwnerHolding { get; set; }
 	[Sync] private float LastOwnerTime { get; set; }
+	[Sync] private float MoneyMultiplier { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
 	private bool IsPulled;
 	private int ClearOwnerIdHandle;
@@ -20,7 +22,8 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private GameObject AlienShipRef;
 	
 	public bool GetIsPulled() { return IsPulled; }
-	public bool IsInAir() { return !IsInAirCheckRequired || MathF.Abs(Rigidbody.Velocity.z) > 0.1f; }
+	public bool IsInAir() { return !IsInAirCheckRequired || LastOwnedBy != Guid.Empty || MathF.Abs(Rigidbody.Velocity.z) > 0.1f; }
+	public float GetMoneyMultiplier() { return MoneyMultiplier; }
 	public Guid GetOwnerId() { return LastOwnedBy; }
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)
@@ -28,6 +31,11 @@ public class PullableComponent : Component, Component.ICollisionListener
 		LastOwnerTime = ClearTime;
 		LastOwnedBy = InId;
 		SetIsOwnerHoldingState(true);
+		if (InId == Network.OwnerId)
+		{
+			CollectibleCube Cube = GetComponent<CollectibleCube>();
+			if (Cube != null) MoneyMultiplier = Cube.GetMoneyMultiplier();
+		}
 		if (!IsGrabbedByPlayer) SetClearOwnerIdTimerInternally();
 		else TimerManager.ClearTimer(ClearOwnerIdHandle);
 	}
@@ -84,7 +92,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	{
 		if (IsProxy || !IsPulled || AlienShipRef == null) return;
 		Rigidbody.AngularVelocity = Vector3.Zero;
-		Vector3 PullVelocity = (AlienShipRef.WorldPosition - WorldPosition) * 10.0f;
+		Vector3 PullVelocity = (AlienShipRef.WorldPosition - WorldPosition) * 10f;
 		Rigidbody.Velocity = PullVelocity.WithZ(BeamPullSpeed);
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -98,7 +106,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	private void CheckOutOfBounds()
 	{
-		if (WorldPosition.z < 5000f) return;
+		if (WorldPosition.z < 6000f) return;
 		if (GetIsPulled()) SetIsPulled(false);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------

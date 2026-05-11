@@ -6,10 +6,11 @@ namespace Sandbox.Managers;
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	public static event Action<bool> OnStuckPopupStateChanged;
-	public static event Action<float> OnMoneyChanged;
+	public static event Action<double> OnMoneyChanged;
+	public static event Action<EUpgradeName> OnUpgradePurchased;
 	public static event Action<EUi, bool> OnUiStateChanged;
 	public static event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
-	public static event Action<Guid, bool, float> OnKill;
+	public static event Action<Guid, bool, double> OnKill;
 	public static event Func<Vector3> OnTeleportToSpawnLocation;
 	public static event Func<Vector3> OnTeleportToSafeZoneLocation;
 	public static event Func<PlayerData> OnPlayerDataRequired;
@@ -18,9 +19,13 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnStuckPopupStateChanged?.Invoke(InState);
 	}
-	public static void TriggerMoneyChange(float InMoney)
+	public static void TriggerMoneyChange(double InMoney)
 	{
 		OnMoneyChanged?.Invoke(InMoney);
+	}
+	public static void TriggerUpgradePurchased(EUpgradeName InUpgradeName)
+	{
+		OnUpgradePurchased?.Invoke(InUpgradeName);
 	}
 	public static void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
@@ -30,7 +35,7 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
 	}
-	public static void TriggerOnKill(Guid InKillerPlayerId, bool InIsPlayerKill, float InMoneyAmount)
+	public static void TriggerOnKill(Guid InKillerPlayerId, bool InIsPlayerKill, double InMoneyAmount)
 	{
 		OnKill?.Invoke(InKillerPlayerId, InIsPlayerKill, InMoneyAmount);
 	}

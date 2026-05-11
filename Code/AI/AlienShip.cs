@@ -35,7 +35,7 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		Collider?.Enabled = true;
 		BeamCollider?.Enabled = true;
-		RandomDownwardsStopZ = Random.Shared.Float(500f, 1100f);
+		RandomDownwardsStopZ = Random.Shared.Float(1500f, 2100f);
 		SetupBeamVfx();
 		WorldScale = new Vector3(1f);
 		FlyDownwardsHandle = TimerManager.AddTimer(FlyDownwardsHandle, FpsTime, true, FlyDownProcess);
@@ -143,7 +143,7 @@ public sealed class AlienShip : Component, IPoolObject
 	private void FlyUpProcess()
 	{
 		WorldPosition += new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
-		if (WorldPosition.z >= 7000f) ReturnToPool();
+		if (WorldPosition.z >= 8000f) ReturnToPool();
 	}
 	private void FlyDownProcess()
 	{

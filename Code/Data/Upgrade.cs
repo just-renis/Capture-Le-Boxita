@@ -10,6 +10,7 @@ public class Upgrade
 	public string Description { get; set; }
 	public List<int> Costs { get; set; }
 	public List<EUpgradeName> ParentsUpgradeNames { get; set; } = [];
+	[ImageAssetPath]
 	public string Icon { get; set; }
 	public float X { get; set; }
 	public float Y { get; set; }
