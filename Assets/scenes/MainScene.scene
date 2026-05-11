@@ -148,7 +148,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/collectiblecube.prefab"
               },
-              "MaxAmountActive": 200,
+              "MaxAmountActive": 500,
               "Objects": [],
               "ActiveCount": 0
             },
@@ -157,7 +157,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 1,
+              "MaxAmountActive": 30,
               "Objects": [],
               "ActiveCount": 0
             }
@@ -1037,9 +1037,9 @@
         {
           "__type": "Sandbox.ColorGrading",
           "__guid": "2feec8ad-99bc-463c-be5e-bf3e65c897f8",
-          "__enabled": false,
+          "__enabled": true,
           "Flags": 0,
-          "BlendFactor": 1,
+          "BlendFactor": 0.4,
           "BlueCurve": [
             {
               "x": 0,
@@ -1057,8 +1057,8 @@
             }
           ],
           "ColorSpace": "RGB",
-          "ColorTempK": 6500,
-          "GradingMethod": "None",
+          "ColorTempK": 2950,
+          "GradingMethod": "TemperatureControl",
           "GreenCurve": [
             {
               "x": 0,
@@ -24972,9 +24972,6 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
@@ -24984,6 +24981,9 @@
         "Data": {
           "SelectionSets": []
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },
