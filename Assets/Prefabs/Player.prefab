@@ -49,6 +49,12 @@
         "Flags": 0,
         "CameraDistance": 200,
         "CameraHeight": 50,
+        "DefaultBoxThrowImpulseStrength": 2000,
+        "DefaultDashCooldown": 8,
+        "DefaultDashImpulseStrength": 2000,
+        "DefaultGrabDistance": 600,
+        "DefaultMoneyLossToAliensPercentage": 0.25,
+        "DefaultMovementSpeed": 2500,
         "Materials": {
           "Cardboard": "models/cardboard box/cardboard box.fbm/cardboard.vmat",
           "Wood": "models/wood/wood.vmat",
@@ -80,7 +86,6 @@
           "component_type": "BoxCollider"
         },
         "Sensitivity": 0.2,
-        "Speed": 2500,
         "Sword": {
           "_type": "component",
           "component_id": "aa6ef62d-fece-4223-a702-587672172ddd",
@@ -160,6 +165,62 @@
         "Static": false,
         "Surface": null,
         "SurfaceVelocity": "0,0,0"
+      },
+      {
+        "__type": "Sandbox.Voice",
+        "__guid": "e3dc26ca-56c8-4fa4-8315-8683e9d71c22",
+        "__enabled": true,
+        "Flags": 0,
+        "Distance": 15000,
+        "Falloff": [
+          {
+            "x": 0,
+            "y": 1,
+            "in": 0,
+            "out": -1.8,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0.05,
+            "y": 0.22,
+            "in": 3.5,
+            "out": -3.5,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0.2,
+            "y": 0.04,
+            "in": 0.16,
+            "out": -0.16,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          }
+        ],
+        "LipSync": false,
+        "Loopback": false,
+        "Mode": "Manual",
+        "MorphScale": 3,
+        "MorphSmoothTime": 0.1,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "PushToTalkInput": "voice",
+        "Renderer": null,
+        "VoiceMixer": {
+          "Name": "unknown",
+          "Id": "00000000-0000-0000-0000-000000000000"
+        },
+        "Volume": 1,
+        "WorldspacePlayback": true
       }
     ],
     "Children": [

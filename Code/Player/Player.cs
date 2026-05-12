@@ -32,6 +32,7 @@ public sealed class Player : Component, Component.INetworkListener
 			EventManager.TriggerStuckPopupStateChange(field);
 		}
 	}
+	private bool VoiceChatEnabled;
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
 	private int PhysicsFrameWaitTimerHandle;
@@ -373,7 +374,6 @@ public sealed class Player : Component, Component.INetworkListener
 		if (AlienBoxComboMultiplier > 0 && TimeSinceLastBoxConsumed > 5f)
 		{
 			CurrentAlienBoxComboCountOfBoxes = 0;
-			Log.Info("RESET");
 			AlienBoxComboMultiplier = 0f;
 			EventManager.TriggerAlienBoxComboChange(0f);
 		}
@@ -428,10 +428,9 @@ public sealed class Player : Component, Component.INetworkListener
 			TimeSinceLastBoxConsumed = 0f;
 			AddMoney(AdditionalMoneyAmount * (InMoneyMultiplier + AlienBoxComboMultiplier));
 			if (AlienBoxComboMultiplier >= AlienBoxComboMaxMultiplier) return;
-			Log.Info("CURRENT BOXES AMOUNT: " + CurrentAlienBoxComboCountOfBoxes + 1);
 			if (++CurrentAlienBoxComboCountOfBoxes < RequiredBoxesAmountForAlienBoxCombo) return;
 			CurrentAlienBoxComboCountOfBoxes = 0;
-			AlienBoxComboMultiplier += 0.1f;
+			AlienBoxComboMultiplier = MathF.Min(MathF.Round(AlienBoxComboMultiplier + 0.1f, 1), AlienBoxComboMaxMultiplier);
 			EventManager.TriggerAlienBoxComboChange(AlienBoxComboMultiplier);
 		}
 	}

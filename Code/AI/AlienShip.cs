@@ -8,6 +8,8 @@ namespace Sandbox.AI;
 
 public sealed class AlienShip : Component, IPoolObject
 {
+	[Sync] private bool IsFlyUpProcessInProgress { get; set; }
+	[Sync] private bool IsFlyDownProcessInProgress { get; set; }
 	[Sync] private int TimesToFlyUpwards { get; set; }
 	[Property] private GameObject BeamVfx { get; set; }
 	private bool IsLogicInitialized;
@@ -38,6 +40,7 @@ public sealed class AlienShip : Component, IPoolObject
 		RandomDownwardsStopZ = Random.Shared.Float(1500f, 2100f);
 		SetupBeamVfx();
 		WorldScale = new Vector3(1f);
+		IsFlyDownProcessInProgress = true;
 		FlyDownwardsHandle = TimerManager.AddTimer(FlyDownwardsHandle, FpsTime, true, FlyDownProcess);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
@@ -67,6 +70,8 @@ public sealed class AlienShip : Component, IPoolObject
 		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
 		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
 		SmallFlyUpwardsHandle = TimerManager.AddTimer(SmallFlyUpwardsHandle, 0.25f, true, SmallFlyUpProcess);
+		if (IsFlyUpProcessInProgress) FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime, true, FlyUpProcess);
+		if (IsFlyDownProcessInProgress) FlyDownwardsHandle = TimerManager.AddTimer(FlyDownwardsHandle, FpsTime, true, FlyDownProcess);
 	}
 	private void Move()
 	{
@@ -132,6 +137,7 @@ public sealed class AlienShip : Component, IPoolObject
 		Collider?.Enabled = false;
 		BeamCollider?.Enabled = false;
 		ChangeBeamVfxState(false);
+		IsFlyUpProcessInProgress = true;
 		FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime, true, FlyUpProcess);
 	}
 	private void SmallFlyUpProcess()
@@ -143,12 +149,16 @@ public sealed class AlienShip : Component, IPoolObject
 	private void FlyUpProcess()
 	{
 		WorldPosition += new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
-		if (WorldPosition.z >= 8000f) ReturnToPool();
+		if (WorldPosition.z < 8000f) return;
+		IsFlyUpProcessInProgress = false;
+		ReturnToPool();
 	}
 	private void FlyDownProcess()
 	{
 		WorldPosition -= new Vector3(Vector3.Up * MoveUpwardsSpeed * FpsTime);
-		if (WorldPosition.z <= RandomDownwardsStopZ) TimerManager.ClearTimer(FlyDownwardsHandle);
+		if (WorldPosition.z > RandomDownwardsStopZ) return;
+		IsFlyDownProcessInProgress = false;
+		TimerManager.ClearTimer(FlyDownwardsHandle);
 	}
 	private void ReturnToPool()
 	{
@@ -179,7 +189,8 @@ public sealed class AlienShip : Component, IPoolObject
 	private void SetupBoxCollider()
 	{
 		Collider = GameObject.AddComponent<BoxCollider>();
-		Collider.Scale = new Vector3(400f, 400f, 50f);
+		Collider.Scale = new Vector3(400f, 400f, 100f);
+		Collider.Center = new Vector3(0f, 0f, 20f);
 		Collider.IsTrigger = true;
 		Collider.ColliderFlags |= ColliderFlags.IgnoreTraces;
 		Collider.ColliderFlags |= ColliderFlags.IgnoreMass;
@@ -191,6 +202,7 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider = BeamObject.AddComponent<CapsuleCollider>();
 		BeamCollider.End = new Vector3(0f, 0f, -2000f);
 		BeamCollider.Radius = 100f;
+		BeamCollider.LocalPosition = new Vector3(0f, 0f, -50f);
 		BeamCollider.IsTrigger = true;
 		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreTraces;
 		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreMass;

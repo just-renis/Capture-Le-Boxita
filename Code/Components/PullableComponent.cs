@@ -36,14 +36,11 @@ public class PullableComponent : Component, Component.ICollisionListener
 		LastOwnerTime = ClearTime;
 		LastOwnedBy = InId;
 		SetIsOwnerHoldingState(true);
-		if (InId == Network.OwnerId)
+		CollectibleCube Cube = GetComponent<CollectibleCube>();
+		if (Cube != null)
 		{
-			CollectibleCube Cube = GetComponent<CollectibleCube>();
-			if (Cube != null)
-			{
-				MoneyMultiplier = Cube.GetMoneyMultiplier();
-				AlienScaleMultiplier = Cube.GetAlienScaleMultiplier();
-			}
+			MoneyMultiplier = Cube.GetMoneyMultiplier();
+			AlienScaleMultiplier = Cube.GetAlienScaleMultiplier();
 		}
 		if (!IsGrabbedByPlayer) SetClearOwnerIdTimerInternally();
 		else TimerManager.ClearTimer(ClearOwnerIdHandle);
@@ -56,12 +53,12 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public void ClearOwnerId() { LastOwnedBy = Guid.Empty; }
 	public void OnCollisionStart(Collision InCollision)
 	{
-		if (GameObject.Tags.HasAny("player") || !IsOwnerHolding) return;
+		if (GameObject.Tags.Has("player")) return;
 		GameObject CollisionObject = InCollision.Other.GameObject;
 		if (!CollisionObject.Tags.HasAny("player", "collectible")) return;
 		PullableComponent OtherPullableComponent = CollisionObject.GetComponent<PullableComponent>();
-		if (OtherPullableComponent == null || !OtherPullableComponent.IsOwnerHolding) return;
-		if (OtherPullableComponent.Tags.Has("player") && OtherPullableComponent.Network.OwnerId != LastOwnedBy)
+		if (OtherPullableComponent == null) return;
+		if (OtherPullableComponent.IsOwnerHolding && OtherPullableComponent.Tags.Has("player") && OtherPullableComponent.Network.OwnerId != LastOwnedBy)
 		{
 			Vector3 PushDir = (OtherPullableComponent.WorldPosition - WorldPosition).Normal;
 			PushDir.z = 0;
@@ -95,6 +92,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	protected override void OnDestroy()
 	{
+		TimerManager.ClearTimer(ClearOwnerIdHandle);
 		TimerManager.ClearTimer(CheckOutOfBoundsHandle);
 	}
 	protected override void OnFixedUpdate()

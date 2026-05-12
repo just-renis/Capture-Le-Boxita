@@ -43,6 +43,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	}
 	protected override void OnDestroy()
 	{
+		TimerManager.ClearTimer(SetMaterialHandle);
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
@@ -125,6 +126,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	public void Init()
 	{
 		if (Networking.IsHost) CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
+		Data = EventManager.TriggerGetPlayerData();
 		if (Data == null) return;
 		ChangeMaterialByChances();
 	}

@@ -1,5 +1,4 @@
 using System;
-using Sandbox.Collectibles;
 using Sandbox.Components;
 using Sandbox.Enums;
 using Sandbox.Managers;
@@ -15,7 +14,12 @@ public sealed class Sword : Component
 	private const int SwordMaxProcessTimes = 9;
 	private const float SwordAttackRotationSpeed = 10f;
 	private readonly HashSet<GameObject> HitObjects = [];
-	
+
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(ProcessAttackHandle);
+	}
+
 	private void ProcessAttackForward()
 	{
 		LocalRotation *= Rotation.From(new Angles(SwordAttackRotationSpeed, 0f, 0f));
@@ -33,12 +37,12 @@ public sealed class Sword : Component
 		TimerManager.ClearTimer(ProcessAttackHandle);
 		IsInAttackMode = false;
 	}
-
 	private void CheckForHit(Guid InPusherId)
 	{
-		Vector3 TraceSize = new (20f, 20f, 150f);
-		SceneTraceResult TraceResults = Scene.Trace.Box(TraceSize, WorldPosition, WorldPosition).WithAnyTags("player", "collectible").IgnoreGameObjectHierarchy(GameObject.Root).Rotated(WorldRotation).Run();
-		//DebugOverlay.Box(Vector3.Zero, TraceSize, Color.Red, 2f, WorldTransform);
+		Vector3 TraceSize = new (20f, 20f, 80f);
+		Vector3 TraceCenter = WorldPosition + WorldRotation.Up * 35f;
+		SceneTraceResult TraceResults = Scene.Trace.Box(TraceSize, TraceCenter, TraceCenter).WithAnyTags("player", "collectible").IgnoreGameObjectHierarchy(GameObject.Root).Rotated(WorldRotation).Run();
+		//DebugOverlay.Box(Vector3.Zero, TraceSize, Color.Red, 5f, WorldTransform.WithPosition(TraceCenter));
 		if (!TraceResults.Hit) return;
 		GameObject Target = TraceResults.GameObject.Root;
 		if (!HitObjects.Add(Target)) return;
@@ -54,6 +58,7 @@ public sealed class Sword : Component
 		TargetPullableComponent.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force * MassForceMultiplier);
 		TargetPullableComponent.SetOwnerId(Network.OwnerId, false);
 	}
+	
 	[Rpc.Broadcast]
 	public void Attack()
 	{
