@@ -131,12 +131,12 @@
 						<div class="buy-section">
 							@if (!CanBuyMore(SelectedUpgrade))
 							{
-								<div class="status-box owned">MAX LEVEL REACHED</div>
+								<div class="buy-btn">MAXED OUT</div>
 							}
 							else
 							{
 								<div class="buy-btn @(CanAfford(SelectedUpgrade) && GetIsAvailable(SelectedUpgradeName) ? "active" : "disabled")" @onclick=@BuyUpgrade>
-									@(!GetIsAvailable(SelectedUpgradeName) ? "LOCKED" : CanAfford(SelectedUpgrade) ? "UPGRADE LEVEL" : "INSUFFICIENT MONEY")
+									@(!GetIsAvailable(SelectedUpgradeName) ? "LOCKED" : CanAfford(SelectedUpgrade) ? "BUY UPGRADE" : "INSUFFICIENT MONEY")
 								</div>
 							}
 						</div>
@@ -237,6 +237,9 @@
 			case EUpgradeValue.ChanceToSpawnEmerald: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * 2 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2;
 			case EUpgradeValue.ChanceToSpawnAmethyst: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1);
 			case EUpgradeValue.ChanceToSpawnObsidian: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1);
+			case EUpgradeValue.AlienComboMaxMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * 0.5f;
+			case EUpgradeValue.AlienComboMultiplierBoxReduction: return 5 - PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1);
+			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * 0.05f;
 			default: return 0;
 		}
 	}
@@ -246,8 +249,9 @@
 		string Formatted = Value.ToString("G");
 		switch (InUpgradeValue)
 		{
-			case EUpgradeValue.MoneyAdded: return Formatted;
+			case EUpgradeValue.MoneyAdded: case EUpgradeValue.AlienComboMultiplierBoxReduction: return Formatted;
 			case EUpgradeValue.DashCooldown: return $"{Formatted}s";
+			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: case EUpgradeValue.AlienComboMaxMultiplier: return $"{Formatted}x";
 			default: return $"{Formatted}%";
 		}
 	}

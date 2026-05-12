@@ -86,11 +86,7 @@
             "LodOverride": null,
             "MaterialGroup": null,
             "MaterialOverride": null,
-            "Materials": {
-              "indexed": {
-                "0": "models/ufo/beam.vmat"
-              }
-            },
+            "Materials": null,
             "Model": "models/ufo/beam.vmdl",
             "OnComponentDestroy": null,
             "OnComponentDisabled": null,

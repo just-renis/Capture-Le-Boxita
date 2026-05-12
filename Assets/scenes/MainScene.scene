@@ -593,11 +593,11 @@
               "Y": 100
             },
             {
-              "UpgradeName": "AlienComboMultiplier1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeName": "AlienComboMaxMultiplier1",
+              "UpgradeValue": "AlienComboMaxMultiplier",
               "MaxAmount": 5,
-              "Name": "Alien Combo Multiplier",
-              "Description": "Every box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds 0.5x maximum.",
+              "Name": "Alien Combo Max Multiplier",
+              "Description": "Every 5th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds 0.5x maximum.",
               "Costs": [
                 200,
                 500,
@@ -614,7 +614,7 @@
             },
             {
               "UpgradeName": "BiggerAlienMoreMoneyMultiplier1",
-              "UpgradeValue": "MoneyAdded",
+              "UpgradeValue": "BiggerAlienMoreMoneyMultiplier",
               "MaxAmount": 5,
               "Name": "Bigger Alien = More Money",
               "Description": "For each alien scale 0.5x size get multiplier of upgrade level. Each level grants 0.05x multiplier.",
@@ -630,6 +630,25 @@
               ],
               "Icon": "ui/biggeralienmoremoneymultiplier1.png",
               "X": -100,
+              "Y": -300
+            },
+            {
+              "UpgradeName": "AlienComboMultiplierBoxReduction1",
+              "UpgradeValue": "AlienComboMultiplierBoxReduction",
+              "MaxAmount": 4,
+              "Name": "Alien Combo Multiplier Box Reduction",
+              "Description": "Reduces box requirement by 1.",
+              "Costs": [
+                50,
+                120,
+                250,
+                800
+              ],
+              "ParentsUpgradeNames": [
+                "AlienComboMaxMultiplier1"
+              ],
+              "Icon": null,
+              "X": 200,
               "Y": -300
             }
           ]
@@ -24982,18 +25001,18 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
+        }
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
         }
       },
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
-        }
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },

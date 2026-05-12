@@ -292,8 +292,8 @@ UpgradesMenu .sidebar
 UpgradesMenu .close-sidebar
 {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 4px;
+  right: 4px;
   padding: 8px;
   border-radius: 12px;
   cursor: pointer;
@@ -361,6 +361,7 @@ UpgradesMenu .buy-btn
   border-radius: 12px;
   font-weight: bold;
   text-transform: uppercase;
+  flex-direction: column;
   text-align: center;
   background-color: white;
   color: black;

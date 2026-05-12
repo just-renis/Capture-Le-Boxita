@@ -19,5 +19,8 @@ public enum EUpgradeValue
 	ChanceToSpawnEmerald,
 	ChanceToSpawnAmethyst,
 	ChanceToSpawnObsidian,
+	AlienComboMaxMultiplier,
+	AlienComboMultiplierBoxReduction,
+	BiggerAlienMoreMoneyMultiplier,
 	None
 }

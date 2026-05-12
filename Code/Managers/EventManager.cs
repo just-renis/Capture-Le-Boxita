@@ -6,6 +6,7 @@ namespace Sandbox.Managers;
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	public static event Action<bool> OnStuckPopupStateChanged;
+	public static event Action<float> OnAlienBoxComboChanged;
 	public static event Action<double> OnMoneyChanged;
 	public static event Action<EUpgradeName> OnUpgradePurchased;
 	public static event Action<EUi, bool> OnUiStateChanged;
@@ -18,6 +19,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerStuckPopupStateChange(bool InState)
 	{
 		OnStuckPopupStateChanged?.Invoke(InState);
+	}
+	public static void TriggerAlienBoxComboChange(float InCombo)
+	{
+		OnAlienBoxComboChanged?.Invoke(InCombo);
 	}
 	public static void TriggerMoneyChange(double InMoney)
 	{

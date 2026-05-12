@@ -76,4 +76,24 @@ PlayerHud
       > .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; }
       > .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; }
     }
+    > .AlienBoxComboMultiplier 
+    {
+      position: absolute;
+      top: 250px;
+      right: 50px;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 300px;
+      font-family: Poppins;
+      text-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+      transform: rotate(-3deg);
+      z-index: 100;
+    }
+    > .AlienBoxComboMultiplier .label 
+    {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: white;
+    }
 }

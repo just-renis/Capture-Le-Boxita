@@ -36,7 +36,10 @@ public sealed class Player : Component, Component.INetworkListener
 	private int HostClientCollisionUpdateHandle;
 	private int PhysicsFrameWaitTimerHandle;
 	private int CheckIfFallingOutOfWorldHandle;
+	private int CheckIfAlienBoxMultiplierComboEndedHandle;
 	private int AdditionalMoneyAmount = 1;
+	private int CurrentAlienBoxComboCountOfBoxes;
+	private int RequiredBoxesAmountForAlienBoxCombo;
 	private readonly float SpringStrength = 150f; 
 	private readonly float DampingStrength = 15f;
 	private float StuckTimer;
@@ -46,7 +49,10 @@ public sealed class Player : Component, Component.INetworkListener
 	private float MoneyLossToAliensPercentage;
 	private float MovementSpeed;
 	private float BoxThrowImpulseStrength;
+	private float AlienBoxComboMultiplier;
+	private float AlienBoxComboMaxMultiplier;
 	private TimeSince TimeSinceLastDash;
+	private TimeSince TimeSinceLastBoxConsumed;
 	private Vector3 LastFramePosition;
 	private Angles CurrentCameraRotation;
 	private FHeldObjectData HeldObjectData;
@@ -107,6 +113,7 @@ public sealed class Player : Component, Component.INetworkListener
 		EventManager.OnPlayerDataRequired += GetPlayerData;
 		EventManager.OnUpgradePurchased += UpgradePurchased;
 		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
+		CheckIfAlienBoxMultiplierComboEndedHandle = TimerManager.AddTimer(CheckIfAlienBoxMultiplierComboEndedHandle, 0.05f, true, CheckIfAlienBoxMultiplierComboEnded);
 		LoadSaveData();
 		ApplyUpgradesOnJoin();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
@@ -121,8 +128,11 @@ public sealed class Player : Component, Component.INetworkListener
 	protected override void OnDestroy()
 	{
 		EventManager.OnKill -= OnKillEventListener;
+		TimerManager.ClearTimer(GrabTimerHandle);
 		TimerManager.ClearTimer(HostClientCollisionUpdateHandle);
+		TimerManager.ClearTimer(PhysicsFrameWaitTimerHandle);
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
+		TimerManager.ClearTimer(CheckIfAlienBoxMultiplierComboEndedHandle);
 		if (IsProxy) return;
 		ClearHeldObjectData();
 		EventManager.OnPlayerDataRequired -= GetPlayerData;
@@ -301,10 +311,10 @@ public sealed class Player : Component, Component.INetworkListener
 		Data = PlayerData.Load();
 		EventManager.TriggerMoneyChange(Data.GetMoney());
 	}
-	private void OnKillEventListener(Guid InKillerId, bool InIsPlayerKill, double InMoneyAmount)
+	private void OnKillEventListener(Guid InKillerId, bool InIsPlayerKill, double InMoneyMultiplier)
 	{
 		if (!Networking.IsHost) return;
-		IncreaseMoney(InKillerId, InIsPlayerKill, InMoneyAmount);
+		IncreaseMoney(InKillerId, InIsPlayerKill, InMoneyMultiplier);
 	}
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
@@ -343,6 +353,8 @@ public sealed class Player : Component, Component.INetworkListener
 			case EUpgradeName.DashCooldown1: DashCooldown = DefaultDashCooldown - Data.GetUpgradeAmount(EUpgradeName.DashCooldown1) * 0.5f; break;
 			case EUpgradeName.DashImpulseStrength1: DashImpulseStrength = DefaultDashImpulseStrength * (1f + Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * 0.05f); break;
 			case EUpgradeName.BoxThrowImpulseStrength1: BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * 0.08f); break;
+			case EUpgradeName.AlienComboMaxMultiplier1: AlienBoxComboMaxMultiplier = Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * 0.5f; break;
+			case EUpgradeName.AlienComboMultiplierBoxReduction1: RequiredBoxesAmountForAlienBoxCombo = 5 - Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1); break;
 		}
 	}
 	private void ApplyUpgradesOnJoin()
@@ -353,7 +365,18 @@ public sealed class Player : Component, Component.INetworkListener
 		MoneyLossToAliensPercentage = DefaultMoneyLossToAliensPercentage;
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
+		RequiredBoxesAmountForAlienBoxCombo = 5;
 		foreach (KeyValuePair<EUpgradeName, int> Upgrade in Data.GetOwnedUpgrades()) UpgradePurchased(Upgrade.Key);
+	}
+	private void CheckIfAlienBoxMultiplierComboEnded()
+	{
+		if (AlienBoxComboMultiplier > 0 && TimeSinceLastBoxConsumed > 5f)
+		{
+			CurrentAlienBoxComboCountOfBoxes = 0;
+			Log.Info("RESET");
+			AlienBoxComboMultiplier = 0f;
+			EventManager.TriggerAlienBoxComboChange(0f);
+		}
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]
@@ -396,11 +419,21 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	
 	[Rpc.Broadcast]
-	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, double InMoneyAmount)
+	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, double InMoneyMultiplier)
 	{
 		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
-		if (InIsPlayerKill) AddMoney(InMoneyAmount);
-		else AddMoney(AdditionalMoneyAmount * InMoneyAmount);
+		if (InIsPlayerKill) AddMoney(InMoneyMultiplier); // When player gets killed its entire money sum not multiplier.
+		else
+		{
+			TimeSinceLastBoxConsumed = 0f;
+			AddMoney(AdditionalMoneyAmount * (InMoneyMultiplier + AlienBoxComboMultiplier));
+			if (AlienBoxComboMultiplier >= AlienBoxComboMaxMultiplier) return;
+			Log.Info("CURRENT BOXES AMOUNT: " + CurrentAlienBoxComboCountOfBoxes + 1);
+			if (++CurrentAlienBoxComboCountOfBoxes < RequiredBoxesAmountForAlienBoxCombo) return;
+			CurrentAlienBoxComboCountOfBoxes = 0;
+			AlienBoxComboMultiplier += 0.1f;
+			EventManager.TriggerAlienBoxComboChange(AlienBoxComboMultiplier);
+		}
 	}
 	[Rpc.Broadcast]
 	private void RequestMoneyTransfer(Guid TargetId)

@@ -19,6 +19,13 @@
 			<p>PRESS [U] TO UNSTUCK</p>
 		</div>
 	}
+	@if (IsAlienBoxComboMultiplierAvailable)
+	{
+		<div class="AlienBoxComboMultiplier">
+			<div class="label">COMBO</div>
+			<div class="value">@AlienBoxComboMultiplier.ToString("F1") X</div>
+		</div>
+	}
 	<div class="Leaderboard">
 		@foreach (LeaderboardEntry Entry in Players)
 		{
@@ -33,6 +40,8 @@
 @code
 {
 	private bool IsStuckPopupEnabled;
+	private bool IsAlienBoxComboMultiplierAvailable;
+	private float AlienBoxComboMultiplier;
 	private double Money;
 	private List<LeaderboardEntry> Players = [];
 	
@@ -41,18 +50,25 @@
 		EventManager.OnPlayerConnectionChanged += HandleClickStateChange;
 		EventManager.OnMoneyChanged += SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged += StuckPopupStateChange;
+		EventManager.OnAlienBoxComboChanged += SetAlienBoxCombo;
 	}
 	protected override void OnDestroy()
 	{
 		EventManager.OnPlayerConnectionChanged -= HandleClickStateChange;
 		EventManager.OnMoneyChanged -= SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged -= StuckPopupStateChange;
+		EventManager.OnAlienBoxComboChanged -= SetAlienBoxCombo;
 	}
 	protected override int BuildHash()
 	{
-		return System.HashCode.Combine(Money, IsStuckPopupEnabled);
+		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable);
 	}
 	
+	private void SetAlienBoxCombo(float InAlienBoxComboMultiplier)
+	{
+		AlienBoxComboMultiplier = InAlienBoxComboMultiplier + 1f;
+		IsAlienBoxComboMultiplierAvailable = AlienBoxComboMultiplier >= 1.1f;
+	}
 	private void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
 	{
 		if (InConnected) Players.Add(InLeaderboardEntry);

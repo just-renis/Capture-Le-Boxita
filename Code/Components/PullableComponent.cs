@@ -11,6 +11,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private bool IsOwnerHolding { get; set; }
 	[Sync] private float LastOwnerTime { get; set; }
 	[Sync] private float MoneyMultiplier { get; set; }
+	[Sync] private float AlienScaleMultiplier { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
 	private bool IsPulled;
 	private int ClearOwnerIdHandle;
@@ -23,7 +24,11 @@ public class PullableComponent : Component, Component.ICollisionListener
 	
 	public bool GetIsPulled() { return IsPulled; }
 	public bool IsInAir() { return !IsInAirCheckRequired || LastOwnedBy != Guid.Empty || MathF.Abs(Rigidbody.Velocity.z) > 0.1f; }
-	public float GetMoneyMultiplier() { return MoneyMultiplier; }
+	public float GetMoneyMultiplier(float InAlienScale)
+	{
+		float Stacks = (float)Math.Floor(InAlienScale / 0.5f);
+		return MoneyMultiplier + MoneyMultiplier * Stacks * AlienScaleMultiplier;
+	}
 	public Guid GetOwnerId() { return LastOwnedBy; }
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)
@@ -34,7 +39,11 @@ public class PullableComponent : Component, Component.ICollisionListener
 		if (InId == Network.OwnerId)
 		{
 			CollectibleCube Cube = GetComponent<CollectibleCube>();
-			if (Cube != null) MoneyMultiplier = Cube.GetMoneyMultiplier();
+			if (Cube != null)
+			{
+				MoneyMultiplier = Cube.GetMoneyMultiplier();
+				AlienScaleMultiplier = Cube.GetAlienScaleMultiplier();
+			}
 		}
 		if (!IsGrabbedByPlayer) SetClearOwnerIdTimerInternally();
 		else TimerManager.ClearTimer(ClearOwnerIdHandle);

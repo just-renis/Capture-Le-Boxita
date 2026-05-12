@@ -17,13 +17,19 @@ public sealed class CollectibleCube : Component, IPoolObject
 	private Rigidbody Rigidbody;
 	private PlayerData Data;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
-	public void RequestReturnToPoolObject()
+	public float GetAlienScaleMultiplier()
+	{
+		if (Data == null) return 0f;
+		return Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * 0.05f;
+	}
+	
+	public void RequestReturnToPoolObject(float InAlienScale)
 	{
 		if (!Networking.IsHost) return;
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
 		GameObject.Network.TakeOwnership();
 		PullComp.SetIsPulled(false);
-		EventManager.TriggerOnKill(PullComp.GetOwnerId(), false, PullComp.GetMoneyMultiplier());
+		EventManager.TriggerOnKill(PullComp.GetOwnerId(), false, PullComp.GetMoneyMultiplier(InAlienScale));
 		PullComp.ClearOwnerId();
 		Rigidbody.Velocity = 0f;
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);
@@ -49,7 +55,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 		ChangeMaterialByChances();
 		TimerManager.ClearTimer(SetMaterialHandle);
 	}
-	private void CheckIfFallingOutOfWorld() { if (WorldPosition.z <= -1000f) RequestReturnToPoolObject(); }
+	private void CheckIfFallingOutOfWorld() { if (WorldPosition.z <= -1000f) RequestReturnToPoolObject(0f); }
 	private void ChangeMaterialByChances()
 	{
 		int RemainingPercentage = 100;

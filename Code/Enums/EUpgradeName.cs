@@ -20,7 +20,8 @@ public enum EUpgradeName
 	DashImpulseStrength1,
 	DashCooldown1,
 	BoxThrowImpulseStrength1,
-	AlienComboMultiplier1,
+	AlienComboMaxMultiplier1,
+	AlienComboMultiplierBoxReduction1,
 	BiggerAlienMoreMoneyMultiplier1,
 	None
 }

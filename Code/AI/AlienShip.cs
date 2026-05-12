@@ -94,7 +94,7 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		if (InCollider.Tags.Has("collectible"))
 		{
-			InCollider.GameObject.Root.GetComponent<CollectibleCube>()?.RequestReturnToPoolObject();
+			InCollider.GameObject.Root.GetComponent<CollectibleCube>()?.RequestReturnToPoolObject(WorldScale.x);
 			AddScale();
 		}
 		else if (InCollider.Tags.Has("player"))
