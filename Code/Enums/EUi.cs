@@ -2,5 +2,6 @@
 
 public enum EUi
 {
-	UpgradesMenu
+	UpgradesMenu,
+	SettingsMenu
 }

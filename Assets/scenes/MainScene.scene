@@ -215,7 +215,7 @@
         {
           "__type": "Sandbox.UI.UpgradesMenu",
           "__guid": "2e7713f4-f662-4d73-89a0-bf19cdd61224",
-          "__enabled": true,
+          "__enabled": false,
           "Flags": 0,
           "DebugMoneyAmount": 100000,
           "OnComponentDestroy": null,
@@ -224,13 +224,15 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
+          "QuestionMarkIcon": "ui/questionmark.png",
           "Upgrades": [
             {
               "UpgradeName": "MoreMoney1",
               "UpgradeValue": "MoneyAdded",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "More Money",
-              "Description": "Increases +1 more money from boxes per upgrade.",
+              "Description": "Increases +{0} more money from boxes per upgrade.",
               "Costs": [
                 5,
                 10,
@@ -246,9 +248,10 @@
             {
               "UpgradeName": "MovementSpeed1",
               "UpgradeValue": "MovementSpeed",
+              "DefaultAttribute": "None",
               "MaxAmount": 10,
               "Name": "Movement Speed",
-              "Description": "Increases movement speed by 5% per upgrade.",
+              "Description": "Increases movement speed by {0}% per upgrade.",
               "Costs": [
                 30,
                 75,
@@ -269,9 +272,10 @@
             {
               "UpgradeName": "BoxGrabRange1",
               "UpgradeValue": "BoxGrabRange",
+              "DefaultAttribute": "None",
               "MaxAmount": 3,
               "Name": "Box Grab Range",
-              "Description": "Increases box grab range by 15% per upgrade",
+              "Description": "Increases box grab range by {0}% per upgrade",
               "Costs": [
                 40,
                 150,
@@ -285,9 +289,10 @@
             {
               "UpgradeName": "SwordPower1",
               "UpgradeValue": "SwordPower",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "Sword Power",
-              "Description": "Increases sword power by 10% per upgrade.",
+              "Description": "Increases sword power by {0}% per upgrade.",
               "Costs": [
                 20,
                 80,
@@ -303,9 +308,10 @@
             {
               "UpgradeName": "LessMoneyLoss1",
               "UpgradeValue": "MoneyLoss",
+              "DefaultAttribute": "MoneyLossPercentageToAliens",
               "MaxAmount": 5,
               "Name": "Money Defense",
-              "Description": "Reduces money lost from Alien Probes by 1% (Does not apply to Player-initiated kills).",
+              "Description": "Reduces money lost from Alien Probes by {0}% (Does not apply to Player-initiated kills).",
               "Costs": [
                 90,
                 300,
@@ -323,9 +329,10 @@
             {
               "UpgradeName": "ChanceToSpawnWood1",
               "UpgradeValue": "ChanceToSpawnWood",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Wood Box",
-              "Description": "Adds 5% chance for wood box to spawn.",
+              "Description": "Adds {0}% chance for wood box to spawn.",
               "Costs": [
                 20,
                 50,
@@ -343,9 +350,10 @@
             {
               "UpgradeName": "ChanceToSpawnRock1",
               "UpgradeValue": "ChanceToSpawnRock",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "Chance To Spawn Wood And Rock Box",
-              "Description": "Adds 5% chance to spawn wood and rock box.",
+              "Description": "Adds {0}% chance to spawn wood and rock box.",
               "Costs": [
                 75,
                 100,
@@ -363,9 +371,10 @@
             {
               "UpgradeName": "ChanceToSpawnMetal1",
               "UpgradeValue": "ChanceToSpawnMetal",
+              "DefaultAttribute": "None",
               "MaxAmount": 6,
               "Name": "Chance To Spawn Rock And Metal Box",
-              "Description": "Adds 4% chance to spawn rock and metal box.",
+              "Description": "Adds {0}% chance to spawn rock and metal box.",
               "Costs": [
                 180,
                 275,
@@ -384,9 +393,10 @@
             {
               "UpgradeName": "ChanceToSpawnGold1",
               "UpgradeValue": "ChanceToSpawnGold",
+              "DefaultAttribute": "None",
               "MaxAmount": 6,
               "Name": "Chance To Spawn Metal And Gold Box",
-              "Description": "Adds 4% chance to spawn metal and gold box.",
+              "Description": "Adds {0}% chance to spawn metal and gold box.",
               "Costs": [
                 350,
                 700,
@@ -405,9 +415,10 @@
             {
               "UpgradeName": "ChanceToSpawnDiamond1",
               "UpgradeValue": "ChanceToSpawnDiamond",
+              "DefaultAttribute": "None",
               "MaxAmount": 7,
               "Name": "Chance to spawn gold and diamond box",
-              "Description": "Adds 3% chance to spawn gold and diamond box.",
+              "Description": "Adds {0}% chance to spawn gold and diamond box.",
               "Costs": [
                 800,
                 1300,
@@ -427,9 +438,10 @@
             {
               "UpgradeName": "ChanceToSpawnRuby1",
               "UpgradeValue": "ChanceToSpawnRuby",
+              "DefaultAttribute": "None",
               "MaxAmount": 7,
               "Name": "Chance to spawn diamond and ruby box",
-              "Description": "Adds 3% chance to spawn diamond and ruby box.",
+              "Description": "Adds {0}% chance to spawn diamond and ruby box.",
               "Costs": [
                 1500,
                 3000,
@@ -449,9 +461,10 @@
             {
               "UpgradeName": "ChanceToSpawnEmerald1",
               "UpgradeValue": "ChanceToSpawnEmerald",
+              "DefaultAttribute": "None",
               "MaxAmount": 8,
               "Name": "Chance to spawn ruby and emerald box",
-              "Description": "Adds 2% chance to spawn ruby and emerald box.",
+              "Description": "Adds {0}% chance to spawn ruby and emerald box.",
               "Costs": [
                 2750,
                 5000,
@@ -472,9 +485,10 @@
             {
               "UpgradeName": "ChanceToSpawnAmethyst1",
               "UpgradeValue": "ChanceToSpawnAmethyst",
+              "DefaultAttribute": "None",
               "MaxAmount": 8,
               "Name": "Chance to spawn emerald and amethysst box",
-              "Description": "Adds 2% chance to spawn emerald and amethyst box.",
+              "Description": "Adds {0}% chance to spawn emerald and amethyst box.",
               "Costs": [
                 5000,
                 8000,
@@ -495,9 +509,10 @@
             {
               "UpgradeName": "ChanceToSpawnObsidian1",
               "UpgradeValue": "ChanceToSpawnObsidian",
+              "DefaultAttribute": "None",
               "MaxAmount": 10,
               "Name": "Chance to spawn amethyst and obsidian box",
-              "Description": "Adds 1% chance to spawn amethyst and obsidian box.",
+              "Description": "Adds {0}% chance to spawn amethyst and obsidian box.",
               "Costs": [
                 8000,
                 15000,
@@ -519,10 +534,11 @@
             },
             {
               "UpgradeName": "UnlockDashAbility",
-              "UpgradeValue": "BoxThrowStrength",
+              "UpgradeValue": "None",
+              "DefaultAttribute": "DashCooldown",
               "MaxAmount": 1,
               "Name": "Unlock Dash Ability",
-              "Description": "Unlocks ability to dash using [SHIFT]. Dash has 15 seconds cooldown.",
+              "Description": "Unlocks ability to dash using [SHIFT]. Dash has {1} seconds cooldown.",
               "Costs": [
                 500
               ],
@@ -536,9 +552,10 @@
             {
               "UpgradeName": "DashImpulseStrength1",
               "UpgradeValue": "DashImpulseStrength",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "Dash Impulse Strength",
-              "Description": "Increases dash impulse strength by 5%.",
+              "Description": "Increases dash impulse strength by {0}%.",
               "Costs": [
                 200,
                 400,
@@ -556,9 +573,10 @@
             {
               "UpgradeName": "DashCooldown1",
               "UpgradeValue": "DashCooldown",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "Reduce Dash Cooldown",
-              "Description": "Reduces dash cooldown by 0.5 seconds.",
+              "Description": "Reduces dash cooldown by {0} seconds.",
               "Costs": [
                 500,
                 800,
@@ -576,9 +594,10 @@
             {
               "UpgradeName": "BoxThrowImpulseStrength1",
               "UpgradeValue": "BoxThrowStrength",
+              "DefaultAttribute": "None",
               "MaxAmount": 4,
               "Name": "Box throw impulse strength",
-              "Description": "Increases box throw impulse strength by 8%.",
+              "Description": "Increases box throw impulse strength by {0}%.",
               "Costs": [
                 100,
                 225,
@@ -595,9 +614,10 @@
             {
               "UpgradeName": "AlienComboMaxMultiplier1",
               "UpgradeValue": "AlienComboMaxMultiplier",
+              "DefaultAttribute": "RequiredBoxesAmountForAlienBoxCombo1",
               "MaxAmount": 5,
               "Name": "Alien Combo Max Multiplier",
-              "Description": "Every 5th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds 0.5x maximum.",
+              "Description": "Every {1}th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds {0}x maximum.",
               "Costs": [
                 200,
                 500,
@@ -615,9 +635,10 @@
             {
               "UpgradeName": "BiggerAlienMoreMoneyMultiplier1",
               "UpgradeValue": "BiggerAlienMoreMoneyMultiplier",
+              "DefaultAttribute": "None",
               "MaxAmount": 5,
               "Name": "Bigger Alien = More Money",
-              "Description": "For each alien scale 0.5x size get multiplier of upgrade level. Each level grants 0.05x multiplier.",
+              "Description": "For each alien scale 0.5x size get multiplier of upgrade level. Each level grants {0}x multiplier.",
               "Costs": [
                 100,
                 200,
@@ -635,9 +656,10 @@
             {
               "UpgradeName": "AlienComboMultiplierBoxReduction1",
               "UpgradeValue": "AlienComboMultiplierBoxReduction",
+              "DefaultAttribute": "None",
               "MaxAmount": 4,
               "Name": "Alien Combo Multiplier Box Reduction",
-              "Description": "Reduces box requirement by 1.",
+              "Description": "Reduces box requirement by {0}.",
               "Costs": [
                 50,
                 120,
@@ -647,11 +669,62 @@
               "ParentsUpgradeNames": [
                 "AlienComboMaxMultiplier1"
               ],
-              "Icon": null,
+              "Icon": "ui/aliencombomultiplierboxreduction1.png",
               "X": 200,
               "Y": -300
             }
           ]
+        },
+        {
+          "__type": "Sandbox.Data.GlobalData",
+          "__guid": "32570a61-1dd3-4d58-86a1-e771f90930bb",
+          "__enabled": true,
+          "Flags": 0,
+          "DefaultAttributes": {
+            "RequiredBoxesAmountForAlienBoxCombo1": 5,
+            "MoneyLossPercentageToAliens": 25,
+            "DashCooldown": 8
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Upgrades": {
+            "MoreMoney1": 1,
+            "MovementSpeed1": 5,
+            "BoxGrabRange1": 10,
+            "SwordPower1": 10,
+            "LessMoneyLoss1": 1,
+            "ChanceToSpawnWood1": 5,
+            "ChanceToSpawnRock1": 5,
+            "ChanceToSpawnMetal1": 4,
+            "ChanceToSpawnGold1": 4,
+            "ChanceToSpawnDiamond1": 3,
+            "ChanceToSpawnRuby1": 3,
+            "ChanceToSpawnEmerald1": 2,
+            "ChanceToSpawnAmethyst1": 2,
+            "ChanceToSpawnObsidian1": 1,
+            "DashImpulseStrength1": 10,
+            "DashCooldown1": 0.5,
+            "BoxThrowImpulseStrength1": 10,
+            "AlienComboMaxMultiplier1": 0.5,
+            "AlienComboMultiplierBoxReduction1": 1,
+            "BiggerAlienMoreMoneyMultiplier1": 0.05
+          }
+        },
+        {
+          "__type": "Sandbox.UI.SettingsMenu",
+          "__guid": "7d8af88c-9b62-43fd-8ba6-1c51c9b82cba",
+          "__enabled": false,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []
@@ -25001,17 +25074,17 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
+        }
+      },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
-        }
-      },
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
         }
       }
     }

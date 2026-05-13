@@ -17,6 +17,7 @@ public sealed class GameManager : Component
 		CollectibleCubeManager.Init();
 		PoolingManager = Scene.GetSystem<PoolingManager>();
 		EventManager.OnTeleportToSpawnLocation += GetSpawnerLocation;
+		UiManager.OnStart();
 		if (!Networking.IsHost) return;
 		PoolingManager.Init(Prefabs);
 	}
@@ -30,6 +31,7 @@ public sealed class GameManager : Component
 	{
 		EventManager.OnTeleportToSpawnLocation -= GetSpawnerLocation;
 		TimerManager.OnDestroy();
+		UiManager.OnDestroy();
 	}
 	private Vector3 GetSpawnerLocation()
 	{

@@ -1,5 +1,4 @@
 @using Sandbox;
-@using Sandbox.Data
 @using Sandbox.Managers
 @inherits PanelComponent
 
@@ -11,7 +10,10 @@
 		<div class="corner bottom-right"></div>
 	</div>
 	<div class="Money">
-		<p>MONEY: @Money.ToString("F0")</p>
+		<div class="icon"><i>payments</i></div>
+		<div class="amount-container">
+			<span class="value">$@Money.ToString("N0")</span>
+		</div>
 	</div>
 	@if (IsStuckPopupEnabled)
 	{
@@ -22,19 +24,21 @@
 	@if (IsAlienBoxComboMultiplierAvailable)
 	{
 		<div class="AlienBoxComboMultiplier">
-			<div class="label">COMBO</div>
-			<div class="value">@AlienBoxComboMultiplier.ToString("F1") X</div>
+			<div>COMBO</div>
+			<div>@AlienBoxComboMultiplier.ToString("F1") X</div>
 		</div>
 	}
-	<div class="Leaderboard">
-		@foreach (LeaderboardEntry Entry in Players)
-		{
-			<div class="Entry">
-				<span class="Name">@Entry.Name</span>
-				<span class="Money">@Entry.Money</span>
-			</div>
-		}
-	</div>
+	<footer>
+		<div class="tips">
+			<span class="tip"><b>LMB</b> ATTACK</span>
+			<span class="divider">|</span>
+			<span class="tip"><b>RMB</b> PICK UP BOX</span>
+			<span class="divider">|</span>
+			<span class="tip"><b>TAB</b> Open Upgrades</span>
+			<span class="divider">|</span>
+			<span class="tip"><b>ESC</b> Open Settings</span>
+		</div>
+	</footer>
 </root>
 
 @code
@@ -43,18 +47,15 @@
 	private bool IsAlienBoxComboMultiplierAvailable;
 	private float AlienBoxComboMultiplier;
 	private double Money;
-	private List<LeaderboardEntry> Players = [];
 	
 	protected override void OnStart()
 	{
-		EventManager.OnPlayerConnectionChanged += HandleClickStateChange;
 		EventManager.OnMoneyChanged += SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged += StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged += SetAlienBoxCombo;
 	}
 	protected override void OnDestroy()
 	{
-		EventManager.OnPlayerConnectionChanged -= HandleClickStateChange;
 		EventManager.OnMoneyChanged -= SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged -= StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged -= SetAlienBoxCombo;
@@ -64,16 +65,11 @@
 		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable);
 	}
 	
+	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
+	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
 	private void SetAlienBoxCombo(float InAlienBoxComboMultiplier)
 	{
 		AlienBoxComboMultiplier = InAlienBoxComboMultiplier + 1f;
 		IsAlienBoxComboMultiplierAvailable = AlienBoxComboMultiplier >= 1.1f;
 	}
-	private void HandleClickStateChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
-	{
-		if (InConnected) Players.Add(InLeaderboardEntry);
-		else Players.Remove(InLeaderboardEntry);
-	}
-	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
-	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
 }

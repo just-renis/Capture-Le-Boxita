@@ -1,5 +1,6 @@
 using System;
 using Sandbox.Components;
+using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Player;
@@ -46,15 +47,15 @@ public sealed class Sword : Component
 		if (!TraceResults.Hit) return;
 		GameObject Target = TraceResults.GameObject.Root;
 		if (!HitObjects.Add(Target)) return;
-		SendToHostAboutTheHit(Target, InPusherId, EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1));
+		SendToHostAboutTheHit(Target, InPusherId, EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.SwordPower1));
 	}
-	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId, int InPushForceUpgradeAmount)
+	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId, float InPushForceUpgradeAmount)
 	{
 		if (!Network.IsOwner || !IsInAttackMode || Target.Tags.Has("safe")) return;
 		PullableComponent TargetPullableComponent = Target.GetComponent<PullableComponent>();
 		if (TargetPullableComponent == null) return;
 		float MassForceMultiplier = TargetPullableComponent.Tags.Has("collectible") ? BoxPushMultiplier : 1f;
-		Int64 Force = (long)(PushForce + PushForce * (float)InPushForceUpgradeAmount * 0.1f);
+		Int64 Force = (long)(PushForce + PushForce * InPushForceUpgradeAmount * 0.01f);
 		TargetPullableComponent.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force * MassForceMultiplier);
 		TargetPullableComponent.SetOwnerId(Network.OwnerId, false);
 	}

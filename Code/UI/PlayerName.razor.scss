@@ -1,0 +1,18 @@
+PlayerName
+{
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  align-items: center;
+  justify-content: center;
+  .name
+  {
+    font-size: 200px;
+    font-weight: 900;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    font-family: Poppins;
+    text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+  }
+}

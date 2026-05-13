@@ -374,19 +374,6 @@ UpgradesMenu .buy-btn.disabled
   color: rgba(255, 255, 255, 0.2);
 }
 
-/* --- Footer --- */
-
-UpgradesMenu footer
-{
-  padding: 12px 32px;
-  background-color: rgba(0, 0, 0, 0.9);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 50;
-}
-
 UpgradesMenu .zoom-controls
 {
   position: absolute;

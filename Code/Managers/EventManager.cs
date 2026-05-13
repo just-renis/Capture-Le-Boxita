@@ -6,11 +6,12 @@ namespace Sandbox.Managers;
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	public static event Action<bool> OnStuckPopupStateChanged;
+	public static event Action<bool> OnPlayerNameShowTagChanged;
 	public static event Action<float> OnAlienBoxComboChanged;
 	public static event Action<double> OnMoneyChanged;
+	public static event Action<string> OnPlayerNameChanged;
 	public static event Action<EUpgradeName> OnUpgradePurchased;
 	public static event Action<EUi, bool> OnUiStateChanged;
-	public static event Action<LeaderboardEntry, bool> OnPlayerConnectionChanged;
 	public static event Action<Guid, bool, double> OnKill;
 	public static event Func<Vector3> OnTeleportToSpawnLocation;
 	public static event Func<Vector3> OnTeleportToSafeZoneLocation;
@@ -20,6 +21,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnStuckPopupStateChanged?.Invoke(InState);
 	}
+	public static void TriggerPlayerNameShowTagChange(bool InState)
+	{
+		OnPlayerNameShowTagChanged?.Invoke(InState);
+	}
 	public static void TriggerAlienBoxComboChange(float InCombo)
 	{
 		OnAlienBoxComboChanged?.Invoke(InCombo);
@@ -28,6 +33,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnMoneyChanged?.Invoke(InMoney);
 	}
+	public static void TriggerPlayerNameChange(string InPlayerName)
+	{
+		OnPlayerNameChanged?.Invoke(InPlayerName);
+	}
 	public static void TriggerUpgradePurchased(EUpgradeName InUpgradeName)
 	{
 		OnUpgradePurchased?.Invoke(InUpgradeName);
@@ -35,10 +44,6 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerUiStateChange(EUi InUi, bool RenderState)
 	{
 		OnUiStateChanged?.Invoke(InUi, RenderState);
-	}
-	public static void TriggerPlayerConnectionChange(LeaderboardEntry InLeaderboardEntry, bool InConnected)
-	{
-		OnPlayerConnectionChanged?.Invoke(InLeaderboardEntry, InConnected);
 	}
 	public static void TriggerOnKill(Guid InKillerPlayerId, bool InIsPlayerKill, double InMoneyAmount)
 	{

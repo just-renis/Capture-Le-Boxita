@@ -45,6 +45,10 @@
 					<div class="lines">
 						@foreach (Upgrade Node in Upgrades)
 						{
+							bool IsUpgradeOwned = GetIsOwned(Node.UpgradeName);
+							bool IsAvailable = GetIsAvailable(Node.UpgradeName);
+							bool IsDiscoverable = !IsUpgradeOwned && Node.ParentsUpgradeNames.Any(GetIsAvailable);
+							if (!IsUpgradeOwned && !IsAvailable && !IsDiscoverable) continue;
 							@foreach (EUpgradeName ParentId in Node.ParentsUpgradeNames)
 							{
 								Upgrade Parent = Upgrades.FirstOrDefault(U => U.UpgradeName == ParentId);
@@ -53,7 +57,7 @@
 								float Dy = Node.Y - Parent.Y;
 								float Length = MathF.Sqrt(Dx * Dx + Dy * Dy);
 								float Angle = MathF.Atan2(Dy, Dx) * 180f / MathF.PI;
-								bool IsOwnedPath = GetIsOwned(Node.UpgradeName) && GetIsOwned(Parent.UpgradeName);
+								bool IsOwnedPath = IsUpgradeOwned && GetIsOwned(Parent.UpgradeName);
 								<div class="line @(IsOwnedPath ? "owned" : "unowned")"
 								     style="left: @(Parent.X + 32)px; top: @(Parent.Y + 32)px; width: @(Length)px; transform: rotate(@(Angle)deg);"></div>
 							}
@@ -63,25 +67,27 @@
 					<div class="nodes">
 						@foreach (Upgrade Node in Upgrades)
 						{
-							bool IsSelected = SelectedUpgradeName == Node.UpgradeName;
-							bool IsOwned = GetIsOwned(Node.UpgradeName);
+							bool IsUpgradeOwned = GetIsOwned(Node.UpgradeName);
 							bool IsAvailable = GetIsAvailable(Node.UpgradeName);
-							string BackgroundStyle = "";
-							if (IsAvailable)
+							bool IsDiscoverable = !IsUpgradeOwned && !IsAvailable && Node.ParentsUpgradeNames.Any(GetIsAvailable);
+							if (!IsAvailable && !IsDiscoverable) continue;
+							bool IsSelected = SelectedUpgradeName == Node.UpgradeName;
+							string BackgroundStyle = "background-color: black;";
+							if (!IsDiscoverable)
 							{
 								if (!CanBuyMore(Node)) BackgroundStyle = "background-color: #FFFF00BF;";
 								else if (CanAfford(Node)) BackgroundStyle = "background-color: #41D34D;";
 								else BackgroundStyle = "background-color: #C92121;";
 							}
 							<div class="node-wrapper @(IsSelected ? "selected" : "")" style="left: @(Node.X)px; top: @(Node.Y)px;"
-							     @onclick=@(() => SelectNode(Node.UpgradeName))>
-								<div class="node @(IsOwned ? "owned" : "") @(IsAvailable ? "available" : "locked")" style="@BackgroundStyle">
-									<img src="@Node.Icon" alt=""/>
+							     @onclick=@(IsDiscoverable ? null : () => SelectNode(Node.UpgradeName))>
+								<div class="node @(IsUpgradeOwned ? "owned" : "") @(IsAvailable ? "available" : "locked")" style="@BackgroundStyle">
+									<img src="@(IsDiscoverable ? QuestionMarkIcon : Node.Icon)" alt=""/>
 									@if (Node.MaxAmount > 1)
 									{
 										<div class="level-badge">@GetLevel(Node.UpgradeName)/@Node.MaxAmount</div>
 									}
-									@if (IsOwned && GetLevel(Node.UpgradeName) == Node.MaxAmount)
+									@if (IsUpgradeOwned && GetLevel(Node.UpgradeName) == Node.MaxAmount)
 									{
 										<div class="check"><i>check</i></div>
 									}
@@ -107,7 +113,7 @@
 
 						<h2>@SelectedUpgrade.Name</h2>
 
-						<p class="desc">@SelectedUpgrade.Description</p>
+						<p class="desc">@GetDynamicDescription(SelectedUpgrade)</p>
 						@if (SelectedUpgrade.UpgradeValue != EUpgradeValue.None)
 						{
 							<div class="stat-row">
@@ -143,12 +149,6 @@
 					</div>
 				}
 			</div>
-			<footer>
-				<div class="tips">
-					<div class="tip">Left Click = Attack</div>
-					<div class="tip">, Right Click = Pick Up Box</div>
-				</div>
-			</footer>
 		</div>
 	}
 </root>
@@ -156,6 +156,7 @@
 @code
 {
 	[Property] private List<Upgrade> Upgrades { get; set; } = [];
+	[Property, ImageAssetPath] private string QuestionMarkIcon { get; set; }
 	private bool IsDragging;
     private EUpgradeName SelectedUpgradeName;
     private float CanvasX = -225f;
@@ -173,7 +174,6 @@
     protected override void OnAwake()
     {
 	    EventManager.OnUiStateChanged += UiStateChanged;
-	    Enabled = false;
     }
     protected override void OnStart() { PlayerData = EventManager.TriggerGetPlayerData(); }
     protected override void OnDestroy()
@@ -220,28 +220,34 @@
 		if (PlayerData == null) return 0;
 		switch (InUpgradeValue)
 		{
-			case EUpgradeValue.MoneyAdded: return 1 + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1);
-			case EUpgradeValue.MovementSpeed: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 5;
-			case EUpgradeValue.MoneyLoss: return 25 - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1);
-			case EUpgradeValue.SwordPower: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.SwordPower1) * 10;
-			case EUpgradeValue.BoxGrabRange: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 15;
-			case EUpgradeValue.DashCooldown: return 8f - PlayerData.GetUpgradeAmount(EUpgradeName.DashCooldown1) * 0.5f;
-			case EUpgradeValue.DashImpulseStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * 5;
-			case EUpgradeValue.BoxThrowStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * 8;
-			case EUpgradeValue.ChanceToSpawnWood: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnWood1) * 5 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRock1) * 5;
-			case EUpgradeValue.ChanceToSpawnRock: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRock1) * 5 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnMetal1) * 4;
-			case EUpgradeValue.ChanceToSpawnMetal: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnMetal1) * 4 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnGold1) * 4;
-			case EUpgradeValue.ChanceToSpawnGold: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnGold1) * 4 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnDiamond1) * 3;
-			case EUpgradeValue.ChanceToSpawnDiamond: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnDiamond1) * 3 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRuby1) * 3;
-			case EUpgradeValue.ChanceToSpawnRuby: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRuby1) * 3 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * 2;
-			case EUpgradeValue.ChanceToSpawnEmerald: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * 2 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2;
-			case EUpgradeValue.ChanceToSpawnAmethyst: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2 + PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1);
-			case EUpgradeValue.ChanceToSpawnObsidian: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1);
-			case EUpgradeValue.AlienComboMaxMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * 0.5f;
-			case EUpgradeValue.AlienComboMultiplierBoxReduction: return 5 - PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1);
-			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * 0.05f;
+			case EUpgradeValue.MoneyAdded: return 1 + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MoreMoney1);
+			case EUpgradeValue.MovementSpeed: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MovementSpeed1);
+			case EUpgradeValue.BoxGrabRange: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxGrabRange1);
+			case EUpgradeValue.SwordPower: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.SwordPower1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.SwordPower1);
+			case EUpgradeValue.MoneyLoss: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.LessMoneyLoss1);
+			case EUpgradeValue.DashCooldown: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - PlayerData.GetUpgradeAmount(EUpgradeName.DashCooldown1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldown1);
+			case EUpgradeValue.DashImpulseStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashImpulseStrength1);
+			case EUpgradeValue.BoxThrowStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowImpulseStrength1);
+			case EUpgradeValue.ChanceToSpawnWood: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnWood1, EUpgradeName.ChanceToSpawnRock1);
+			case EUpgradeValue.ChanceToSpawnRock: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnRock1, EUpgradeName.ChanceToSpawnMetal1);
+			case EUpgradeValue.ChanceToSpawnMetal: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnMetal1, EUpgradeName.ChanceToSpawnGold1);
+			case EUpgradeValue.ChanceToSpawnGold: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnGold1, EUpgradeName.ChanceToSpawnDiamond1);
+			case EUpgradeValue.ChanceToSpawnDiamond: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnDiamond1, EUpgradeName.ChanceToSpawnRuby1);
+			case EUpgradeValue.ChanceToSpawnRuby: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnRuby1, EUpgradeName.ChanceToSpawnEmerald1);
+			case EUpgradeValue.ChanceToSpawnEmerald: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnEmerald1, EUpgradeName.ChanceToSpawnAmethyst1);
+			case EUpgradeValue.ChanceToSpawnAmethyst: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnAmethyst1, EUpgradeName.ChanceToSpawnObsidian1);
+			case EUpgradeValue.ChanceToSpawnObsidian: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnObsidian1);
+			case EUpgradeValue.AlienComboMaxMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMaxMultiplier1);
+			case EUpgradeValue.AlienComboMultiplierBoxReduction: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMultiplierBoxReduction1);
+			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
 			default: return 0;
 		}
+	}
+	private float CalculateBoxSpawnChance(EUpgradeName InUpgradeName, EUpgradeName InUpgradeNextTierName)
+	{
+		float CurrentMultiplier = GlobalData.Instance.GetUpgradeValue(InUpgradeName);
+		float NextMultiplier = GlobalData.Instance.GetUpgradeValue(InUpgradeNextTierName);
+		return PlayerData.GetUpgradeAmount(InUpgradeName) * CurrentMultiplier + PlayerData.GetUpgradeAmount(InUpgradeNextTierName) * NextMultiplier;
 	}
 	private string GetFormattedUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
@@ -270,12 +276,18 @@
 		PlayerData.SubtractMoney(GetCurrentCost(SelectedUpgrade));
 		PlayerData.BuyUpgrade(SelectedUpgradeName);
 	}
-	private void CloseMenu() { UiManager.TriggerUiStateChange(EUi.UpgradesMenu); }
+	private void CloseMenu() { UiManager.ChangeUiState(EUi.UpgradesMenu); }
 	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
 		if (InUi != EUi.UpgradesMenu) return;
 		Enabled = RenderState;
 		Panel?.Style.PointerEvents = Enabled ? PointerEvents.All : PointerEvents.None;
+	}
+	private string GetDynamicDescription(Upgrade InUpgrade)
+	{
+		return InUpgrade == null ? "" : InUpgrade.Description
+			.Replace("{0}", GlobalData.Instance.GetUpgradeValue(InUpgrade.UpgradeName).ToString("G"))
+			.Replace("{1}", GlobalData.Instance.GetDefaultAttributeValue(InUpgrade.DefaultAttribute).ToString("G"));
 	}
 	
 	[Button("Reset Save File"), Group("Dev Tools")]

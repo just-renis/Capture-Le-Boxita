@@ -20,7 +20,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	public float GetAlienScaleMultiplier()
 	{
 		if (Data == null) return 0f;
-		return Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * 0.05f;
+		return Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * 0.01f * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
 	}
 	
 	public void RequestReturnToPoolObject(float InAlienScale)
@@ -63,55 +63,63 @@ public sealed class CollectibleCube : Component, IPoolObject
 		int Roll = Random.Shared.Int(1, 100);
 
 		// --- OBSIDIAN ---
-		int ObsidianChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1));
+		int ObsidianChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnObsidian1);
+		int ObsidianChance = Math.Min(RemainingPercentage, ObsidianChanceFromUpgrades);
 		if (Roll <= ObsidianChance) { ChangeMaterial(ECubeMaterial.Obsidian); return; }
 		RemainingPercentage -= ObsidianChance;
 		Roll -= ObsidianChance;
 
 		// --- AMETHYST ---
-		int AmethystChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * 2);
+		int AmethystChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnAmethyst1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnAmethyst1);
+		int AmethystChance = Math.Min(RemainingPercentage, ObsidianChanceFromUpgrades + AmethystChanceFromUpgrades);
 		if (Roll <= AmethystChance) { ChangeMaterial(ECubeMaterial.Amethyst); return; }
 		RemainingPercentage -= AmethystChance;
 		Roll -= AmethystChance;
 		
 		// --- EMERALD ---
-		int EmeraldChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * 2);
+		int EmeraldChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnEmerald1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnEmerald1);
+		int EmeraldChance = Math.Min(RemainingPercentage, AmethystChanceFromUpgrades + EmeraldChanceFromUpgrades);
 		if (Roll <= EmeraldChance) { ChangeMaterial(ECubeMaterial.Emerald); return; }
 		RemainingPercentage -= EmeraldChance;
 		Roll -= EmeraldChance;
 		
 		// --- RUBY ---
-		int RubyChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRuby1) * 3);
+		int RubyChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRuby1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnRuby1);
+		int RubyChance = Math.Min(RemainingPercentage, EmeraldChanceFromUpgrades + RubyChanceFromUpgrades);
 		if (Roll <= RubyChance) { ChangeMaterial(ECubeMaterial.Ruby); return; }
 		RemainingPercentage -= RubyChance;
 		Roll -= RubyChance;
 		
 		// --- DIAMOND ---
-		int DiamondChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnDiamond1) * 3);
+		int DiamondChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnDiamond1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnDiamond1);
+		int DiamondChance = Math.Min(RemainingPercentage, RubyChanceFromUpgrades + DiamondChanceFromUpgrades);
 		if (Roll <= DiamondChance) { ChangeMaterial(ECubeMaterial.Diamond); return; }
 		RemainingPercentage -= DiamondChance;
 		Roll -= DiamondChance;
 		
 		// --- GOLD ---
-		int GoldChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnGold1) * 4);
+		int GoldChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnGold1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnGold1);
+		int GoldChance = Math.Min(RemainingPercentage, DiamondChanceFromUpgrades + GoldChanceFromUpgrades);
 		if (Roll <= GoldChance) { ChangeMaterial(ECubeMaterial.Gold); return; }
 		RemainingPercentage -= GoldChance;
 		Roll -= GoldChance;
 		
 		// --- METAL ---
-		int MetalChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnMetal1) * 4);
+		int MetalChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnMetal1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnMetal1);
+		int MetalChance = Math.Min(RemainingPercentage, GoldChanceFromUpgrades + MetalChanceFromUpgrades);
 		if (Roll <= MetalChance) { ChangeMaterial(ECubeMaterial.Metal); return; }
 		RemainingPercentage -= MetalChance;
 		Roll -= MetalChance;
 		
 		// --- ROCK ---
-		int RockChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRock1) * 5);
+		int RockChanceFromUpgrades = Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnRock1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnRock1);
+		int RockChance = Math.Min(RemainingPercentage, MetalChanceFromUpgrades + RockChanceFromUpgrades);
 		if (Roll <= RockChance) { ChangeMaterial(ECubeMaterial.Rock); return; }
 		RemainingPercentage -= RockChance;
 		Roll -= RockChance;
 		
 		// --- WOOD ---
-		int WoodChance = Math.Min(RemainingPercentage, Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnWood1) * 5);
+		int WoodChance = Math.Min(RemainingPercentage, RockChanceFromUpgrades + Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnWood1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnWood1));
 		if (Roll <= WoodChance) { ChangeMaterial(ECubeMaterial.Wood); return; }
 		
 		ChangeMaterial(ECubeMaterial.Cardboard);

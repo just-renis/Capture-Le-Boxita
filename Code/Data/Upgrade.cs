@@ -5,6 +5,7 @@ public class Upgrade
 {
 	public EUpgradeName UpgradeName { get; set; }
 	public EUpgradeValue UpgradeValue { get; set; }
+	public EDefaultAttribute DefaultAttribute { get; set; }
 	public int MaxAmount { get; set { field = value; AdjustCostsList(); } } = 1;
 	public string Name { get; set; }
 	public string Description { get; set; }

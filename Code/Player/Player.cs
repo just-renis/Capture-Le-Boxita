@@ -10,17 +10,16 @@ public sealed class Player : Component, Component.INetworkListener
 	[Sync, Change(nameof(OnCurrentMaterialChanged))] private ECubeMaterial CurrentMaterial { get; set; } = ECubeMaterial.None;
 	[Property] private float DefaultMovementSpeed { get; set; } = 2500f;
 	[Property] private float DefaultGrabDistance { get; set; } = 600f;
-	[Property] private float DefaultMoneyLossToAliensPercentage { get; set; } = 0.25f;
 	[Property] private float DefaultBoxThrowImpulseStrength { get; set; } = 2000f;
 	[Property] private float Sensitivity { get; set; } = 0.2f;
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
+	[Property] private float DefaultDashImpulseStrength { get; set; } = 2000f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
 	[Property] private ModelRenderer Mesh { get; set; }
+	[Property] private PlayerName NameUi { get; set; }
 	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
-	[Property, Group("Dash")] private float DefaultDashImpulseStrength { get; set; } = 2000f;
-	[Property, Group("Dash")] private float DefaultDashCooldown { get; set; } = 8f;
 
 	private bool IsStuck
 	{
@@ -32,7 +31,6 @@ public sealed class Player : Component, Component.INetworkListener
 			EventManager.TriggerStuckPopupStateChange(field);
 		}
 	}
-	private bool VoiceChatEnabled;
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
 	private int PhysicsFrameWaitTimerHandle;
@@ -113,6 +111,8 @@ public sealed class Player : Component, Component.INetworkListener
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
 		EventManager.OnUpgradePurchased += UpgradePurchased;
+		EventManager.OnPlayerNameChanged += ChangedName;
+		EventManager.OnPlayerNameShowTagChanged += ChangedShowNameTag;
 		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
 		CheckIfAlienBoxMultiplierComboEndedHandle = TimerManager.AddTimer(CheckIfAlienBoxMultiplierComboEndedHandle, 0.05f, true, CheckIfAlienBoxMultiplierComboEnded);
 		LoadSaveData();
@@ -120,6 +120,7 @@ public sealed class Player : Component, Component.INetworkListener
 		PlayerRigidbody = GetComponent<Rigidbody>();
 		SetMaterial();
 		ApplyUpgradesOnJoin();
+		ChangedShowNameTag(Data?.GetShowNameTag() ?? true);
 	}
 	protected override void OnUpdate()
 	{
@@ -138,6 +139,8 @@ public sealed class Player : Component, Component.INetworkListener
 		ClearHeldObjectData();
 		EventManager.OnPlayerDataRequired -= GetPlayerData;
 		EventManager.OnUpgradePurchased -= UpgradePurchased;
+		EventManager.OnPlayerNameChanged -= ChangedName;
+		EventManager.OnPlayerNameShowTagChanged -= ChangedShowNameTag;
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private ECubeMaterial GetCubeMaterialByTotalMoney()
@@ -163,6 +166,14 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		ProcessMouseInput();
 		ProcessKeyboardInput();
+	}
+	private void ChangedName(string InPlayerName)
+	{
+		NameUi?.SetName(InPlayerName);
+	}
+	private void ChangedShowNameTag(bool InState)
+	{
+		NameUi?.SetShowNameTag(InState);
 	}
 	private void ProcessCameraLook()
 	{
@@ -212,8 +223,9 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		ProcessMovementInput();
 		ProcessCameraLook();
-		if (Input.Pressed("Score")) UiManager.TriggerUiStateChange(EUi.UpgradesMenu);
+		if (Input.Pressed("Score")) UiManager.ChangeUiState(EUi.UpgradesMenu);
 		if (Input.Pressed("Dash") && Data?.GetUpgradeAmount(EUpgradeName.UnlockDashAbility) == 1) Dash();
+		if (Input.EscapePressed) ProcessEscape();
 	}
 	private void Dash()
 	{
@@ -222,6 +234,11 @@ public sealed class Player : Component, Component.INetworkListener
 		if (DashDir.LengthSquared < 0.1f) DashDir = WorldRotation.Forward.WithZ(0);
 		PlayerRigidbody.ApplyImpulse(DashDir * DashImpulseStrength * PlayerRigidbody.PhysicsBody.Mass);
 		TimeSinceLastDash = 0;
+	}
+	private void ProcessEscape()
+	{
+		Input.EscapePressed = false;
+		UiManager.ChangeUiState(EUi.SettingsMenu);
 	}
 	private void ProcessMouseInput()
 	{
@@ -310,6 +327,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private void LoadSaveData()
 	{
 		Data = PlayerData.Load();
+		NameUi?.SetName(Data.GetName());
 		EventManager.TriggerMoneyChange(Data.GetMoney());
 	}
 	private void OnKillEventListener(Guid InKillerId, bool InIsPlayerKill, double InMoneyMultiplier)
@@ -347,26 +365,26 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		switch (InUpgradeName)
 		{
-			case EUpgradeName.LessMoneyLoss1: MoneyLossToAliensPercentage = DefaultMoneyLossToAliensPercentage - Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * 0.01f; break;
-			case EUpgradeName.MoreMoney1: AdditionalMoneyAmount = 1 + Data.GetUpgradeAmount(EUpgradeName.MoreMoney1); break;
-			case EUpgradeName.BoxGrabRange1: GrabDistance = DefaultGrabDistance * (1f + Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 0.15f); break;
-			case EUpgradeName.MovementSpeed1: MovementSpeed = DefaultMovementSpeed * (1f + Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.05f); break;
-			case EUpgradeName.DashCooldown1: DashCooldown = DefaultDashCooldown - Data.GetUpgradeAmount(EUpgradeName.DashCooldown1) * 0.5f; break;
-			case EUpgradeName.DashImpulseStrength1: DashImpulseStrength = DefaultDashImpulseStrength * (1f + Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * 0.05f); break;
-			case EUpgradeName.BoxThrowImpulseStrength1: BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * 0.08f); break;
-			case EUpgradeName.AlienComboMaxMultiplier1: AlienBoxComboMaxMultiplier = Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * 0.5f; break;
-			case EUpgradeName.AlienComboMultiplierBoxReduction1: RequiredBoxesAmountForAlienBoxCombo = 5 - Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1); break;
+			case EUpgradeName.LessMoneyLoss1: MoneyLossToAliensPercentage = (GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.LessMoneyLoss1)) * 0.01f; break;
+			case EUpgradeName.MoreMoney1: AdditionalMoneyAmount = 1 + Data.GetUpgradeAmount(EUpgradeName.MoreMoney1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.MoreMoney1); break;
+			case EUpgradeName.BoxGrabRange1: GrabDistance = DefaultGrabDistance * (1f + Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * 0.01f * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxGrabRange1)); break;
+			case EUpgradeName.MovementSpeed1: MovementSpeed = DefaultMovementSpeed * (1f + Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * 0.01f * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MovementSpeed1)); break;
+			case EUpgradeName.DashCooldown1: DashCooldown = GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - Data.GetUpgradeAmount(EUpgradeName.DashCooldown1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldown1); break;
+			case EUpgradeName.DashImpulseStrength1: DashImpulseStrength = DefaultDashImpulseStrength * (1f + Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * 0.01f * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashImpulseStrength1)); break;
+			case EUpgradeName.BoxThrowImpulseStrength1: BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * 0.01f * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowImpulseStrength1)); break;
+			case EUpgradeName.AlienComboMaxMultiplier1: AlienBoxComboMaxMultiplier = Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMaxMultiplier1); break;
+			case EUpgradeName.AlienComboMultiplierBoxReduction1: RequiredBoxesAmountForAlienBoxCombo = (int)GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1) * (int)GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMultiplierBoxReduction1); break;
 		}
 	}
 	private void ApplyUpgradesOnJoin()
 	{
 		GrabDistance = DefaultGrabDistance;
 		DashImpulseStrength = DefaultDashImpulseStrength;
-		DashCooldown = DefaultDashCooldown;
-		MoneyLossToAliensPercentage = DefaultMoneyLossToAliensPercentage;
+		DashCooldown = GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown);
+		MoneyLossToAliensPercentage = GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) * 0.01f;
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
-		RequiredBoxesAmountForAlienBoxCombo = 5;
+		RequiredBoxesAmountForAlienBoxCombo = (int)GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1);
 		Dictionary<EUpgradeName, int> OwnedUpgrades = Data?.GetOwnedUpgrades();
 		if (OwnedUpgrades == null) return;
 		foreach (KeyValuePair<EUpgradeName, int> Upgrade in OwnedUpgrades) UpgradePurchased(Upgrade.Key);

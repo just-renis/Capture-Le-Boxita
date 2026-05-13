@@ -7,17 +7,21 @@ using System.Text;
 
 public sealed class PlayerData
 {
+	public bool ShowNameTag { get; set; } = true;
 	public int CurrentVersion { get; set; } = LiveVersion;
 	public double Money { get; set; }
 	public double TotalMoneyEarned { get; set; }
+	public string Name { get; set; }
 	public string Checksum { get; set; }
 	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; } = new();
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
     private const int LiveVersion = 1;
-    
+
+    public bool GetShowNameTag() { return ShowNameTag; }
     public double GetMoney() { return Money; }
     public double GetTotalMoneyEarned() { return TotalMoneyEarned; }
+    public string GetName() { return Name; }
     public int GetUpgradeAmount(EUpgradeName InUpgradeName) { return OwnedUpgrades?.GetValueOrDefault(InUpgradeName, 0) ?? 0; }
     public Dictionary<EUpgradeName, int> GetOwnedUpgrades() { return OwnedUpgrades; }
 
@@ -40,6 +44,18 @@ public sealed class PlayerData
 	    Save(this);
 	    EventManager.TriggerUpgradePurchased(InUpgradeName);
     }
+    public void ChangeName(string InName)
+    {
+	    Name = InName;
+	    Save(this);
+	    EventManager.TriggerPlayerNameChange(Name);
+    }
+    public void SetShowNameTag(bool InState)
+    {
+	    ShowNameTag = InState;
+	    Save(this);
+	    EventManager.TriggerPlayerNameShowTagChange(ShowNameTag);
+    }
     
     public static void Save(PlayerData InData)
     {
@@ -60,7 +76,7 @@ public sealed class PlayerData
     }
     public static PlayerData Load()
     {
-        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<EUpgradeName, int>(), CurrentVersion = LiveVersion };
+        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<EUpgradeName, int>(), ShowNameTag = true, Name = "I Dont Know My Name", CurrentVersion = LiveVersion };
         if (!FileSystem.Data.FileExists("save.dat")) return DefaultData;
         try
         {

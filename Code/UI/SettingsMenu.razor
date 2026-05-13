@@ -1,0 +1,69 @@
+@using Sandbox.Data
+@using Sandbox.Enums
+@using Sandbox.Managers
+@inherits PanelComponent
+
+<root>
+	@if (Data != null)
+	{
+		<div class="menu-box">
+			<div class="x-close" onclick="@CloseMenu">X</div>
+			<div class="header">SETTINGS</div>
+			<div class="content">
+				<div class="section">
+					<label>YOUR NAME</label>
+					<TextEntry Value:bind="@Data.Name" MaxLength=@(19) @OnTextEdited=@OnPlayerNameChanged/>
+					<label class="hint">Min: 3 Characters, Max: 19 Characters</label>
+				</div>
+				<div class="section row">
+					<div class="custom-checkbox @(Data.ShowNameTag ? "checked" : "")" onclick=@ToggleNameTag>
+						<div class="check-inner"></div>
+					</div>
+					<label>SHOW NAME TAG FOR YOU</label>
+				</div>
+			</div>
+			<div class="footer">
+				<button class="btn-quit" onclick="@QuitGame">EXIT GAME</button>
+			</div>
+		</div>
+	}
+</root>
+
+@code
+{
+	private PlayerData Data; 
+
+	protected override int BuildHash()
+	{
+		return System.HashCode.Combine(Data.GetName(), Data.GetShowNameTag());
+	}
+	protected override void OnAwake()
+	{
+		EventManager.OnUiStateChanged += UiStateChanged;
+	}
+	protected override void OnStart()
+	{
+		Data = EventManager.TriggerGetPlayerData();
+	}
+	protected override void OnDestroy()
+	{
+		EventManager.OnUiStateChanged -= UiStateChanged;
+	}
+
+	private void UiStateChanged(EUi InUi, bool RenderState)
+	{
+		if (InUi != EUi.SettingsMenu) return;
+		Enabled = RenderState;
+		Panel?.Style.PointerEvents = Enabled ? PointerEvents.All : PointerEvents.None;
+	}
+	private void ToggleNameTag()
+	{
+		Data.SetShowNameTag(!Data.ShowNameTag);
+	}
+	private void OnPlayerNameChanged(string InValue)
+	{
+		if (InValue.Length >= 3) Data.ChangeName(InValue);
+	}
+	private void CloseMenu() { UiManager.ChangeUiState(EUi.SettingsMenu); }
+	private void QuitGame() { Game.Close(); }
+}

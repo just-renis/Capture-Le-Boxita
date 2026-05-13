@@ -1,0 +1,22 @@
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+	@if (ShouldRender())
+	{
+		<div class="name">@Name</div>
+	}
+</root>
+
+@code
+{
+	[Sync] private string Name { get; set; }
+	private bool IsVisible;
+		
+	public void SetName(string InName) { Name = InName; }
+	public void SetShowNameTag(bool InState) { IsVisible = InState; }
+	
+	protected override int BuildHash() => System.HashCode.Combine(Name, IsVisible);
+	
+	private bool ShouldRender() { return IsProxy || IsVisible; }
+}
