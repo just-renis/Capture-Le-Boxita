@@ -367,6 +367,7 @@ public sealed class Player : Component, Component.INetworkListener
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
 		RequiredBoxesAmountForAlienBoxCombo = 5;
+		if (Data == null || Data.GetOwnedUpgrades().Count == 0) return;
 		foreach (KeyValuePair<EUpgradeName, int> Upgrade in Data.GetOwnedUpgrades()) UpgradePurchased(Upgrade.Key);
 	}
 	private void CheckIfAlienBoxMultiplierComboEnded()
