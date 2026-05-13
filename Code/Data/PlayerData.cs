@@ -11,7 +11,7 @@ public sealed class PlayerData
 	public double Money { get; set; }
 	public double TotalMoneyEarned { get; set; }
 	public string Checksum { get; set; }
-	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
+	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; } = new();
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
     private const int LiveVersion = 1;

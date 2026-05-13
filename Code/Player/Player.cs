@@ -116,10 +116,10 @@ public sealed class Player : Component, Component.INetworkListener
 		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
 		CheckIfAlienBoxMultiplierComboEndedHandle = TimerManager.AddTimer(CheckIfAlienBoxMultiplierComboEndedHandle, 0.05f, true, CheckIfAlienBoxMultiplierComboEnded);
 		LoadSaveData();
-		ApplyUpgradesOnJoin();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
 		PlayerRigidbody = GetComponent<Rigidbody>();
 		SetMaterial();
+		ApplyUpgradesOnJoin();
 	}
 	protected override void OnUpdate()
 	{
@@ -367,8 +367,9 @@ public sealed class Player : Component, Component.INetworkListener
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
 		RequiredBoxesAmountForAlienBoxCombo = 5;
-		if (Data == null || Data.GetOwnedUpgrades().Count == 0) return;
-		foreach (KeyValuePair<EUpgradeName, int> Upgrade in Data.GetOwnedUpgrades()) UpgradePurchased(Upgrade.Key);
+		Dictionary<EUpgradeName, int> OwnedUpgrades = Data?.GetOwnedUpgrades();
+		if (OwnedUpgrades == null) return;
+		foreach (KeyValuePair<EUpgradeName, int> Upgrade in OwnedUpgrades) UpgradePurchased(Upgrade.Key);
 	}
 	private void CheckIfAlienBoxMultiplierComboEnded()
 	{
