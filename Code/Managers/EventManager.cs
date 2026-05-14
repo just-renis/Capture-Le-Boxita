@@ -13,6 +13,7 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static event Action<EUpgradeName> OnUpgradePurchased;
 	public static event Action<EUi, bool> OnUiStateChanged;
 	public static event Action<Guid, bool, double> OnKill;
+	public static event Func<Vector3> OnRequestPlayerLocation;
 	public static event Func<Vector3> OnTeleportToSpawnLocation;
 	public static event Func<Vector3> OnTeleportToSafeZoneLocation;
 	public static event Func<PlayerData> OnPlayerDataRequired;
@@ -48,6 +49,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerOnKill(Guid InKillerPlayerId, bool InIsPlayerKill, double InMoneyAmount)
 	{
 		OnKill?.Invoke(InKillerPlayerId, InIsPlayerKill, InMoneyAmount);
+	}
+	public static Vector3 TriggerGetPlayerLocation()
+	{
+		return OnRequestPlayerLocation?.Invoke() ?? Vector3.Zero;
 	}
 	public static Vector3 TriggerGetSpawnLocation()
 	{

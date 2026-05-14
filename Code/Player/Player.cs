@@ -8,6 +8,7 @@ namespace Sandbox.Player;
 public sealed class Player : Component, Component.INetworkListener
 {
 	[Sync, Change(nameof(OnCurrentMaterialChanged))] private ECubeMaterial CurrentMaterial { get; set; } = ECubeMaterial.None;
+	[Sync, Change(nameof(OnPhysicsReset))] private int PhysicsRecreation { get; set; }
 	[Property] private float DefaultMovementSpeed { get; set; } = 2500f;
 	[Property] private float DefaultGrabDistance { get; set; } = 600f;
 	[Property] private float DefaultBoxThrowImpulseStrength { get; set; } = 2000f;
@@ -33,7 +34,6 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private int GrabTimerHandle;
 	private int HostClientCollisionUpdateHandle;
-	private int PhysicsFrameWaitTimerHandle;
 	private int CheckIfFallingOutOfWorldHandle;
 	private int CheckIfAlienBoxMultiplierComboEndedHandle;
 	private int AdditionalMoneyAmount = 1;
@@ -103,21 +103,25 @@ public sealed class Player : Component, Component.INetworkListener
 		PlayerRigidbody?.ApplyImpulse(InImpulseForce);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
+	protected override void OnAwake()
+	{
+		PullComp = GetComponent<PullableComponent>();
+	}
 	protected override void OnStart()
 	{
 		EventManager.OnKill += OnKillEventListener;
-		PullComp = GetComponent<PullableComponent>();
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
 		EventManager.OnUpgradePurchased += UpgradePurchased;
 		EventManager.OnPlayerNameChanged += ChangedName;
 		EventManager.OnPlayerNameShowTagChanged += ChangedShowNameTag;
+		EventManager.OnRequestPlayerLocation += GetPlayerLocation;
 		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
 		CheckIfAlienBoxMultiplierComboEndedHandle = TimerManager.AddTimer(CheckIfAlienBoxMultiplierComboEndedHandle, 0.05f, true, CheckIfAlienBoxMultiplierComboEnded);
 		LoadSaveData();
 		Camera = Scene.GetComponentInChildren<CameraComponent>();
-		PlayerRigidbody = GetComponent<Rigidbody>();
+		PhysicsRecreation++;
 		SetMaterial();
 		ApplyUpgradesOnJoin();
 		ChangedShowNameTag(Data?.GetShowNameTag() ?? true);
@@ -132,7 +136,6 @@ public sealed class Player : Component, Component.INetworkListener
 		EventManager.OnKill -= OnKillEventListener;
 		TimerManager.ClearTimer(GrabTimerHandle);
 		TimerManager.ClearTimer(HostClientCollisionUpdateHandle);
-		TimerManager.ClearTimer(PhysicsFrameWaitTimerHandle);
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
 		TimerManager.ClearTimer(CheckIfAlienBoxMultiplierComboEndedHandle);
 		if (IsProxy) return;
@@ -141,8 +144,10 @@ public sealed class Player : Component, Component.INetworkListener
 		EventManager.OnUpgradePurchased -= UpgradePurchased;
 		EventManager.OnPlayerNameChanged -= ChangedName;
 		EventManager.OnPlayerNameShowTagChanged -= ChangedShowNameTag;
+		EventManager.OnRequestPlayerLocation -= GetPlayerLocation;
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
+	private Vector3 GetPlayerLocation() { return WorldPosition; }
 	private ECubeMaterial GetCubeMaterialByTotalMoney()
 	{
 		if (Data == null) return ECubeMaterial.Cardboard;
@@ -227,6 +232,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Input.Pressed("Dash") && Data?.GetUpgradeAmount(EUpgradeName.UnlockDashAbility) == 1) Dash();
 		if (Input.EscapePressed) ProcessEscape();
 	}
+	private void OnPhysicsReset(int InOldValue, int NewValue) { RecreateRigidbody(); }
 	private void Dash()
 	{
 		if (TimeSinceLastDash < DashCooldown) return;
@@ -337,11 +343,9 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
-		PhysicsFrameWaitTimerHandle = TimerManager.AddTimer(PhysicsFrameWaitTimerHandle, 0.03f, false, () =>
-		{
-			WorldPosition = InPosition;
-			PlayerRigidbody.PhysicsBody.Position = InPosition;
-		});
+		WorldPosition = InPosition;
+		Transform.ClearInterpolation();
+		PhysicsRecreation++;
 	}
 	private void SetMaterial()
 	{
@@ -356,6 +360,21 @@ public sealed class Player : Component, Component.INetworkListener
 	private void CheckIfFallingOutOfWorld()
 	{
 		if (WorldPosition.z <= -1000f) TeleportToSafeZone();
+	}
+	private void RecreateRigidbody()
+	{
+		if (PlayerCollider.IsValid()) PlayerCollider.Enabled = false;
+		if (PlayerRigidbody.IsValid()) PlayerRigidbody.Destroy();
+		PlayerRigidbody = Components.Create<Rigidbody>();
+		if (PlayerRigidbody == null) return;
+		PlayerRigidbody.Locking = new PhysicsLock { Pitch = true, Yaw = true, Roll = true, X = false, Y = false, Z = false };
+		PlayerRigidbody.EnableImpactDamage = false;
+		PlayerRigidbody.RigidbodyFlags |= RigidbodyFlags.DisableCollisionSounds;
+		PlayerRigidbody.MassOverride = 500;
+		PlayerRigidbody.GravityScale = 2;
+		PlayerRigidbody.LinearDamping = 3;
+		if (PlayerCollider.IsValid()) PlayerCollider.Enabled = true;
+		PullComp?.SetRigidbody(PlayerRigidbody);
 	}
 	private void TeleportToSafeZone()
 	{
@@ -459,6 +478,7 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		if (IsProxy || TargetId != Network.OwnerId) return;
 		double MoneyLoss = Data.GetMoney() * 0.25f;
+		if (MoneyLoss < 0) return;
 		SubtractMoney(MoneyLoss);
 		SendBackMoney(MoneyLoss);
 	}

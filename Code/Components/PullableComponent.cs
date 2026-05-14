@@ -1,7 +1,5 @@
 ﻿using System;
 using Sandbox.Collectibles;
-using Sandbox.Data;
-using Sandbox.Enums;
 using Sandbox.Managers;
 namespace Sandbox.Components;
 
@@ -21,16 +19,20 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private const Int64 PushForceMultiplier = 1250000;
 	private Rigidbody Rigidbody;
 	private GameObject AlienShipRef;
-	
+	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsPulled() { return IsPulled; }
-	public bool IsInAir() { return !IsInAirCheckRequired || LastOwnedBy != Guid.Empty || MathF.Abs(Rigidbody.Velocity.z) > 0.1f; }
+	public bool IsInAir()
+	{
+		if (Rigidbody == null) return false;
+		return !IsInAirCheckRequired || LastOwnedBy != Guid.Empty || MathF.Abs(Rigidbody.Velocity.z) > 0.1f;
+	}
 	public float GetMoneyMultiplier(float InAlienScale)
 	{
 		float Stacks = (float)Math.Floor(InAlienScale / 0.5f);
 		return MoneyMultiplier + MoneyMultiplier * Stacks * AlienScaleMultiplier;
 	}
 	public Guid GetOwnerId() { return LastOwnedBy; }
-	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)
 	{
 		LastOwnerTime = ClearTime;
@@ -80,10 +82,10 @@ public class PullableComponent : Component, Component.ICollisionListener
 			Rigidbody.Velocity = 0f;
 		}
 	}
+	public void SetRigidbody(Rigidbody InRigidbody) { Rigidbody = InRigidbody; }
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnStart()
 	{
-		Rigidbody = GetComponent<Rigidbody>();
 		CheckOutOfBoundsHandle = TimerManager.AddTimer(CheckOutOfBoundsHandle, 5f, true, CheckOutOfBounds);
 	}
 	protected override void OnUpdate()
@@ -97,7 +99,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	protected override void OnFixedUpdate()
 	{
-		if (IsProxy || !IsPulled || AlienShipRef == null) return;
+		if (IsProxy || !IsPulled || AlienShipRef == null || Rigidbody == null) return;
 		Rigidbody.AngularVelocity = Vector3.Zero;
 		Vector3 PullVelocity = (AlienShipRef.WorldPosition - WorldPosition) * 10f;
 		Rigidbody.Velocity = PullVelocity.WithZ(BeamPullSpeed);

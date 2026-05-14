@@ -11,8 +11,16 @@ public sealed class SafeZoneTrigger : CustomTrigger
 	{
 		EventManager.OnTeleportToSafeZoneLocation -= GetLocation;
 	}
-	protected override void OnTriggerEnter(GameObject InGameObject) { InGameObject.Tags.Add("safe"); }
-	protected override void OnTriggerExit(GameObject InGameObject) { InGameObject.Tags.Remove("safe"); }
+	protected override void OnTriggerEnter(GameObject InGameObject)
+	{
+		Log.Info("ADDED SAFE TAG ON THE " + InGameObject.Name);
+		InGameObject.Tags.Add("safe");
+	}
+	protected override void OnTriggerExit(GameObject InGameObject)
+	{
+		Log.Info("REMOVED SAFE TAG ON THE " + InGameObject.Name);
+		InGameObject.Tags.Remove("safe");
+	}
 
 	private Vector3 GetLocation() { return WorldPosition; }
 }

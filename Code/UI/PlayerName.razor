@@ -1,3 +1,4 @@
+@using Sandbox.Managers
 @inherits PanelComponent
 @namespace Sandbox
 
@@ -12,11 +13,27 @@
 {
 	[Sync] private string Name { get; set; }
 	private bool IsVisible;
+	int CullingDistanceHandle;
 		
 	public void SetName(string InName) { Name = InName; }
 	public void SetShowNameTag(bool InState) { IsVisible = InState; }
 	
-	protected override int BuildHash() => System.HashCode.Combine(Name, IsVisible);
-	
+	protected override int BuildHash() { return System.HashCode.Combine(Name, IsVisible); }
+
+	protected override void OnStart()
+	{
+		CullingDistanceHandle = TimerManager.AddTimer(CullingDistanceHandle, 1f, true, CheckIfInCullingDistance);
+	}
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(CullingDistanceHandle);
+	}
+
 	private bool ShouldRender() { return IsProxy || IsVisible; }
+
+	private void CheckIfInCullingDistance()
+	{
+		bool ShouldBeEnabled = Vector3.DistanceBetweenSquared(WorldPosition, EventManager.TriggerGetPlayerLocation()) < 5000000f;
+		if (ShouldBeEnabled != Enabled) Enabled = ShouldBeEnabled;
+	}
 }

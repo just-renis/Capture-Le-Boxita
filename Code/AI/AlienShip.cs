@@ -11,6 +11,7 @@ public sealed class AlienShip : Component, IPoolObject
 	[Sync] private bool IsFlyUpProcessInProgress { get; set; }
 	[Sync] private bool IsFlyDownProcessInProgress { get; set; }
 	[Sync] private int TimesToFlyUpwards { get; set; }
+	[Sync] private float RandomDownwardsStopZ { get; set; }
 	[Property] private GameObject BeamVfx { get; set; }
 	private bool IsLogicInitialized;
 	private int MoveHandle;
@@ -25,10 +26,9 @@ public sealed class AlienShip : Component, IPoolObject
 	private const float ScaleIncrease = 0.1f;
 	private const float MaxScale = 4f;
 	private float ChangeDirectionTimer;
-	private float RandomDownwardsStopZ;
 	private Vector2 Direction;
 	private BoxCollider Collider;
-	private CapsuleCollider BeamCollider;
+	private CustomTrigger BeamCollider;
 	private readonly HashSet<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 	private readonly Dictionary<Guid, float> RecentlyTeleported = [];
@@ -52,8 +52,10 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		if (!Networking.IsHost) return;
 		Collider?.OnTriggerEnter -= ChangeToOppositeDirection;
-		BeamCollider?.OnTriggerEnter -= BeamEntered;
-		BeamCollider?.OnTriggerExit -= BeamExit;
+		//BeamCollider?.OnTriggerEnter -= BeamEntered;
+		//BeamCollider?.OnTriggerExit -= BeamExit;
+		BeamCollider?.OnEnter -= BeamEntered;
+		BeamCollider?.OnExit -= BeamExit;
 		TimerManager.ClearTimer(MoveHandle);
 		TimerManager.ClearTimer(CheckIsInAirObjectsHandle);
 		TimerManager.ClearTimer(SmallFlyUpwardsHandle);
@@ -124,6 +126,11 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		GameObject.WorldScale += new Vector3(ScaleIncrease);
 		TimesToFlyUpwards += 5;
+		if (BeamCollider != null)
+		{
+			BeamCollider.CapsuleRadius = BeamCollider.DefaultCapsuleRadius * GameObject.WorldScale.x;
+			BeamCollider.CapsuleHeight = BeamCollider.DefaultCapsuleHeight * GameObject.WorldScale.x;
+		}
 		if (GameObject.WorldScale.x >= MaxScale) FlyAway();
 	}
 	private void FlyAway()
@@ -168,18 +175,19 @@ public sealed class AlienShip : Component, IPoolObject
 		GameObject.Network.TakeOwnership();
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.AlienShip, GameObject);
 	}
-	private void BeamExit(Collider InCollider)
+	private void BeamExit(GameObject InGameObject)
 	{
-		if (InCollider.Tags.Has("safe")) return;
-		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>(true);
+		if (InGameObject.Tags.Has("safe")) return;
+		PullableComponent Pullable = InGameObject.Root.GetComponent<PullableComponent>(true);
 		if (Pullable == null) return;
+		SetPullOnObject(Pullable, false);
 		ImmovableBeamObjects.Remove(Pullable);
 		InsideBeamObjects.Remove(Pullable);
 	}
-	private void BeamEntered(Collider InCollider)
+	private void BeamEntered(GameObject InGameObject)
 	{
-		if (InCollider.Tags.Has("safe")) return;
-		PullableComponent Pullable = InCollider.GameObject.Root.GetComponent<PullableComponent>();
+		if (InGameObject.Tags.Has("safe")) return;
+		PullableComponent Pullable = InGameObject.Root.GetComponent<PullableComponent>();
 		if (Pullable == null) return;
 		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
 		else SetPullOnObject(Pullable, true);
@@ -199,22 +207,27 @@ public sealed class AlienShip : Component, IPoolObject
 	private void SetupBeamCollider()
 	{
 		GameObject BeamObject = new() { Parent = GameObject };
-		BeamCollider = BeamObject.AddComponent<CapsuleCollider>();
-		BeamCollider.End = new Vector3(0f, 0f, -2000f);
-		BeamCollider.Radius = 100f;
-		BeamCollider.LocalPosition = new Vector3(0f, 0f, -50f);
-		BeamCollider.IsTrigger = true;
-		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreTraces;
-		BeamCollider.ColliderFlags |= ColliderFlags.IgnoreMass;
-		BeamCollider.OnTriggerEnter += BeamEntered;
-		BeamCollider.OnTriggerExit += BeamExit;
+		BeamCollider = BeamObject.AddComponent<CustomTrigger>();
+		BeamCollider.Shape = TriggerShape.Capsule;
+		BeamCollider.TriggerByTags = true;
+		BeamCollider.TriggerTags = ["player", "collectible"];
+		BeamCollider.CapsuleRadius = BeamCollider.DefaultCapsuleRadius = 100f;
+		BeamCollider.CapsuleHeight = BeamCollider.DefaultCapsuleHeight = 2000f;
+		BeamCollider.LocalPosition = new Vector3(0, 0, -1050f);
+		BeamCollider.OnEnter += BeamEntered;
+		BeamCollider.OnExit += BeamExit;
 	}
 	private void SetupBeamVfx()
 	{
 		if (BeamVfx == null) return;
-		BeamVfx.LocalPosition = new Vector3(0f, 0f, RandomDownwardsStopZ * -0.5f);
-		BeamVfx.LocalScale = new Vector3(1f, 1f, RandomDownwardsStopZ * 0.005f);
+		SetupBeamVfxPositionAndScale(RandomDownwardsStopZ);
 		ChangeBeamVfxState(true);
+	}
+	[Rpc.Broadcast]
+	private void SetupBeamVfxPositionAndScale(float InRandomDownwardsStopZ)
+	{
+		BeamVfx.LocalPosition = new Vector3(0f, 0f, InRandomDownwardsStopZ * -0.5f);
+		BeamVfx.LocalScale = new Vector3(1f, 1f, InRandomDownwardsStopZ * 0.005f);
 	}
 	// --------------------------------------------------------------NETWORKING METHODS--------------------------------------------------------------
 	[Rpc.Broadcast]

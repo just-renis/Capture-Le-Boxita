@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			<div class="footer">
-				<button class="btn-quit" onclick="@QuitGame">EXIT GAME</button>
+				<button class="btn-quit" onclick="@OpenDefaultSboxSettings">OPEN DEFAULT S&BOX SETTINGS</button>
 			</div>
 		</div>
 	}
@@ -65,5 +65,5 @@
 		if (InValue.Length >= 3) Data.ChangeName(InValue);
 	}
 	private void CloseMenu() { UiManager.ChangeUiState(EUi.SettingsMenu); }
-	private void QuitGame() { Game.Close(); }
+	private void OpenDefaultSboxSettings() { Game.Overlay.ShowPauseMenu(); }
 }

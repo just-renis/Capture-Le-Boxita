@@ -35,11 +35,15 @@ public sealed class CollectibleCube : Component, IPoolObject
 		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
+	protected override void OnAwake()
+	{
+		PullComp = GetComponent<PullableComponent>();
+	}
 	protected override void OnStart()
 	{
 		SetMaterialHandle = TimerManager.AddTimer(SetMaterialHandle, 0.1f, true, SetMaterial);
-		PullComp = GetComponent<PullableComponent>();
 		Rigidbody = GetComponent<Rigidbody>();
+		PullComp?.SetRigidbody(Rigidbody);
 	}
 	protected override void OnDestroy()
 	{
@@ -134,6 +138,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 	public void Init()
 	{
 		if (Networking.IsHost) CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
+		Transform.ClearInterpolation();
 		Data = EventManager.TriggerGetPlayerData();
 		if (Data == null) return;
 		ChangeMaterialByChances();
