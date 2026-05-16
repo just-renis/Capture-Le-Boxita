@@ -141,7 +141,7 @@
         "__guid": "e3dc26ca-56c8-4fa4-8315-8683e9d71c22",
         "__enabled": true,
         "Flags": 0,
-        "Distance": 15000,
+        "Distance": 10000,
         "Falloff": [
           {
             "x": 0,

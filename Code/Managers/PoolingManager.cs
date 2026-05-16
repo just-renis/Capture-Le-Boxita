@@ -4,9 +4,10 @@ using Sandbox.Enums;
 using Sandbox.Interfaces;
 namespace Sandbox.Managers;
 
-public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
+public sealed class PoolingManager : Component
 {
-	[Sync] private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
+	public static PoolingManager Instance { get; private set; }
+	[Sync, Property] private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
 
 	public bool CanSpawnObject(EPoolObject InObjectName)
 	{
@@ -28,14 +29,27 @@ public sealed class PoolingManager(Scene Scene) : GameObjectSystem(Scene)
 		PoolData.ActiveCount++;
 		return PoolObject;
 	}
-
-	public void Init(NetDictionary<EPoolObject, ObjectPoolData> InPrefabs) { Pool = InPrefabs; }
+	
 	public void ReturnObjectToPool(EPoolObject InObjectName, GameObject InGameObject)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
 		InGameObject.Enabled = false;
 		PoolData.Objects.Add(InGameObject.Id);
 		PoolData.ActiveCount--;
+	}
+	
+	protected override void OnAwake()
+	{
+		if (Instance != null && Instance != this)
+		{
+			GameObject.Destroy();
+			return;
+		}
+		Instance = this;
+	}
+	protected override void OnDestroy()
+	{
+		if (Instance == this) Instance = null;
 	}
 
 	private void AllocatePoolObject(EPoolObject InObjectName)

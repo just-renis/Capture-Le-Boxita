@@ -141,27 +141,7 @@
               "_type": "gameobject",
               "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
             }
-          ],
-          "Prefabs": {
-            "CollectibleCube": {
-              "Prefab": {
-                "_type": "gameobject",
-                "prefab": "prefabs/collectiblecube.prefab"
-              },
-              "MaxAmountActive": 500,
-              "Objects": [],
-              "ActiveCount": 0
-            },
-            "AlienShip": {
-              "Prefab": {
-                "_type": "gameobject",
-                "prefab": "prefabs/alien.prefab"
-              },
-              "MaxAmountActive": 30,
-              "Objects": [],
-              "ActiveCount": 0
-            }
-          }
+          ]
         }
       ],
       "Children": []
@@ -692,26 +672,26 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Upgrades": {
-            "MoreMoney1": 1,
-            "MovementSpeed1": 5,
-            "BoxGrabRange1": 10,
-            "SwordPower1": 10,
-            "LessMoneyLoss1": 1,
-            "ChanceToSpawnWood1": 5,
-            "ChanceToSpawnRock1": 5,
-            "ChanceToSpawnMetal1": 4,
-            "ChanceToSpawnGold1": 4,
-            "ChanceToSpawnDiamond1": 3,
-            "ChanceToSpawnRuby1": 3,
-            "ChanceToSpawnEmerald1": 2,
-            "ChanceToSpawnAmethyst1": 2,
-            "ChanceToSpawnObsidian1": 1,
-            "DashImpulseStrength1": 10,
-            "DashCooldown1": 0.5,
-            "BoxThrowImpulseStrength1": 10,
-            "AlienComboMaxMultiplier1": 0.5,
-            "AlienComboMultiplierBoxReduction1": 1,
-            "BiggerAlienMoreMoneyMultiplier1": 0.05
+            "MoreMoney1": {},
+            "MovementSpeed1": {},
+            "BoxGrabRange1": {},
+            "SwordPower1": {},
+            "LessMoneyLoss1": {},
+            "ChanceToSpawnWood1": {},
+            "ChanceToSpawnRock1": {},
+            "ChanceToSpawnMetal1": {},
+            "ChanceToSpawnGold1": {},
+            "ChanceToSpawnDiamond1": {},
+            "ChanceToSpawnRuby1": {},
+            "ChanceToSpawnEmerald1": {},
+            "ChanceToSpawnAmethyst1": {},
+            "ChanceToSpawnObsidian1": {},
+            "DashImpulseStrength1": {},
+            "DashCooldown1": {},
+            "BoxThrowImpulseStrength1": {},
+            "AlienComboMaxMultiplier1": {},
+            "AlienComboMultiplierBoxReduction1": {},
+            "BiggerAlienMoreMoneyMultiplier1": {}
           }
         },
         {
@@ -25238,6 +25218,57 @@
         }
       ],
       "Children": []
+    },
+    {
+      "__guid": "ccd49515-360d-45b7-8dd7-317d417d0273",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "PoolingManager",
+      "Position": "0,0,1051.42358",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 1,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 1,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.Managers.PoolingManager",
+          "__guid": "6cc49786-9200-45d8-9f40-ee8bd81ca760",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Pool": {
+            "CollectibleCube": {
+              "Prefab": {
+                "_type": "gameobject",
+                "prefab": "prefabs/collectiblecube.prefab"
+              },
+              "MaxAmountActive": 500,
+              "Objects": [],
+              "ActiveCount": 0
+            },
+            "AlienShip": {
+              "Prefab": {
+                "_type": "gameobject",
+                "prefab": "prefabs/alien.prefab"
+              },
+              "MaxAmountActive": 30,
+              "Objects": [],
+              "ActiveCount": 0
+            }
+          }
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
@@ -25262,16 +25293,16 @@
     "GameObjectSystems": {
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "e77a17b0-ca24-4b2e-8d48-ed2bf6c15014"
+          "$blob": "b653db23-c99c-489e-828b-640e7704e36b"
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
         }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },

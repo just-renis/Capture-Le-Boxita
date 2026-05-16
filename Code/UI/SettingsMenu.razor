@@ -4,7 +4,7 @@
 @inherits PanelComponent
 
 <root>
-	@if (Data != null)
+	@if (GetPlayerData() != null)
 	{
 		<div class="menu-box">
 			<div class="x-close" onclick="@CloseMenu">X</div>
@@ -35,21 +35,25 @@
 
 	protected override int BuildHash()
 	{
-		return System.HashCode.Combine(Data.GetName(), Data.GetShowNameTag());
+		PlayerData CurrentData = GetPlayerData();
+		if (CurrentData == null) return -1;
+		return System.HashCode.Combine(CurrentData.GetName(), CurrentData.GetShowNameTag());
 	}
 	protected override void OnAwake()
 	{
 		EventManager.OnUiStateChanged += UiStateChanged;
-	}
-	protected override void OnStart()
-	{
-		Data = EventManager.TriggerGetPlayerData();
 	}
 	protected override void OnDestroy()
 	{
 		EventManager.OnUiStateChanged -= UiStateChanged;
 	}
 
+	private PlayerData GetPlayerData()
+	{
+		Data ??= EventManager.TriggerGetPlayerData();
+		return Data;
+	}
+	
 	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
 		if (InUi != EUi.SettingsMenu) return;

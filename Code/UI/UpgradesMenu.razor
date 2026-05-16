@@ -6,7 +6,7 @@
 @using Sandbox.Data
 
 <root>
-	@if (PlayerData != null)
+	@if (GetPlayerData() != null)
 	{
 		<div class="wrapper">
 			<!-- Header -->
@@ -25,7 +25,7 @@
 						<span>AVAILABLE MONEY</span>
 						<div class="money-amount">
 							<i>savings</i>
-							<span>$@PlayerData.GetMoney().ToString("F0")</span>
+							<span>$@Data.GetMoney().ToString("F0")</span>
 						</div>
 					</div>
 					<div class="code-btn" @onclick=@CloseMenu>
@@ -164,7 +164,7 @@
     private float Scale = 1f;
     private Vector2 DragStartPos;
     private Vector2 DragStartOffset;
-    private PlayerData PlayerData; 
+    private PlayerData Data; 
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
     protected override void OnMouseWheel(Vector2 InValue)
     {
@@ -175,14 +175,14 @@
     {
 	    EventManager.OnUiStateChanged += UiStateChanged;
     }
-    protected override void OnStart() { PlayerData = EventManager.TriggerGetPlayerData(); }
     protected override void OnDestroy()
     {
 	    EventManager.OnUiStateChanged -= UiStateChanged;
     }
     protected override int BuildHash()
     {
-	    return HashCode.Combine(PlayerData.GetMoney(), SelectedUpgradeName, Scale, CanvasX, CanvasY, PlayerData.GetOwnedUpgrades().Count, IsDragging);
+	    if (GetPlayerData()?.GetOwnedUpgrades() == null) return -1;
+	    return HashCode.Combine(Data.GetMoney(), SelectedUpgradeName, Scale, CanvasX, CanvasY, Data.GetOwnedUpgrades().Count, IsDragging);
     }
     protected override void OnUpdate()
     {
@@ -194,7 +194,7 @@
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private bool CanAfford(Upgrade InUpgrade)
 	{
-		return InUpgrade != null && PlayerData.GetMoney() >= GetCurrentCost(InUpgrade);
+		return InUpgrade != null && Data.GetMoney() >= GetCurrentCost(InUpgrade);
 	}
 	private Upgrade SelectedUpgrade => Upgrades.FirstOrDefault(U => U.UpgradeName == SelectedUpgradeName);
 	private bool GetIsAvailable(EUpgradeName InUpgradeName)
@@ -208,7 +208,7 @@
 	{
 		return InUpgrade != null && GetLevel(InUpgrade.UpgradeName) < InUpgrade.MaxAmount;
 	}
-	private int GetLevel(EUpgradeName InUpgradeName) => PlayerData.GetOwnedUpgrades().GetValueOrDefault(InUpgradeName, 0);
+	private int GetLevel(EUpgradeName InUpgradeName) => Data.GetOwnedUpgrades().GetValueOrDefault(InUpgradeName, 0);
 	private int GetCurrentCost(Upgrade InUpgrade)
 	{
 		if (InUpgrade?.Costs == null || InUpgrade.Costs.Count == 0) return 0;
@@ -217,17 +217,17 @@
 	}
 	private float GetUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
-		if (PlayerData == null) return 0;
+		if (Data == null) return 0;
 		switch (InUpgradeValue)
 		{
-			case EUpgradeValue.MoneyAdded: return 1 + PlayerData.GetUpgradeAmount(EUpgradeName.MoreMoney1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MoreMoney1);
-			case EUpgradeValue.MovementSpeed: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MovementSpeed1);
-			case EUpgradeValue.BoxGrabRange: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxGrabRange1);
-			case EUpgradeValue.SwordPower: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.SwordPower1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.SwordPower1);
-			case EUpgradeValue.MoneyLoss: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - PlayerData.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.LessMoneyLoss1);
-			case EUpgradeValue.DashCooldown: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - PlayerData.GetUpgradeAmount(EUpgradeName.DashCooldown1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldown1);
-			case EUpgradeValue.DashImpulseStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashImpulseStrength1);
-			case EUpgradeValue.BoxThrowStrength: return 100 + PlayerData.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowImpulseStrength1);
+			case EUpgradeValue.MoneyAdded: return 1 + Data.GetUpgradeAmount(EUpgradeName.MoreMoney1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MoreMoney1);
+			case EUpgradeValue.MovementSpeed: return 100 + Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MovementSpeed1);
+			case EUpgradeValue.BoxGrabRange: return 100 + Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxGrabRange1);
+			case EUpgradeValue.SwordPower: return 100 + Data.GetUpgradeAmount(EUpgradeName.SwordPower1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.SwordPower1);
+			case EUpgradeValue.MoneyLoss: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.LessMoneyLoss1);
+			case EUpgradeValue.DashCooldown: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - Data.GetUpgradeAmount(EUpgradeName.DashCooldown1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldown1);
+			case EUpgradeValue.DashImpulseStrength: return 100 + Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashImpulseStrength1);
+			case EUpgradeValue.BoxThrowStrength: return 100 + Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowImpulseStrength1);
 			case EUpgradeValue.ChanceToSpawnWood: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnWood1, EUpgradeName.ChanceToSpawnRock1);
 			case EUpgradeValue.ChanceToSpawnRock: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnRock1, EUpgradeName.ChanceToSpawnMetal1);
 			case EUpgradeValue.ChanceToSpawnMetal: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnMetal1, EUpgradeName.ChanceToSpawnGold1);
@@ -236,10 +236,10 @@
 			case EUpgradeValue.ChanceToSpawnRuby: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnRuby1, EUpgradeName.ChanceToSpawnEmerald1);
 			case EUpgradeValue.ChanceToSpawnEmerald: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnEmerald1, EUpgradeName.ChanceToSpawnAmethyst1);
 			case EUpgradeValue.ChanceToSpawnAmethyst: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnAmethyst1, EUpgradeName.ChanceToSpawnObsidian1);
-			case EUpgradeValue.ChanceToSpawnObsidian: return PlayerData.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnObsidian1);
-			case EUpgradeValue.AlienComboMaxMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMaxMultiplier1);
-			case EUpgradeValue.AlienComboMultiplierBoxReduction: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - PlayerData.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMultiplierBoxReduction1);
-			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return PlayerData.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
+			case EUpgradeValue.ChanceToSpawnObsidian: return Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnObsidian1);
+			case EUpgradeValue.AlienComboMaxMultiplier: return Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMaxMultiplier1);
+			case EUpgradeValue.AlienComboMultiplierBoxReduction: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMultiplierBoxReduction1);
+			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
 			default: return 0;
 		}
 	}
@@ -247,7 +247,7 @@
 	{
 		float CurrentMultiplier = GlobalData.Instance.GetUpgradeValue(InUpgradeName);
 		float NextMultiplier = GlobalData.Instance.GetUpgradeValue(InUpgradeNextTierName);
-		return PlayerData.GetUpgradeAmount(InUpgradeName) * CurrentMultiplier + PlayerData.GetUpgradeAmount(InUpgradeNextTierName) * NextMultiplier;
+		return Data.GetUpgradeAmount(InUpgradeName) * CurrentMultiplier + Data.GetUpgradeAmount(InUpgradeNextTierName) * NextMultiplier;
 	}
 	private string GetFormattedUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
@@ -261,6 +261,11 @@
 			default: return $"{Formatted}%";
 		}
 	}
+	private PlayerData GetPlayerData()
+	{
+		Data ??= EventManager.TriggerGetPlayerData();
+		return Data;
+	}
 	
 	private void OnMouseDragged()
 	{
@@ -273,8 +278,8 @@
 	private void BuyUpgrade()
 	{
 		if (SelectedUpgradeName == EUpgradeName.None || SelectedUpgrade == null || !CanBuyMore(SelectedUpgrade) || !CanAfford(SelectedUpgrade) || !GetIsAvailable(SelectedUpgradeName)) return;
-		PlayerData.SubtractMoney(GetCurrentCost(SelectedUpgrade));
-		PlayerData.BuyUpgrade(SelectedUpgradeName);
+		Data.SubtractMoney(GetCurrentCost(SelectedUpgrade));
+		Data.BuyUpgrade(SelectedUpgradeName);
 	}
 	private void CloseMenu() { UiManager.ChangeUiState(EUi.UpgradesMenu); }
 	private void UiStateChanged(EUi InUi, bool RenderState)
@@ -302,13 +307,13 @@
 	[Button("Add Money"), Group("Dev Tools")]
 	public void AddMoney()
 	{
-		if (!Game.IsEditor || PlayerData == null) return;
-		PlayerData.AddMoney(DebugMoneyAmount);
+		if (!Game.IsEditor || Data == null) return;
+		Data.AddMoney(DebugMoneyAmount);
 	}
 	[Button("Remove Money"), Group("Dev Tools")]
 	public void SubtractMoney()
 	{
-		if (!Game.IsEditor || PlayerData == null) return;
-		PlayerData.SubtractMoney(DebugMoneyAmount);
+		if (!Game.IsEditor || Data == null) return;
+		Data.SubtractMoney(DebugMoneyAmount);
 	}
 }

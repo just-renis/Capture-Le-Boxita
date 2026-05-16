@@ -8,7 +8,7 @@ public class Upgrade
 	public EDefaultAttribute DefaultAttribute { get; set; }
 	public int MaxAmount { get; set { field = value; AdjustCostsList(); } } = 1;
 	public string Name { get; set; }
-	public string Description { get; set; }
+	[TextArea] public string Description { get; set; }
 	public List<int> Costs { get; set; }
 	public List<EUpgradeName> ParentsUpgradeNames { get; set; } = [];
 	[ImageAssetPath]

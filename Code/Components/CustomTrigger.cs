@@ -1,4 +1,5 @@
 ﻿using System;
+using Sandbox.Managers;
 namespace Sandbox.Components;
 
 public enum TriggerShape
@@ -24,47 +25,64 @@ public class CustomTrigger : Component
 	public float DefaultCapsuleRadius;
 	public Action<GameObject> OnEnter;
 	public Action<GameObject> OnExit;
+	private int RunTraceHandle;
 	
 	private readonly HashSet<GameObject> Occupants = [];
 	private readonly HashSet<GameObject> CurrentFrameOccupants = [];
+	private readonly List<GameObject> RemoveOccupants = [];
 
-	protected override void OnFixedUpdate()
+	protected override void OnStart()
+	{
+		RunTraceHandle = TimerManager.AddTimer(RunTraceHandle, 0.1f, true, RunTraceCheck);
+	}
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(RunTraceHandle);
+	}
+	protected virtual void OnTriggerEnter(GameObject InGameObject) { }
+	protected virtual void OnTriggerExit(GameObject InGameObject) { }
+	
+	private SceneTrace BuildTrace()
+	{
+		SceneTrace Trace;
+		if (Shape == TriggerShape.Box) Trace = Scene.Trace.Ray(WorldPosition, WorldPosition).Size(Size);
+		else
+		{
+			Vector3 HalfHeight = WorldRotation.Up * (CapsuleHeight * 0.5f);
+			Vector3 Start = WorldPosition + HalfHeight;
+			Vector3 End = WorldPosition - HalfHeight;
+			Trace = Scene.Trace.Ray(Start, End).Radius(CapsuleRadius);
+		}
+		if (TriggerByTags && TriggerTags != null) Trace = Trace.WithAnyTags(TriggerTags);
+		return Trace;
+	}
+
+	private void RunTraceCheck()
 	{
 		if (!Networking.IsHost) return;
 		// ----------------------------------------------------DEBUG-----------------------------------------------------
-		/*
 		Vector3 HalfHeight = WorldRotation.Up * (CapsuleHeight * 0.5f);
 		Vector3 Top = WorldPosition + HalfHeight;
 		Vector3 Bottom = WorldPosition - HalfHeight;
 
-		if (Shape == TriggerShape.Box) 
+		if (Shape == TriggerShape.Box)
 		{
-			DebugOverlay.Box( BBox.FromPositionAndSize( WorldPosition, Size ), Color.Cyan, Time.Delta );
+			DebugOverlay.Box(BBox.FromPositionAndSize(WorldPosition, Size), Color.Cyan, 0.1f);
 		}
 		else
 		{
 			Capsule Capsule = new (Bottom, Top, CapsuleRadius);
-			DebugOverlay.Capsule(Capsule, color: Color.Cyan, duration: Time.Delta );
-		}*/
+			DebugOverlay.Capsule(Capsule, Color.Cyan, 0.1f);
+		}
+		RemoveOccupants.Clear();
+		CurrentFrameOccupants.Clear();
 		SceneTrace Trace = BuildTrace();
 		IEnumerable<SceneTraceResult> Hits = Trace.RunAll();
-		CurrentFrameOccupants.Clear();
 		foreach (SceneTraceResult Hit in Hits)
 		{
+			if (!Hit.Hit) continue;
 			GameObject Root = Hit.GameObject.Root;
 			if (!Root.IsValid()) continue;
-			if (TriggerByTags)
-			{
-				bool HasValidTag = false;
-				foreach (string Tag in TriggerTags)
-				{
-					if (!Root.Tags.Has(Tag)) continue;
-					HasValidTag = true;
-					break;
-				}
-				if (!HasValidTag) continue;
-			}
-
 			CurrentFrameOccupants.Add(Root);
 		}
 		foreach (GameObject Object in CurrentFrameOccupants)
@@ -73,52 +91,15 @@ public class CustomTrigger : Component
 			OnTriggerEnter(Object);
 			OnEnter?.Invoke(Object);
 		}
-		Occupants.RemoveWhere(Object => 
+		foreach (GameObject Occupant in Occupants)
 		{
-			if (!Object.IsValid() || !CurrentFrameOccupants.Contains(Object))
-			{
-				OnTriggerExit(Object);
-				OnExit?.Invoke(Object);
-				return true;
-			}
-			return false;
-		});
+			if (!Occupant.IsValid() || !CurrentFrameOccupants.Contains(Occupant)) RemoveOccupants.Add(Occupant);
+		}
+		foreach (GameObject Occupant in RemoveOccupants)
+		{
+			OnTriggerExit(Occupant);
+			OnExit?.Invoke(Occupant);
+			Occupants.Remove(Occupant);
+		}
 	}
-
-	private SceneTrace BuildTrace()
-	{
-		if (Shape == TriggerShape.Box) return Scene.Trace.Ray(WorldPosition, WorldPosition).Size(Size);
-		Vector3 HalfHeight = WorldRotation.Up * (CapsuleHeight * 0.5f);
-		Vector3 Start = WorldPosition + HalfHeight;
-		Vector3 End = WorldPosition - HalfHeight;
-		return Scene.Trace.Ray(Start, End).Radius(CapsuleRadius);
-		/*if (!Networking.IsHost) return;
-		IEnumerable<GameObject> CurrentlyTouching;
-		if (TriggerByTags)
-		{
-			CurrentlyTouching = Scene.FindInPhysics(OverlapBounds)
-				.Select(X => X.Root)
-				.Where(X => TriggerTags.Any(Tag => X.Tags.Has(Tag)))
-				.Distinct();
-		}
-		else
-		{
-			CurrentlyTouching = Scene.FindInPhysics(OverlapBounds)
-				.Select(X => X.Root)
-				.Distinct();
-		}
-		IEnumerable<GameObject> GameObjects = CurrentlyTouching.ToList();
-		foreach (GameObject Object in GameObjects)
-		{
-			if (Occupants.Add(Object)) OnTriggerEnter(Object);
-		}
-		Occupants.RemoveWhere(Object => 
-		{
-			if (GameObjects.Contains(Object)) return false;
-			OnTriggerExit(Object);
-			return true;
-		});*/
-	}
-	protected virtual void OnTriggerEnter(GameObject InGameObject) { }
-	protected virtual void OnTriggerExit(GameObject InGameObject) { }
 }

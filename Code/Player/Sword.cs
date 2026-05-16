@@ -47,7 +47,7 @@ public sealed class Sword : Component
 		if (!TraceResults.Hit) return;
 		GameObject Target = TraceResults.GameObject.Root;
 		if (!HitObjects.Add(Target)) return;
-		SendToHostAboutTheHit(Target, InPusherId, EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.SwordPower1));
+		SendToHostAboutTheHit(Target, InPusherId, GlobalData.Instance.GetProcessedUpgradeValue(EventManager.TriggerGetPlayerData().GetUpgradeAmount(EUpgradeName.SwordPower1), EUpgradeName.SwordPower1));
 	}
 	private void SendToHostAboutTheHit(GameObject Target, Guid InPusherId, float InPushForceUpgradeAmount)
 	{

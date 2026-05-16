@@ -5,11 +5,12 @@ public sealed class TimerManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	private class Timer
 	{
-		private readonly bool IsLooping;
-		private readonly int Id;
-		private float CurrentTime;
-		private readonly float Interval;
-		private readonly Action TimerCallback;
+		public bool IsLooping;
+		public  int Id;
+		public float CurrentTime;
+		public float Interval;
+		public Action TimerCallback;
+		public bool PendingDelete;
 		
 		public Timer(int InId, float InInterval, bool InIsLooping, Action InTimerCallback)
 		{
@@ -17,34 +18,55 @@ public sealed class TimerManager(Scene Scene) : GameObjectSystem(Scene)
 			Interval = InInterval;
 			IsLooping = InIsLooping;
 			TimerCallback = InTimerCallback;
-		}
-		public void IncrementTimer(float InDeltaTime)
-		{
-			CurrentTime += InDeltaTime;
-			if (CurrentTime < Interval) return;
-			TimerCallback.Invoke();
-			CurrentTime = 0f;
-			if (!IsLooping) ClearTimer(Id);
+			PendingDelete = false;
 		}
 	}
 
-	private static readonly Dictionary<int, Timer> TIMERS = new();
+	private static readonly List<Timer> TIMERS = [];
 	private static int NEXT_ID;
 	
-	public static int AddTimer(int TimerHandle, float InInterval, bool InIsLooping, Action InTimerCallback)
+	public static int AddTimer(int InTimerHandle, float InInterval, bool InIsLooping, Action InTimerCallback)
 	{
-		if (TIMERS.ContainsKey(TimerHandle))
+		for (int i = 0; i < TIMERS.Count; i++)
 		{
-			TIMERS[TimerHandle] = new Timer(TimerHandle, InInterval, InIsLooping, InTimerCallback);
-			return TimerHandle;
+			Timer Timer = TIMERS[i];
+			if (Timer.Id != InTimerHandle || InTimerHandle == 0) continue;
+			Timer.Interval = InInterval;
+			Timer.IsLooping = InIsLooping;
+			Timer.TimerCallback = InTimerCallback;
+			Timer.CurrentTime = 0f;
+			Timer.PendingDelete = false;
+			return InTimerHandle;
 		}
-		TIMERS.Add(++NEXT_ID, new Timer(NEXT_ID, InInterval, InIsLooping, InTimerCallback));
+		TIMERS.Add(new Timer(++NEXT_ID, InInterval, InIsLooping, InTimerCallback));
 		return NEXT_ID;
 	}
-	public static void ClearTimer(int InId) { TIMERS.Remove(InId); }
+
+	public static void ClearTimer(int InId)
+	{
+		for (int i = 0; i < TIMERS.Count; i++)
+		{
+			if (TIMERS[i].Id != InId) continue;
+			TIMERS[i].PendingDelete = true;
+			break;
+		}
+	}
 	public static void OnUpdate()
 	{
-		foreach (KeyValuePair<int, Timer> TimerObject in TIMERS.ToArray()) TimerObject.Value.IncrementTimer(Time.Delta);
+		for (int i = TIMERS.Count - 1; i >= 0; i--)
+		{
+			Timer Timer = TIMERS[i];
+			if (Timer.PendingDelete)
+			{
+				TIMERS.RemoveAt(i);
+				continue;
+			}
+			Timer.CurrentTime += Time.Delta;
+			if (Timer.CurrentTime < Timer.Interval) continue;
+			Timer.TimerCallback?.Invoke();
+			if (Timer.IsLooping && !Timer.PendingDelete) Timer.CurrentTime = 0f;
+			else TIMERS.RemoveAt(i);
+		}
 	}
 	public static void OnDestroy()
 	{

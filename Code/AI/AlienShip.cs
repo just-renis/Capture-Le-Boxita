@@ -50,10 +50,7 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	protected override void OnDestroy()
 	{
-		if (!Networking.IsHost) return;
 		Collider?.OnTriggerEnter -= ChangeToOppositeDirection;
-		//BeamCollider?.OnTriggerEnter -= BeamEntered;
-		//BeamCollider?.OnTriggerExit -= BeamExit;
 		BeamCollider?.OnEnter -= BeamEntered;
 		BeamCollider?.OnExit -= BeamExit;
 		TimerManager.ClearTimer(MoveHandle);
@@ -173,7 +170,7 @@ public sealed class AlienShip : Component, IPoolObject
 		RecentlyTeleported.Clear();
 		TimerManager.ClearTimer(FlyUpwardsHandle);
 		GameObject.Network.TakeOwnership();
-		Scene.GetSystem<PoolingManager>().ReturnObjectToPool(EPoolObject.AlienShip, GameObject);
+		PoolingManager.Instance.ReturnObjectToPool(EPoolObject.AlienShip, GameObject);
 	}
 	private void BeamExit(GameObject InGameObject)
 	{
@@ -196,7 +193,7 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void SetupBoxCollider()
 	{
-		Collider = GameObject.AddComponent<BoxCollider>();
+		Collider = GameObject.GetComponent<BoxCollider>() ?? GameObject.AddComponent<BoxCollider>();
 		Collider.Scale = new Vector3(400f, 400f, 100f);
 		Collider.Center = new Vector3(0f, 0f, 20f);
 		Collider.IsTrigger = true;
@@ -206,16 +203,27 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void SetupBeamCollider()
 	{
-		GameObject BeamObject = new() { Parent = GameObject };
-		BeamCollider = BeamObject.AddComponent<CustomTrigger>();
+		if (BeamCollider == null)
+		{
+			BeamCollider = GameObject.GetComponentInChildren<CustomTrigger>(true);
+			if (BeamCollider == null)
+			{
+				GameObject BeamObject = new() { Parent = GameObject, Name = "BeamTrigger" };
+				BeamCollider = BeamObject.AddComponent<CustomTrigger>();
+			}
+			BeamCollider.OnEnter -= BeamEntered;
+			BeamCollider.OnExit -= BeamExit;
+			BeamCollider.OnEnter += BeamEntered;
+			BeamCollider.OnExit += BeamExit;
+		}
 		BeamCollider.Shape = TriggerShape.Capsule;
 		BeamCollider.TriggerByTags = true;
+		BeamCollider.DefaultCapsuleHeight = 2000f;
+		BeamCollider.DefaultCapsuleRadius = 100f;
 		BeamCollider.TriggerTags = ["player", "collectible"];
-		BeamCollider.CapsuleRadius = BeamCollider.DefaultCapsuleRadius = 100f;
-		BeamCollider.CapsuleHeight = BeamCollider.DefaultCapsuleHeight = 2000f;
 		BeamCollider.LocalPosition = new Vector3(0, 0, -1050f);
-		BeamCollider.OnEnter += BeamEntered;
-		BeamCollider.OnExit += BeamExit;
+		BeamCollider.CapsuleRadius = BeamCollider.DefaultCapsuleRadius * WorldScale.x;
+		BeamCollider.CapsuleHeight = BeamCollider.DefaultCapsuleHeight * WorldScale.x;
 	}
 	private void SetupBeamVfx()
 	{

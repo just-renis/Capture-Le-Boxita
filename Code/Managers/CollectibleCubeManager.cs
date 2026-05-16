@@ -12,7 +12,7 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 	
 	public void Init()
 	{
-		PoolingManager = Scene.GetSystem<PoolingManager>();
+		PoolingManager = PoolingManager.Instance;
 	}
 	public void OnUpdate()
 	{
