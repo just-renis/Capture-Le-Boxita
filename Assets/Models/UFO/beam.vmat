@@ -4,9 +4,12 @@ Layer0
 {
 	shader "models/ufo/beam.shader"
 
+	//---- Rendering ----
+	F_RENDER_BACKFACES 1
+
 	g_vBeamColor "[1.000000 0.066667 0.066667 1.000000]"
-	g_vBeamFade "[0.416 0.430]"
-	g_vBeamFadeSmoothness "[0.398 0.490]"
+	g_vBeamFade "[0.410 0.440]"
+	g_vBeamFadeSmoothness "[0.408 0.517]"
 
 	//---- Fog ----
 	g_bFogEnabled "1"
