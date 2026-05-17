@@ -3,66 +3,88 @@
 @inherits PanelComponent
 
 <root>
-	<div class="crosshair-container">
-		<div class="corner top-left"></div>
-		<div class="corner top-right"></div>
-		<div class="corner bottom-left"></div>
-		<div class="corner bottom-right"></div>
-	</div>
-	<div class="Money">
-		<div class="icon"><i>payments</i></div>
-		<div class="amount-container">
-			<span class="value">$@Money.ToString("N0")</span>
-		</div>
-	</div>
-	@if (IsStuckPopupEnabled)
+	@if (PlayerRef != null)
 	{
-		<div class="Unstuck">
-			<p>PRESS [U] TO UNSTUCK</p>
+		<div class="crosshair-container">
+			<div class="corner top-left"></div>
+			<div class="corner top-right"></div>
+			<div class="corner bottom-left"></div>
+			<div class="corner bottom-right"></div>
 		</div>
+		<div class="ability-container">
+			<div class="ability-box @(PlayerRef.GetIsDashAvailable() ? "ready" : "on-cooldown")">
+				@if (PlayerRef.GetIsDashAvailable())
+				{
+					<span class="ability-text">DASH</span>
+				}
+				else
+				{
+					<div class="cooldown-overlay" style="height: @(PlayerRef.GetDashPercentage())%;"></div>
+					<span class="cooldown-text">@PlayerRef.GetDashCooldown().ToString("F1")</span>
+				}
+			</div>
+		</div>
+		<div class="Money">
+			<div class="icon"><i>payments</i></div>
+			<div class="amount-container">
+				<span class="value">$@Money.ToString("N0")</span>
+			</div>
+		</div>
+		@if (IsStuckPopupEnabled)
+		{
+			<div class="Unstuck">
+				<p>PRESS [U] TO UNSTUCK</p>
+			</div>
+		}
+		@if (IsAlienBoxComboMultiplierAvailable)
+		{
+			<div class="AlienBoxComboMultiplier">
+				<div>COMBO</div>
+				<div>@AlienBoxComboMultiplier.ToString("F1") X</div>
+			</div>
+		}
+		<footer>
+			<div class="tips">
+				<span class="tip"><b>LMB</b> ATTACK</span>
+				<span class="divider">|</span>
+				<span class="tip"><b>RMB</b> PICK UP BOX</span>
+				<span class="divider">|</span>
+				<span class="tip"><b>TAB</b> Open Upgrades</span>
+				<span class="divider">|</span>
+				<span class="tip"><b>ESC</b> Open Settings</span>
+			</div>
+		</footer>
 	}
-	@if (IsAlienBoxComboMultiplierAvailable)
-	{
-		<div class="AlienBoxComboMultiplier">
-			<div>COMBO</div>
-			<div>@AlienBoxComboMultiplier.ToString("F1") X</div>
-		</div>
-	}
-	<footer>
-		<div class="tips">
-			<span class="tip"><b>LMB</b> ATTACK</span>
-			<span class="divider">|</span>
-			<span class="tip"><b>RMB</b> PICK UP BOX</span>
-			<span class="divider">|</span>
-			<span class="tip"><b>TAB</b> Open Upgrades</span>
-			<span class="divider">|</span>
-			<span class="tip"><b>ESC</b> Open Settings</span>
-		</div>
-	</footer>
 </root>
 
 @code
 {
 	private bool IsStuckPopupEnabled;
 	private bool IsAlienBoxComboMultiplierAvailable;
+	private int RequestPlayerRefHandle;
 	private float AlienBoxComboMultiplier;
 	private double Money;
+	private Player.Player PlayerRef;
+	
+	protected override int BuildHash()
+	{
+		if (PlayerRef == null) return -1;
+		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable, PlayerRef.GetIsDashAvailable(), PlayerRef.GetDashCooldown());
+	}
 	
 	protected override void OnStart()
 	{
 		EventManager.OnMoneyChanged += SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged += StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged += SetAlienBoxCombo;
+		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
 	}
 	protected override void OnDestroy()
 	{
 		EventManager.OnMoneyChanged -= SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged -= StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged -= SetAlienBoxCombo;
-	}
-	protected override int BuildHash()
-	{
-		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable);
+		TimerManager.ClearTimer(RequestPlayerRefHandle);
 	}
 	
 	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
@@ -71,5 +93,11 @@
 	{
 		AlienBoxComboMultiplier = InAlienBoxComboMultiplier + 1f;
 		IsAlienBoxComboMultiplierAvailable = AlienBoxComboMultiplier >= 1.1f;
+	}
+	private void TryToGetPlayerRef()
+	{
+		PlayerRef = EventManager.TriggerGetPlayerRef();
+		if (PlayerRef == null) return;
+		TimerManager.ClearTimer(RequestPlayerRefHandle);
 	}
 }

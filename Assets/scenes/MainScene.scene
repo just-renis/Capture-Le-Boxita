@@ -537,10 +537,10 @@
               "Name": "Dash Impulse Strength",
               "Description": "Increases dash impulse strength by {0}%.",
               "Costs": [
-                200,
-                400,
-                550,
-                800,
+                350,
+                600,
+                750,
+                1000,
                 1400
               ],
               "ParentsUpgradeNames": [
@@ -652,6 +652,32 @@
               "Icon": "ui/aliencombomultiplierboxreduction1.png",
               "X": 200,
               "Y": -300
+            },
+            {
+              "UpgradeName": "DashCooldownReductionPerBox1",
+              "UpgradeValue": "DashCooldownReductionPerBox",
+              "DefaultAttribute": "None",
+              "MaxAmount": 10,
+              "Name": "Dash Cooldown Per Box",
+              "Description": "Each box consumed by alien reduces {0}s of current dash cooldown.",
+              "Costs": [
+                1200,
+                1900,
+                2650,
+                3500,
+                4500,
+                7000,
+                10000,
+                12000,
+                14000,
+                18000
+              ],
+              "ParentsUpgradeNames": [
+                "UnlockDashAbility"
+              ],
+              "Icon": null,
+              "X": 200,
+              "Y": -300
             }
           ]
         },
@@ -671,27 +697,55 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "Upgrades": {
-            "MoreMoney1": {},
-            "MovementSpeed1": {},
-            "BoxGrabRange1": {},
-            "SwordPower1": {},
-            "LessMoneyLoss1": {},
-            "ChanceToSpawnWood1": {},
-            "ChanceToSpawnRock1": {},
-            "ChanceToSpawnMetal1": {},
-            "ChanceToSpawnGold1": {},
-            "ChanceToSpawnDiamond1": {},
-            "ChanceToSpawnRuby1": {},
-            "ChanceToSpawnEmerald1": {},
-            "ChanceToSpawnAmethyst1": {},
-            "ChanceToSpawnObsidian1": {},
-            "DashImpulseStrength1": {},
-            "DashCooldown1": {},
-            "BoxThrowImpulseStrength1": {},
-            "AlienComboMaxMultiplier1": {},
-            "AlienComboMultiplierBoxReduction1": {},
-            "BiggerAlienMoreMoneyMultiplier1": {}
+          "UpgradesMaxAmounts": {
+            "MoreMoney1": 5,
+            "MovementSpeed1": 10,
+            "BoxGrabRange1": 3,
+            "SwordPower1": 5,
+            "LessMoneyLoss1": 5,
+            "ChanceToSpawnWood1": 5,
+            "ChanceToSpawnRock1": 5,
+            "ChanceToSpawnMetal1": 6,
+            "ChanceToSpawnGold1": 6,
+            "ChanceToSpawnDiamond1": 7,
+            "ChanceToSpawnRuby1": 7,
+            "ChanceToSpawnEmerald1": 8,
+            "ChanceToSpawnAmethyst1": 8,
+            "ChanceToSpawnObsidian1": 10,
+            "DashImpulseStrength1": 5,
+            "DashCooldown1": 5,
+            "BoxThrowImpulseStrength1": 4,
+            "AlienComboMaxMultiplier1": 5,
+            "AlienComboMultiplierBoxReduction1": 4,
+            "BiggerAlienMoreMoneyMultiplier1": 5,
+            "DashCooldownReductionPerBox1": 10,
+            "AlienComboForMovementSpeed1": 0,
+            "BoxThrowSlowDownPlayer1": 0
+          },
+          "UpgradesValues": {
+            "MoreMoney1": 1,
+            "MovementSpeed1": 5,
+            "BoxGrabRange1": 10,
+            "SwordPower1": 10,
+            "LessMoneyLoss1": 1,
+            "ChanceToSpawnWood1": 5,
+            "ChanceToSpawnRock1": 5,
+            "ChanceToSpawnMetal1": 4,
+            "ChanceToSpawnGold1": 4,
+            "ChanceToSpawnDiamond1": 3,
+            "ChanceToSpawnRuby1": 3,
+            "ChanceToSpawnEmerald1": 2,
+            "ChanceToSpawnAmethyst1": 2,
+            "ChanceToSpawnObsidian1": 1,
+            "DashImpulseStrength1": 5,
+            "DashCooldown1": 0.5,
+            "BoxThrowImpulseStrength1": 10,
+            "AlienComboMaxMultiplier1": 0.5,
+            "AlienComboMultiplierBoxReduction1": 1,
+            "BiggerAlienMoreMoneyMultiplier1": 0.1,
+            "DashCooldownReductionPerBox1": 0.1,
+            "AlienComboForMovementSpeed1": 0.1,
+            "BoxThrowSlowDownPlayer1": 5
           }
         },
         {
@@ -25296,13 +25350,13 @@
           "$blob": "b653db23-c99c-489e-828b-640e7704e36b"
         }
       },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       }
     }
   },

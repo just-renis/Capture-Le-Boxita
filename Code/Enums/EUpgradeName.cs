@@ -23,5 +23,8 @@ public enum EUpgradeName
 	AlienComboMaxMultiplier1,
 	AlienComboMultiplierBoxReduction1,
 	BiggerAlienMoreMoneyMultiplier1,
-	None
+	None,
+	DashCooldownReductionPerBox1,
+	AlienComboForMovementSpeed1,
+	BoxThrowSlowDownPlayer1
 }

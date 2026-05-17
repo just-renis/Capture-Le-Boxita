@@ -3,6 +3,8 @@ using Sandbox.Components;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
+using Sandbox.UI;
+
 namespace Sandbox.Player;
 
 public sealed class Player : Component, Component.INetworkListener
@@ -50,6 +52,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private float BoxThrowImpulseStrength;
 	private float AlienBoxComboMultiplier;
 	private float AlienBoxComboMaxMultiplier;
+	private float DashReductionCooldownPerBox;
 	private TimeSince TimeSinceLastDash;
 	private TimeSince TimeSinceLastBoxConsumed;
 	private Vector3 LastFramePosition;
@@ -85,6 +88,9 @@ public sealed class Player : Component, Component.INetworkListener
 		public void SetupClearOwnerIdTimer() { PullableComp?.SetClearOwnerIdTimer(); }
 	}
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	public bool GetIsDashAvailable() { return DashCooldown <= TimeSinceLastDash; }
+	public float GetDashCooldown() { return DashCooldown - TimeSinceLastDash; }
+	public float GetDashPercentage() { return Math.Clamp(TimeSinceLastDash / DashCooldown * 100f, 0f, 100f); }
 	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
 	
 	public void OnConnected(Connection InChannel)
@@ -117,6 +123,7 @@ public sealed class Player : Component, Component.INetworkListener
 		EventManager.OnPlayerNameChanged += ChangedName;
 		EventManager.OnPlayerNameShowTagChanged += ChangedShowNameTag;
 		EventManager.OnRequestPlayerLocation += GetPlayerLocation;
+		EventManager.OnRequestPlayerRef += GetThisRef;
 		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
 		CheckIfAlienBoxMultiplierComboEndedHandle = TimerManager.AddTimer(CheckIfAlienBoxMultiplierComboEndedHandle, 0.05f, true, CheckIfAlienBoxMultiplierComboEnded);
 		LoadSaveData();
@@ -166,6 +173,7 @@ public sealed class Player : Component, Component.INetworkListener
 		}
 	}
 	private PlayerData GetPlayerData() { return Data; }
+	private Player GetThisRef() { return this; }
 	
 	private void ProcessInput()
 	{
@@ -394,17 +402,20 @@ public sealed class Player : Component, Component.INetworkListener
 			case EUpgradeName.BoxThrowImpulseStrength1: BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1), EUpgradeName.BoxThrowImpulseStrength1) * 0.01f); break;
 			case EUpgradeName.AlienComboMaxMultiplier1: AlienBoxComboMaxMultiplier = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1), EUpgradeName.AlienComboMaxMultiplier1); break;
 			case EUpgradeName.AlienComboMultiplierBoxReduction1: RequiredBoxesAmountForAlienBoxCombo = (int)GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - (int)GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1), EUpgradeName.AlienComboMultiplierBoxReduction1); break;
+			case EUpgradeName.DashCooldownReductionPerBox1: DashReductionCooldownPerBox = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1), EUpgradeName.DashCooldownReductionPerBox1); break;
 		}
 	}
 	private void ApplyUpgradesOnJoin()
 	{
+		GlobalData GlobalInstance = GlobalData.Instance;;
 		GrabDistance = DefaultGrabDistance;
 		DashImpulseStrength = DefaultDashImpulseStrength;
-		DashCooldown = GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown);
-		MoneyLossToAliensPercentage = GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) * 0.01f;
+		DashCooldown = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown);
+		MoneyLossToAliensPercentage = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) * 0.01f;
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
-		RequiredBoxesAmountForAlienBoxCombo = (int)GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1);
+		RequiredBoxesAmountForAlienBoxCombo = (int)GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1);
+		DashReductionCooldownPerBox = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1), EUpgradeName.DashCooldownReductionPerBox1);
 		Dictionary<EUpgradeName, int> OwnedUpgrades = Data?.GetOwnedUpgrades();
 		if (OwnedUpgrades == null) return;
 		foreach (KeyValuePair<EUpgradeName, int> Upgrade in OwnedUpgrades) UpgradePurchased(Upgrade.Key);
@@ -467,6 +478,7 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			TimeSinceLastBoxConsumed = 0f;
 			AddMoney(AdditionalMoneyAmount * (InMoneyMultiplier + AlienBoxComboMultiplier));
+			TimeSinceLastDash += DashReductionCooldownPerBox;
 			if (AlienBoxComboMultiplier >= AlienBoxComboMaxMultiplier) return;
 			if (++CurrentAlienBoxComboCountOfBoxes < RequiredBoxesAmountForAlienBoxCombo) return;
 			CurrentAlienBoxComboCountOfBoxes = 0;

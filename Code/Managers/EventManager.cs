@@ -17,6 +17,7 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static event Func<Vector3> OnTeleportToSpawnLocation;
 	public static event Func<Vector3> OnTeleportToSafeZoneLocation;
 	public static event Func<PlayerData> OnPlayerDataRequired;
+	public static event Func<Player.Player> OnRequestPlayerRef;
 	
 	public static void TriggerStuckPopupStateChange(bool InState)
 	{
@@ -65,6 +66,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static PlayerData TriggerGetPlayerData()
 	{
 		return OnPlayerDataRequired?.Invoke();
+	}
+	public static Player.Player TriggerGetPlayerRef()
+	{
+		return OnRequestPlayerRef?.Invoke();
 	}
 	/*public override void Dispose()
 	{
