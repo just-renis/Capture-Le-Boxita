@@ -147,6 +147,57 @@
       "Children": []
     },
     {
+      "__guid": "ccd49515-360d-45b7-8dd7-317d417d0273",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "PoolingManager",
+      "Position": "0,0,1051.42358",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 1,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 1,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.Managers.PoolingManager",
+          "__guid": "6cc49786-9200-45d8-9f40-ee8bd81ca760",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Pool": {
+            "CollectibleCube": {
+              "Prefab": {
+                "_type": "gameobject",
+                "prefab": "prefabs/collectiblecube.prefab"
+              },
+              "MaxAmountActive": 500,
+              "Objects": [],
+              "ActiveCount": 0
+            },
+            "AlienShip": {
+              "Prefab": {
+                "_type": "gameobject",
+                "prefab": "prefabs/alien.prefab"
+              },
+              "MaxAmountActive": 30,
+              "Objects": [],
+              "ActiveCount": 0
+            }
+          }
+        }
+      ],
+      "Children": []
+    },
+    {
       "__guid": "242c3c62-4767-4d93-9f36-4e5f1df4078e",
       "__version": 2,
       "Flags": 0,
@@ -223,88 +274,81 @@
               "ParentsUpgradeNames": [],
               "Icon": "ui/moremoney1.png",
               "X": 0,
-              "Y": -100
+              "Y": 0
             },
             {
               "UpgradeName": "MovementSpeed1",
               "UpgradeValue": "MovementSpeed",
               "DefaultAttribute": "None",
-              "MaxAmount": 10,
+              "MaxAmount": 3,
               "Name": "Movement Speed",
               "Description": "Increases movement speed by {0}% per upgrade.",
               "Costs": [
-                30,
-                75,
+                80,
                 150,
-                350,
-                500,
-                800,
-                1200,
-                2000,
-                3000,
-                5000
+                300
               ],
-              "ParentsUpgradeNames": [],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnWood1"
+              ],
               "Icon": "ui/movementspeed1.png",
               "X": 100,
-              "Y": 0
+              "Y": -100
             },
             {
               "UpgradeName": "BoxGrabRange1",
               "UpgradeValue": "BoxGrabRange",
               "DefaultAttribute": "None",
-              "MaxAmount": 3,
+              "MaxAmount": 2,
               "Name": "Box Grab Range",
               "Description": "Increases box grab range by {0}% per upgrade",
               "Costs": [
                 40,
-                150,
-                350
+                150
               ],
-              "ParentsUpgradeNames": [],
+              "ParentsUpgradeNames": [
+                "MoreMoney1"
+              ],
               "Icon": "ui/boxgrabrange1.png",
-              "X": 0,
-              "Y": 100
+              "X": 100,
+              "Y": 0
             },
             {
               "UpgradeName": "SwordPower1",
               "UpgradeValue": "SwordPower",
               "DefaultAttribute": "None",
-              "MaxAmount": 5,
+              "MaxAmount": 2,
               "Name": "Sword Power",
               "Description": "Increases sword power by {0}% per upgrade.",
               "Costs": [
-                20,
-                80,
-                200,
-                340,
-                500
+                30,
+                90
               ],
-              "ParentsUpgradeNames": [],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnWood1"
+              ],
               "Icon": "ui/swordpower1.png",
               "X": -100,
-              "Y": 0
+              "Y": -100
             },
             {
               "UpgradeName": "LessMoneyLoss1",
               "UpgradeValue": "MoneyLoss",
               "DefaultAttribute": "MoneyLossPercentageToAliens",
-              "MaxAmount": 5,
+              "MaxAmount": 3,
               "Name": "Money Defense",
               "Description": "Reduces money lost from Alien Probes by {0}% (Does not apply to Player-initiated kills).",
               "Costs": [
                 90,
                 300,
-                1000,
-                3000,
-                10000
+                1000
               ],
               "ParentsUpgradeNames": [
-                "MoreMoney1"
+                "ChanceToSpawnRock1"
               ],
               "Icon": "ui/lessmoneylosstoplayers1.png",
-              "X": -100,
-              "Y": -100
+              "X": 100,
+              "Y": -200
             },
             {
               "UpgradeName": "ChanceToSpawnWood1",
@@ -325,7 +369,7 @@
               ],
               "Icon": "ui/chancetospawnwood1.png",
               "X": 0,
-              "Y": -200
+              "Y": -100
             },
             {
               "UpgradeName": "ChanceToSpawnRock1",
@@ -346,7 +390,7 @@
               ],
               "Icon": "ui/chancetospawnrock1.png",
               "X": 0,
-              "Y": -300
+              "Y": -200
             },
             {
               "UpgradeName": "ChanceToSpawnMetal1",
@@ -368,7 +412,7 @@
               ],
               "Icon": "ui/chancetospawnmetal1.png",
               "X": 0,
-              "Y": -400
+              "Y": -300
             },
             {
               "UpgradeName": "ChanceToSpawnGold1",
@@ -390,7 +434,7 @@
               ],
               "Icon": "ui/chancetospawngold1.png",
               "X": 0,
-              "Y": -500
+              "Y": -400
             },
             {
               "UpgradeName": "ChanceToSpawnDiamond1",
@@ -413,7 +457,7 @@
               ],
               "Icon": "ui/chancetospawndiamond1.png",
               "X": 0,
-              "Y": -600
+              "Y": -500
             },
             {
               "UpgradeName": "ChanceToSpawnRuby1",
@@ -520,97 +564,87 @@
               "Name": "Unlock Dash Ability",
               "Description": "Unlocks ability to dash using [SHIFT]. Dash has {1} seconds cooldown.",
               "Costs": [
-                500
+                1100
               ],
               "ParentsUpgradeNames": [
-                "MovementSpeed1"
+                "MovementSpeed2"
               ],
               "Icon": "ui/unlockdashability.png",
-              "X": 200,
-              "Y": -100
+              "X": -200,
+              "Y": -300
             },
             {
               "UpgradeName": "DashImpulseStrength1",
               "UpgradeValue": "DashImpulseStrength",
               "DefaultAttribute": "None",
-              "MaxAmount": 5,
+              "MaxAmount": 2,
               "Name": "Dash Impulse Strength",
               "Description": "Increases dash impulse strength by {0}%.",
               "Costs": [
-                350,
-                600,
-                750,
-                1000,
-                1400
+                800,
+                1100
               ],
               "ParentsUpgradeNames": [
                 "UnlockDashAbility"
               ],
               "Icon": "ui/dashimpulsestrength1.png",
-              "X": 150,
-              "Y": -200
+              "X": -300,
+              "Y": -300
             },
             {
               "UpgradeName": "DashCooldown1",
               "UpgradeValue": "DashCooldown",
               "DefaultAttribute": "None",
-              "MaxAmount": 5,
+              "MaxAmount": 2,
               "Name": "Reduce Dash Cooldown",
               "Description": "Reduces dash cooldown by {0} seconds.",
               "Costs": [
-                500,
-                800,
-                1300,
-                3000,
-                5000
+                1000,
+                1500
               ],
               "ParentsUpgradeNames": [
                 "UnlockDashAbility"
               ],
               "Icon": "ui/dashcooldown.png",
-              "X": 250,
+              "X": -300,
               "Y": -200
             },
             {
               "UpgradeName": "BoxThrowImpulseStrength1",
               "UpgradeValue": "BoxThrowStrength",
               "DefaultAttribute": "None",
-              "MaxAmount": 4,
+              "MaxAmount": 3,
               "Name": "Box throw impulse strength",
               "Description": "Increases box throw impulse strength by {0}%.",
               "Costs": [
-                100,
-                225,
-                300,
-                350
+                50,
+                120,
+                300
               ],
               "ParentsUpgradeNames": [
-                "BoxGrabRange1"
+                "ChanceToSpawnWood1"
               ],
               "Icon": "ui/boxthrowimpulsestrength1.png",
-              "X": 100,
-              "Y": 100
+              "X": -100,
+              "Y": -200
             },
             {
               "UpgradeName": "AlienComboMaxMultiplier1",
               "UpgradeValue": "AlienComboMaxMultiplier",
               "DefaultAttribute": "RequiredBoxesAmountForAlienBoxCombo1",
-              "MaxAmount": 5,
+              "MaxAmount": 2,
               "Name": "Alien Combo Max Multiplier",
               "Description": "Every {1}th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds {0}x maximum.",
               "Costs": [
                 200,
-                500,
-                1500,
-                5000,
-                12000
+                500
               ],
               "ParentsUpgradeNames": [
-                "ChanceToSpawnRock1"
+                "ChanceToSpawnMetal1"
               ],
               "Icon": "ui/aliencombomultiplier1.png",
-              "X": 100,
-              "Y": -300
+              "X": -100,
+              "Y": -400
             },
             {
               "UpgradeName": "BiggerAlienMoreMoneyMultiplier1",
@@ -630,7 +664,7 @@
                 "ChanceToSpawnRock1"
               ],
               "Icon": "ui/biggeralienmoremoneymultiplier1.png",
-              "X": -100,
+              "X": 100,
               "Y": -300
             },
             {
@@ -641,23 +675,23 @@
               "Name": "Alien Combo Multiplier Box Reduction",
               "Description": "Reduces box requirement by {0}.",
               "Costs": [
-                50,
-                120,
-                250,
-                800
+                200,
+                400,
+                800,
+                2000
               ],
               "ParentsUpgradeNames": [
                 "AlienComboMaxMultiplier1"
               ],
               "Icon": "ui/aliencombomultiplierboxreduction1.png",
-              "X": 200,
-              "Y": -300
+              "X": -200,
+              "Y": -400
             },
             {
               "UpgradeName": "DashCooldownReductionPerBox1",
               "UpgradeValue": "DashCooldownReductionPerBox",
               "DefaultAttribute": "None",
-              "MaxAmount": 10,
+              "MaxAmount": 5,
               "Name": "Dash Cooldown Per Box",
               "Description": "Each box consumed by alien reduces {0}s of current dash cooldown.",
               "Costs": [
@@ -665,19 +699,318 @@
                 1900,
                 2650,
                 3500,
-                4500,
-                7000,
-                10000,
-                12000,
-                14000,
-                18000
+                4500
               ],
               "ParentsUpgradeNames": [
-                "UnlockDashAbility"
+                "ChanceToSpawnRuby1"
               ],
               "Icon": null,
-              "X": 200,
+              "X": 100,
+              "Y": -700
+            },
+            {
+              "UpgradeName": "AlienComboForMovementSpeed1",
+              "UpgradeValue": "AlienComboForMovementSpeed",
+              "DefaultAttribute": "None",
+              "MaxAmount": 4,
+              "Name": "Alien Combo Movement Speed Boost",
+              "Description": "For each alien box combo receive {0}% additive movement speed boost.",
+              "Costs": [
+                700,
+                1200,
+                2800,
+                3500
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnDiamond1"
+              ],
+              "Icon": null,
+              "X": 100,
+              "Y": -600
+            },
+            {
+              "UpgradeName": "BoxThrowSlowDownPlayer1",
+              "UpgradeValue": "BoxThrowSlowDownPlayer",
+              "DefaultAttribute": "None",
+              "MaxAmount": 4,
+              "Name": "Box Hit Slows Down Player",
+              "Description": "Box hit on player reduces his movement speed by {0}% and double reduction for dash distance.",
+              "Costs": [
+                800,
+                1700,
+                3500,
+                8000
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnDiamond1"
+              ],
+              "Icon": null,
+              "X": -100,
+              "Y": -600
+            },
+            {
+              "UpgradeName": "MovementSpeed2",
+              "UpgradeValue": "MovementSpeed",
+              "DefaultAttribute": "None",
+              "MaxAmount": 3,
+              "Name": "Movement Speed",
+              "Description": "Increases movement speed by {0}% per upgrade.",
+              "Costs": [
+                500,
+                1200,
+                2800
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnMetal1"
+              ],
+              "Icon": "ui/movementspeed1.png",
+              "X": -100,
               "Y": -300
+            },
+            {
+              "UpgradeName": "BoxThrowImpulseStrength2",
+              "UpgradeValue": "BoxThrowStrength",
+              "DefaultAttribute": "None",
+              "MaxAmount": 4,
+              "Name": "Box Throw Strength",
+              "Description": "Increases box throw impulse strength by {0}%.",
+              "Costs": [
+                400,
+                750,
+                1500,
+                2300
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnGold1"
+              ],
+              "Icon": "ui/unlockdashability.png",
+              "X": 100,
+              "Y": -400
+            },
+            {
+              "UpgradeName": "SwordPower2",
+              "UpgradeValue": "SwordPower",
+              "DefaultAttribute": "None",
+              "MaxAmount": 5,
+              "Name": "Sword Power",
+              "Description": "Increases sword power by {0}% per upgrade.",
+              "Costs": [
+                300,
+                560,
+                780,
+                1200,
+                1600
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnGold1"
+              ],
+              "Icon": "ui/unlockdashability.png",
+              "X": 100,
+              "Y": -500
+            },
+            {
+              "UpgradeName": "BoxGrabRange2",
+              "UpgradeValue": "BoxGrabRange",
+              "DefaultAttribute": "None",
+              "MaxAmount": 3,
+              "Name": "Box Grab Range",
+              "Description": "Increases box grab range by {0}% per upgrade",
+              "Costs": [
+                680,
+                1250,
+                1670
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnDiamond1"
+              ],
+              "Icon": "ui/boxgrabrange1.png",
+              "X": -100,
+              "Y": -500
+            },
+            {
+              "UpgradeName": "LessMoneyLoss2",
+              "UpgradeValue": "MoneyLoss",
+              "DefaultAttribute": "MoneyLossPercentageToAliens",
+              "MaxAmount": 5,
+              "Name": "Money Defense",
+              "Description": "Reduces money lost from Alien Probes by {0}% (Does not apply to Player-initiated kills).",
+              "Costs": [
+                800,
+                1300,
+                1700,
+                2200,
+                3000
+              ],
+              "ParentsUpgradeNames": [
+                "BoxGrabRange2"
+              ],
+              "Icon": "ui/unlockdashability.png",
+              "X": -200,
+              "Y": -500
+            },
+            {
+              "UpgradeName": "DashImpulseStrength2",
+              "UpgradeValue": "DashImpulseStrength",
+              "DefaultAttribute": "None",
+              "MaxAmount": 4,
+              "Name": "Dash Impulse Strength",
+              "Description": "Increases dash impulse strength by {0}%.",
+              "Costs": [
+                1800,
+                2600,
+                3500,
+                5000
+              ],
+              "ParentsUpgradeNames": [
+                "DashCooldownReductionPerBox1"
+              ],
+              "Icon": "ui/dashimpulsestrength1.png",
+              "X": 200,
+              "Y": -700
+            },
+            {
+              "UpgradeName": "DashCooldown2",
+              "UpgradeValue": "DashCooldown",
+              "DefaultAttribute": "None",
+              "MaxAmount": 4,
+              "Name": "Dash Cooldown",
+              "Description": "Reduces dash cooldown by {0} seconds.",
+              "Costs": [
+                2000,
+                3000,
+                4600,
+                8000
+              ],
+              "ParentsUpgradeNames": [
+                "DashCooldownReductionPerBox1"
+              ],
+              "Icon": "ui/dashcooldown.png",
+              "X": 200,
+              "Y": -800
+            },
+            {
+              "UpgradeName": "AlienComboMaxMultiplier2",
+              "UpgradeValue": "AlienComboMaxMultiplier",
+              "DefaultAttribute": "RequiredBoxesAmountForAlienBoxCombo1",
+              "MaxAmount": 3,
+              "Name": "Alien Combo Max Multiplier",
+              "Description": "Every {1}th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds {0}x maximum.",
+              "Costs": [
+                2000,
+                3400,
+                5000
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnRuby1"
+              ],
+              "Icon": "ui/aliencombomultiplier1.png",
+              "X": -100,
+              "Y": -700
+            },
+            {
+              "UpgradeName": "AlienComboForMovementSpeed2",
+              "UpgradeValue": "AlienComboForMovementSpeed",
+              "DefaultAttribute": "None",
+              "MaxAmount": 6,
+              "Name": "Alien Combo For Movement Speed",
+              "Description": "For each alien box combo receive {0}% additive movement speed boost.",
+              "Costs": [
+                1500,
+                2000,
+                2700,
+                3400,
+                4500,
+                6000
+              ],
+              "ParentsUpgradeNames": [
+                "AlienComboMaxMultiplier2"
+              ],
+              "Icon": null,
+              "X": -200,
+              "Y": -700
+            },
+            {
+              "UpgradeName": "MovementSpeed3",
+              "UpgradeValue": "MovementSpeed",
+              "DefaultAttribute": "None",
+              "MaxAmount": 3,
+              "Name": "Movement Speed",
+              "Description": "Increases movement speed by {0}% per upgrade.",
+              "Costs": [
+                3000,
+                8000,
+                15000
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnEmerald1"
+              ],
+              "Icon": "ui/movementspeed1.png",
+              "X": 100,
+              "Y": -800
+            },
+            {
+              "UpgradeName": "BoxThrowImpulseStrength3",
+              "UpgradeValue": "BoxThrowStrength",
+              "DefaultAttribute": "None",
+              "MaxAmount": 5,
+              "Name": "Box Throw Strength",
+              "Description": "Increases box throw impulse strength by {0}%.",
+              "Costs": [
+                2000,
+                3000,
+                4500,
+                5000,
+                6000
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnEmerald1"
+              ],
+              "Icon": "ui/unlockdashability.png",
+              "X": -100,
+              "Y": -800
+            },
+            {
+              "UpgradeName": "DashCooldownReductionPerBox2",
+              "UpgradeValue": "DashCooldownReductionPerBox",
+              "DefaultAttribute": "None",
+              "MaxAmount": 5,
+              "Name": "Dash Cooldown Per Box",
+              "Description": "Each box consumed by alien reduces {0}s of current dash cooldown.",
+              "Costs": [
+                3500,
+                4500,
+                6000,
+                8000,
+                10500
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnAmethyst1"
+              ],
+              "Icon": "ui/unlockdashability.png",
+              "X": 100,
+              "Y": -900
+            },
+            {
+              "UpgradeName": "BoxThrowSlowDownPlayer2",
+              "UpgradeValue": "BoxThrowSlowDownPlayer",
+              "DefaultAttribute": "None",
+              "MaxAmount": 6,
+              "Name": "Box Hit Slows Down Player",
+              "Description": "Box hit on player reduces his movement speed by {0}% and double reduction for dash distance.",
+              "Costs": [
+                4500,
+                6000,
+                10000,
+                13000,
+                17000,
+                21000
+              ],
+              "ParentsUpgradeNames": [
+                "ChanceToSpawnAmethyst1"
+              ],
+              "Icon": "ui/unlockdashability.png",
+              "X": -100,
+              "Y": -900
             }
           ]
         },
@@ -699,10 +1032,10 @@
           "OnComponentUpdate": null,
           "UpgradesMaxAmounts": {
             "MoreMoney1": 5,
-            "MovementSpeed1": 10,
-            "BoxGrabRange1": 3,
-            "SwordPower1": 5,
-            "LessMoneyLoss1": 5,
+            "MovementSpeed1": 3,
+            "BoxGrabRange1": 2,
+            "SwordPower1": 2,
+            "LessMoneyLoss1": 3,
             "ChanceToSpawnWood1": 5,
             "ChanceToSpawnRock1": 5,
             "ChanceToSpawnMetal1": 6,
@@ -712,21 +1045,31 @@
             "ChanceToSpawnEmerald1": 8,
             "ChanceToSpawnAmethyst1": 8,
             "ChanceToSpawnObsidian1": 10,
-            "DashImpulseStrength1": 5,
-            "DashCooldown1": 5,
-            "BoxThrowImpulseStrength1": 4,
-            "AlienComboMaxMultiplier1": 5,
+            "DashImpulseStrength1": 2,
+            "DashCooldown1": 2,
+            "BoxThrowImpulseStrength1": 3,
+            "AlienComboMaxMultiplier1": 2,
             "AlienComboMultiplierBoxReduction1": 4,
             "BiggerAlienMoreMoneyMultiplier1": 5,
-            "DashCooldownReductionPerBox1": 10,
-            "AlienComboForMovementSpeed1": 0,
-            "BoxThrowSlowDownPlayer1": 0
+            "DashCooldownReductionPerBox1": 5,
+            "AlienComboForMovementSpeed1": 4,
+            "BoxThrowSlowDownPlayer1": 4,
+            "BoxGrabRange2": 3,
+            "LessMoneyLoss2": 5,
+            "DashImpulseStrength2": 3,
+            "DashCooldown2": 4,
+            "AlienComboMaxMultiplier2": 3,
+            "AlienComboForMovementSpeed2": 6,
+            "MovementSpeed3": 3,
+            "BoxThrowImpulseStrength3": 5,
+            "DashCooldownReductionPerBox2": 5,
+            "BoxThrowSlowDownPlayer2": 6
           },
           "UpgradesValues": {
             "MoreMoney1": 1,
             "MovementSpeed1": 5,
-            "BoxGrabRange1": 10,
-            "SwordPower1": 10,
+            "BoxGrabRange1": 6,
+            "SwordPower1": 8,
             "LessMoneyLoss1": 1,
             "ChanceToSpawnWood1": 5,
             "ChanceToSpawnRock1": 5,
@@ -745,7 +1088,20 @@
             "BiggerAlienMoreMoneyMultiplier1": 0.1,
             "DashCooldownReductionPerBox1": 0.1,
             "AlienComboForMovementSpeed1": 0.1,
-            "BoxThrowSlowDownPlayer1": 5
+            "BoxThrowSlowDownPlayer1": 3,
+            "MovementSpeed2": 6,
+            "BoxThrowImpulseStrength2": 12,
+            "SwordPower2": 12,
+            "BoxGrabRange2": 13,
+            "LessMoneyLoss2": 1,
+            "DashImpulseStrength2": 6,
+            "DashCooldown2": 0.5,
+            "AlienComboMaxMultiplier2": 0.5,
+            "AlienComboForMovementSpeed2": 0.1,
+            "MovementSpeed3": 7,
+            "BoxThrowImpulseStrength3": 15,
+            "DashCooldownReductionPerBox2": 0.1,
+            "BoxThrowSlowDownPlayer2": 3
           }
         },
         {
@@ -25088,243 +25444,6 @@
       }
     },
     {
-      "__guid": "c88f45f5-95bf-4fc9-8a4b-fa0951ade665",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "Smoke",
-      "Position": "-50.0367126,-15.8823853,1062.66113",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "particles,hidden",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "Sandbox.ParticleSpriteRenderer",
-          "__guid": "ba7a5514-8761-475e-aec4-d42472805472",
-          "__enabled": true,
-          "Flags": 0,
-          "__version": 2,
-          "Additive": false,
-          "Alignment": "LookAtCamera",
-          "BlurAmount": 0.5,
-          "BlurOpacity": 0.5,
-          "BlurSpacing": 0.5,
-          "DepthFeather": 0,
-          "FaceVelocity": false,
-          "FogStrength": 1,
-          "LeadingTrail": true,
-          "Lighting": false,
-          "MotionBlur": false,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "Opaque": false,
-          "PlaybackSpeed": 1,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RotationOffset": 0,
-          "Scale": 2,
-          "Shadows": true,
-          "SortMode": "Unsorted",
-          "Sprite": "models/smoke/t_smoke_flipbook.sprite",
-          "StartingAnimationName": "Smoke",
-          "TextureFilter": "Anisotropic"
-        },
-        {
-          "__type": "Sandbox.ParticleEffect",
-          "__guid": "0f187a06-d9b8-4fcd-bbbe-b8d38e437bb3",
-          "__enabled": true,
-          "Flags": 0,
-          "__version": 3,
-          "Alpha": 1,
-          "ApplyAlpha": false,
-          "ApplyColor": false,
-          "ApplyRotation": false,
-          "ApplyShape": false,
-          "Bounce": 1,
-          "Brightness": 1,
-          "Bumpiness": 0,
-          "Collision": false,
-          "CollisionIgnore": null,
-          "CollisionPrefab": [],
-          "CollisionPrefabAlign": false,
-          "CollisionPrefabChance": 1,
-          "CollisionPrefabRotation": 0,
-          "CollisionRadius": 1,
-          "ConstantMovement": {
-            "X": 0,
-            "Y": 0,
-            "Z": 5
-          },
-          "Damping": 0,
-          "DieOnCollisionChance": 0,
-          "FollowerPrefab": [],
-          "FollowerPrefabChance": 1,
-          "FollowerPrefabKill": true,
-          "Force": false,
-          "ForceDirection": "0,0,0",
-          "ForceScale": 1,
-          "ForceSpace": "World",
-          "Friction": 1,
-          "Gradient": "1,1,1,1",
-          "InitialVelocity": {
-            "X": 0,
-            "Y": 0,
-            "Z": 5
-          },
-          "Lifetime": 1,
-          "LocalSpace": 12.590006,
-          "MaxParticles": 1000,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "OnParticleCreated": null,
-          "OnParticleDestroyed": null,
-          "OrbitalForce": {
-            "X": 0,
-            "Y": 0,
-            "Z": 0
-          },
-          "OrbitalPull": 0,
-          "PerParticleTimeScale": {
-            "Type": "Curve",
-            "Evaluation": "Life",
-            "CurveA": [
-              {
-                "x": 0,
-                "y": 1,
-                "in": -0,
-                "out": -0,
-                "mode": "Mirrored"
-              },
-              {
-                "x": 1,
-                "y": 0,
-                "in": 3.1415927,
-                "out": -3.1415927,
-                "mode": "Mirrored"
-              }
-            ],
-            "CurveB": [
-              {
-                "x": 0.5,
-                "y": 0.5,
-                "in": 0,
-                "out": 0,
-                "mode": "Mirrored"
-              }
-            ]
-          },
-          "Pitch": 0,
-          "PreWarm": 0,
-          "PushStrength": 0,
-          "Roll": 0,
-          "Scale": 1,
-          "SequenceId": 0,
-          "SequenceSpeed": 1,
-          "SequenceTime": 1,
-          "SheetSequence": false,
-          "SnapToFrame": true,
-          "StartDelay": 0,
-          "StartVelocity": 0,
-          "Stretch": 0,
-          "TimeScale": 1,
-          "Timing": "GameTime",
-          "Tint": "1,1,1,1",
-          "UsePrefabFeature": false,
-          "Yaw": 0
-        },
-        {
-          "__type": "Sandbox.ParticleBoxEmitter",
-          "__guid": "7445392f-c97a-4640-bdb3-e8127d50eb31",
-          "__enabled": true,
-          "Flags": 0,
-          "Burst": 0,
-          "Delay": 0,
-          "DestroyOnEnd": false,
-          "Duration": 4,
-          "Loop": true,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "OnEdge": false,
-          "Rate": 10,
-          "RateOverDistance": 20,
-          "Size": "1,1,1"
-        }
-      ],
-      "Children": []
-    },
-    {
-      "__guid": "ccd49515-360d-45b7-8dd7-317d417d0273",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "PoolingManager",
-      "Position": "0,0,1051.42358",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 1,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 1,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "Sandbox.Managers.PoolingManager",
-          "__guid": "6cc49786-9200-45d8-9f40-ee8bd81ca760",
-          "__enabled": true,
-          "Flags": 0,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "Pool": {
-            "CollectibleCube": {
-              "Prefab": {
-                "_type": "gameobject",
-                "prefab": "prefabs/collectiblecube.prefab"
-              },
-              "MaxAmountActive": 500,
-              "Objects": [],
-              "ActiveCount": 0
-            },
-            "AlienShip": {
-              "Prefab": {
-                "_type": "gameobject",
-                "prefab": "prefabs/alien.prefab"
-              },
-              "MaxAmountActive": 30,
-              "Objects": [],
-              "ActiveCount": 0
-            }
-          }
-        }
-      ],
-      "Children": []
-    },
-    {
       "__guid": "cbda5e53-2172-4384-b07b-ff585084f24a",
       "__version": 2,
       "Flags": 0,
@@ -25512,10 +25631,15 @@
                 }
               ]
             },
-            "CurveB": {
-              "rangex": "0,0",
-              "rangey": "0,0"
-            }
+            "CurveB": [
+              {
+                "x": 0.5,
+                "y": 0.5,
+                "in": 0,
+                "out": 0,
+                "mode": "Mirrored"
+              }
+            ]
           },
           "SequenceId": 0,
           "SequenceSpeed": {
@@ -25707,18 +25831,18 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
+        }
+      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
         }
-      },
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "b653db23-c99c-489e-828b-640e7704e36b"
-        }
-      },
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
       }
     }
   },

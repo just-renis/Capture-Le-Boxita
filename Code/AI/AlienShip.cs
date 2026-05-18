@@ -36,7 +36,7 @@ public sealed class AlienShip : Component, IPoolObject
 	public void Init()
 	{
 		Collider?.Enabled = true;
-		BeamCollider?.Enabled = true;
+		BeamCollider?.SetTraceState(true);
 		RandomDownwardsStopZ = Random.Shared.Float(1500f, 2100f);
 		SetupBeamVfx();
 		WorldScale = new Vector3(1f);
@@ -139,7 +139,7 @@ public sealed class AlienShip : Component, IPoolObject
 			InsideBeamObjects.Remove(Pullable);
 		}
 		Collider?.Enabled = false;
-		BeamCollider?.Enabled = false;
+		BeamCollider?.SetTraceState(false);
 		ChangeBeamVfxState(false);
 		IsFlyUpProcessInProgress = true;
 		FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime, true, FlyUpProcess);
@@ -167,6 +167,11 @@ public sealed class AlienShip : Component, IPoolObject
 	private void ReturnToPool()
 	{
 		if (!Networking.IsHost) return;
+		if (BeamCollider != null)
+		{
+			BeamCollider.CapsuleRadius = BeamCollider.DefaultCapsuleRadius;
+			BeamCollider.CapsuleHeight = BeamCollider.DefaultCapsuleHeight;
+		}
 		RecentlyTeleported.Clear();
 		TimerManager.ClearTimer(FlyUpwardsHandle);
 		GameObject.Network.TakeOwnership();

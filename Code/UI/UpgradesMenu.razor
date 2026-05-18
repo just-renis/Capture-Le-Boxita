@@ -240,6 +240,9 @@
 			case EUpgradeValue.AlienComboMaxMultiplier: return Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMaxMultiplier1);
 			case EUpgradeValue.AlienComboMultiplierBoxReduction: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMultiplierBoxReduction1);
 			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
+			case EUpgradeValue.DashCooldownReductionPerBox: return Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldownReductionPerBox1);
+			case EUpgradeValue.AlienComboForMovementSpeed: return Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboForMovementSpeed1);
+			case EUpgradeValue.BoxThrowSlowDownPlayer: return Data.GetUpgradeAmount(EUpgradeName.BoxThrowSlowDownPlayer1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowSlowDownPlayer1);
 			default: return 0;
 		}
 	}
@@ -256,7 +259,7 @@
 		switch (InUpgradeValue)
 		{
 			case EUpgradeValue.MoneyAdded: case EUpgradeValue.AlienComboMultiplierBoxReduction: return Formatted;
-			case EUpgradeValue.DashCooldown: return $"{Formatted}s";
+			case EUpgradeValue.DashCooldown: case EUpgradeValue.DashCooldownReductionPerBox: return $"{Formatted}s";
 			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: case EUpgradeValue.AlienComboMaxMultiplier: return $"{Formatted}x";
 			default: return $"{Formatted}%";
 		}

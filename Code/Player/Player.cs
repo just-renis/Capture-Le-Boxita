@@ -18,6 +18,7 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private float DefaultDashImpulseStrength { get; set; } = 2000f;
+	[Property] private float SlowDownDuration { get; set; } = 5f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
 	[Property] private ModelRenderer Mesh { get; set; }
@@ -53,16 +54,18 @@ public sealed class Player : Component, Component.INetworkListener
 	private float AlienBoxComboMultiplier;
 	private float AlienBoxComboMaxMultiplier;
 	private float DashReductionCooldownPerBox;
+	private float SlowDownPercentage;
+	private TimeSince TimeSinceSlowDownApplied;
 	private TimeSince TimeSinceLastDash;
 	private TimeSince TimeSinceLastBoxConsumed;
 	private Vector3 LastFramePosition;
 	private Angles CurrentCameraRotation;
+	private Rotation LastRotation;
 	private FHeldObjectData HeldObjectData;
 	private CameraComponent Camera;
 	private PullableComponent PullComp;
 	private PlayerData Data;
 	private Rigidbody PlayerRigidbody;
-	private Rotation LastRotation;
 	
 	// --------------------------------------------------------------STRUCTS--------------------------------------------------------------
 	private readonly struct FHeldObjectData
@@ -93,20 +96,15 @@ public sealed class Player : Component, Component.INetworkListener
 	public float GetDashPercentage() { return Math.Clamp(TimeSinceLastDash / DashCooldown * 100f, 0f, 100f); }
 	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
 	
-	public void OnConnected(Connection InChannel)
-	{
-		//EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(InChannel.Id, InChannel.Name, 0), true);
-		Log.Info("CONNECTED: " + InChannel.Id);
-	}
-	public void OnDisconnected(Connection InChannel)
-	{
-		//	EventManager.TriggerPlayerConnectionChange(new LeaderboardEntry(channel.Id, channel.Name, 0), false);
-		Log.Info("DISCONNECTED: " + InChannel.Id);
-	}
 	public void GiveImpulseForce(Vector3 InImpulseForce)
 	{
 		InImpulseForce.z = 0f;
 		PlayerRigidbody?.ApplyImpulse(InImpulseForce);
+	}
+	public void ApplySlowDown(float InSlowDownPercentage)
+	{
+		SlowDownPercentage = InSlowDownPercentage;
+		TimeSinceSlowDownApplied = 0f;
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
 	protected override void OnAwake()
@@ -210,7 +208,10 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 MovementInput = Input.AnalogMove; 
 		Vector3 WishDir = (WorldRotation * MovementInput).WithZ(0).Normal;
 		bool IsMovementHappening = MovementInput.LengthSquared > 0;
-		float WishSpeed = IsMovementHappening ? MovementSpeed : 0f;
+		float MovementSpeedBoost = AlienBoxComboMultiplier * 0.1f * GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1), EUpgradeName.AlienComboForMovementSpeed1);
+		float MovementSpeedAfterUpgrades = MovementSpeed + DefaultMovementSpeed * MovementSpeedBoost;
+		if (TimeSinceSlowDownApplied < SlowDownDuration) MovementSpeedAfterUpgrades *= 1f - SlowDownPercentage;
+		float WishSpeed = IsMovementHappening ? MovementSpeedAfterUpgrades : 0f;
 		PlayerRigidbody.Velocity += WishDir * WishSpeed * Time.Delta;
 		CheckIsStuck(IsMovementHappening);
 	}
@@ -246,7 +247,9 @@ public sealed class Player : Component, Component.INetworkListener
 		if (TimeSinceLastDash < DashCooldown) return;
 		Vector3 DashDir = (WorldRotation * Input.AnalogMove).WithZ(0).Normal;
 		if (DashDir.LengthSquared < 0.1f) DashDir = WorldRotation.Forward.WithZ(0);
-		PlayerRigidbody.ApplyImpulse(DashDir * DashImpulseStrength * PlayerRigidbody.PhysicsBody.Mass);
+		Vector3 Impulse = DashDir * DashImpulseStrength * PlayerRigidbody.PhysicsBody.Mass;
+		if (TimeSinceSlowDownApplied < SlowDownDuration) Impulse *= 1f - SlowDownPercentage * 2f;
+		PlayerRigidbody.ApplyImpulse(Impulse);
 		TimeSinceLastDash = 0;
 	}
 	private void ProcessEscape()
@@ -415,7 +418,6 @@ public sealed class Player : Component, Component.INetworkListener
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
 		RequiredBoxesAmountForAlienBoxCombo = (int)GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1);
-		DashReductionCooldownPerBox = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1), EUpgradeName.DashCooldownReductionPerBox1);
 		Dictionary<EUpgradeName, int> OwnedUpgrades = Data?.GetOwnedUpgrades();
 		if (OwnedUpgrades == null) return;
 		foreach (KeyValuePair<EUpgradeName, int> Upgrade in OwnedUpgrades) UpgradePurchased(Upgrade.Key);

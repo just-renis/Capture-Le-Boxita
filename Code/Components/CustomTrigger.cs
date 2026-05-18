@@ -15,11 +15,11 @@ public class CustomTrigger : Component
 	[Property, Group("IsSetByTags")] 
 	[ShowIf(nameof(TriggerByTags), true)]
 	public string[] TriggerTags { get; set; }
-	[Property, ShowIf( nameof( Shape ), TriggerShape.Box )] 
+	[Property, ShowIf(nameof(Shape), TriggerShape.Box)] 
 	public Vector3 Size { get; set; } = new( 100 );
-	[Property, ShowIf( nameof( Shape ), TriggerShape.Capsule )] 
+	[Property, ShowIf(nameof(Shape), TriggerShape.Capsule)] 
 	public float CapsuleRadius { get; set; } = 50f;
-	[Property, ShowIf( nameof( Shape ), TriggerShape.Capsule )] 
+	[Property, ShowIf(nameof(Shape), TriggerShape.Capsule)] 
 	public float CapsuleHeight { get; set; } = 100f;
 	public float DefaultCapsuleHeight;
 	public float DefaultCapsuleRadius;
@@ -31,14 +31,14 @@ public class CustomTrigger : Component
 	private readonly HashSet<GameObject> CurrentFrameOccupants = [];
 	private readonly List<GameObject> RemoveOccupants = [];
 
-	protected override void OnStart()
+	public void SetTraceState(bool InState)
 	{
-		RunTraceHandle = TimerManager.AddTimer(RunTraceHandle, 0.1f, true, RunTraceCheck);
+		if (InState) RunTraceHandle = TimerManager.AddTimer(RunTraceHandle, 0.1f, true, RunTraceCheck);
+		else TimerManager.ClearTimer(RunTraceHandle);
 	}
-	protected override void OnDestroy()
-	{
-		TimerManager.ClearTimer(RunTraceHandle);
-	}
+
+	protected override void OnStart() { SetTraceState(true); }
+	protected override void OnDestroy() { SetTraceState(false); }
 	protected virtual void OnTriggerEnter(GameObject InGameObject) { }
 	protected virtual void OnTriggerExit(GameObject InGameObject) { }
 	

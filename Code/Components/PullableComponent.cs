@@ -10,6 +10,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private float LastOwnerTime { get; set; }
 	[Sync] private float MoneyMultiplier { get; set; }
 	[Sync] private float AlienScaleMultiplier { get; set; }
+	[Sync] private float BoxSlownessPercentage { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
 	private bool IsPulled;
 	private int ClearOwnerIdHandle;
@@ -43,6 +44,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 		{
 			MoneyMultiplier = Cube.GetMoneyMultiplier();
 			AlienScaleMultiplier = Cube.GetAlienScaleMultiplier();
+			BoxSlownessPercentage = Cube.GetBoxSlownessPercentage();
 		}
 		if (!IsGrabbedByPlayer) SetClearOwnerIdTimerInternally();
 		else TimerManager.ClearTimer(ClearOwnerIdHandle);
@@ -55,19 +57,25 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public void ClearOwnerId() { LastOwnedBy = Guid.Empty; }
 	public void OnCollisionStart(Collision InCollision)
 	{
-		if (GameObject.Tags.Has("player")) return;
+		if (GameObject.Tags.Has("player")) return; // Player objects dont use OnCollisionStart.
 		GameObject CollisionObject = InCollision.Other.GameObject;
-		if (!CollisionObject.Tags.HasAny("player", "collectible")) return;
+		if (!CollisionObject.Tags.HasAny("player", "collectible")) return; // If collided object is not player or collectible return.
 		PullableComponent OtherPullableComponent = CollisionObject.GetComponent<PullableComponent>();
 		if (OtherPullableComponent == null) return;
-		if (OtherPullableComponent.IsOwnerHolding && OtherPullableComponent.Tags.Has("player") && OtherPullableComponent.Network.OwnerId != LastOwnedBy)
+		bool IsPlayerHit = OtherPullableComponent.Tags.Has("player");
+		bool IsNotHittingOwner = OtherPullableComponent.Network.OwnerId != LastOwnedBy;
+		if (IsPlayerHit && IsNotHittingOwner)
 		{
-			Vector3 PushDir = (OtherPullableComponent.WorldPosition - WorldPosition).Normal;
-			PushDir.z = 0;
-			OtherPullableComponent.GetComponent<Player.Player>()?.ReceivePush(PushDir * PushForceMultiplier);
+			if (OtherPullableComponent.IsOwnerHolding)
+			{
+				Vector3 PushDir = (OtherPullableComponent.WorldPosition - WorldPosition).Normal;
+				PushDir.z = 0;
+				OtherPullableComponent.GetComponent<Player.Player>()?.ReceivePush(PushDir * PushForceMultiplier);
+			}
+			else if (Rigidbody.Velocity.Length > 200f) OtherPullableComponent.GetComponent<Player.Player>()?.ApplySlowDown(BoxSlownessPercentage);
 		}
-		if (OtherPullableComponent.GetLastOwnerTime() > LastOwnerTime) return;
-		if (OtherPullableComponent.GetLastOwnerTime().AlmostEqual(LastOwnerTime) && OtherPullableComponent.IsOwnerHolding) return;
+		if (OtherPullableComponent.GetLastOwnerTime() > LastOwnerTime) return; // If other object owning time is more recent than this object return.
+		if (OtherPullableComponent.GetLastOwnerTime().AlmostEqual(LastOwnerTime) && OtherPullableComponent.IsOwnerHolding) return; // If both owning times are equal and cube is held by owner return.
 		OtherPullableComponent.SetOwnerId(LastOwnedBy, false);
 	}
 	public void SetIsPulled(bool State)

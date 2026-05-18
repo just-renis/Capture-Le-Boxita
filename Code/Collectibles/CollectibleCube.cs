@@ -17,10 +17,16 @@ public sealed class CollectibleCube : Component, IPoolObject
 	private Rigidbody Rigidbody;
 	private PlayerData Data;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
+	public float GetMoneyMultiplier() { return MathF.Pow(2, (int)CubeMaterial); }
 	public float GetAlienScaleMultiplier()
 	{
 		if (Data == null) return 0f;
 		return GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1), EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * 0.01f;
+	}
+	public float GetBoxSlownessPercentage()
+	{
+		if (Data == null) return 0f;
+		return GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowSlowDownPlayer1), EUpgradeName.BoxThrowSlowDownPlayer1) * 0.01f;
 	}
 	
 	public void RequestReturnToPoolObject(float InAlienScale)
@@ -51,7 +57,6 @@ public sealed class CollectibleCube : Component, IPoolObject
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
-	public float GetMoneyMultiplier() { return MathF.Pow(2, (int)CubeMaterial); }
 	
 	private void SetMaterial()
 	{
