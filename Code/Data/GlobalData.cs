@@ -11,8 +11,19 @@ public sealed class GlobalData : Component
 
 	public float GetProcessedUpgradeValue(int InUpgradeAmount, EUpgradeName InUpgradeName)
 	{
-		return Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(InUpgradeName)) * GetUpgradeValue(InUpgradeName);
+		Log.Info("UPGRADE VALUE " + (Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(InUpgradeName)) * GetUpgradeValue(InUpgradeName)
+		         + Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(EUpgradeName.MovementSpeed2)) * GetUpgradeValue(EUpgradeName.MovementSpeed2)
+		         + Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(EUpgradeName.MovementSpeed3)) * GetUpgradeValue(EUpgradeName.MovementSpeed3)));
+		switch (InUpgradeName)
+		{
+			case EUpgradeName.MovementSpeed1:
+				return Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(InUpgradeName)) * GetUpgradeValue(InUpgradeName)
+				       + Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(EUpgradeName.MovementSpeed2)) * GetUpgradeValue(EUpgradeName.MovementSpeed2)
+				       + Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(EUpgradeName.MovementSpeed3)) * GetUpgradeValue(EUpgradeName.MovementSpeed3);
+			default: return Math.Clamp(InUpgradeAmount, 0, GetUpgradeMaxAmount(InUpgradeName)) * GetUpgradeValue(InUpgradeName);
+		}
 	}
+
 	public float GetUpgradeValue(EUpgradeName InUpgradeName) { return UpgradesValues.GetValueOrDefault(InUpgradeName, 0f); }
 	public float GetDefaultAttributeValue(EDefaultAttribute InDefaultAttribute) { return DefaultAttributes.GetValueOrDefault(InDefaultAttribute, 0f); }
 	

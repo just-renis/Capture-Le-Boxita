@@ -208,10 +208,15 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 MovementInput = Input.AnalogMove; 
 		Vector3 WishDir = (WorldRotation * MovementInput).WithZ(0).Normal;
 		bool IsMovementHappening = MovementInput.LengthSquared > 0;
-		float MovementSpeedBoost = AlienBoxComboMultiplier * 0.1f * GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1), EUpgradeName.AlienComboForMovementSpeed1);
-		float MovementSpeedAfterUpgrades = MovementSpeed + DefaultMovementSpeed * MovementSpeedBoost;
-		if (TimeSinceSlowDownApplied < SlowDownDuration) MovementSpeedAfterUpgrades *= 1f - SlowDownPercentage;
-		float WishSpeed = IsMovementHappening ? MovementSpeedAfterUpgrades : 0f;
+		float WishSpeed = 0f;
+		if (IsMovementHappening)
+		{
+			float MovementSpeedBoost = AlienBoxComboMultiplier * 0.1f * GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1), EUpgradeName.AlienComboForMovementSpeed1);
+			float MovementSpeedAfterUpgrades = MovementSpeed + DefaultMovementSpeed * MovementSpeedBoost;
+			Log.Info(MovementSpeedAfterUpgrades);
+			if (TimeSinceSlowDownApplied < SlowDownDuration) MovementSpeedAfterUpgrades *= 1f - SlowDownPercentage;
+			WishSpeed = MovementSpeedAfterUpgrades;
+		}
 		PlayerRigidbody.Velocity += WishDir * WishSpeed * Time.Delta;
 		CheckIsStuck(IsMovementHappening);
 	}
@@ -399,7 +404,7 @@ public sealed class Player : Component, Component.INetworkListener
 			case EUpgradeName.LessMoneyLoss1: MoneyLossToAliensPercentage = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1), EUpgradeName.LessMoneyLoss1) * 0.01f; break;
 			case EUpgradeName.MoreMoney1: AdditionalMoneyAmount = 1 + (int)GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MoreMoney1), EUpgradeName.MoreMoney1); break;
 			case EUpgradeName.BoxGrabRange1: GrabDistance = DefaultGrabDistance * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1), EUpgradeName.BoxGrabRange1) * 0.01f); break;
-			case EUpgradeName.MovementSpeed1: MovementSpeed = DefaultMovementSpeed * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1), EUpgradeName.MovementSpeed1) * 0.01f); break;
+			case EUpgradeName.MovementSpeed1: case EUpgradeName.MovementSpeed2: case EUpgradeName.MovementSpeed3: MovementSpeed = DefaultMovementSpeed * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1), EUpgradeName.MovementSpeed1) * 0.01f); break;
 			case EUpgradeName.DashCooldown1: DashCooldown = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldown1), EUpgradeName.DashCooldown1); break;
 			case EUpgradeName.DashImpulseStrength1: DashImpulseStrength = DefaultDashImpulseStrength * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1), EUpgradeName.DashImpulseStrength1) * 0.01f); break;
 			case EUpgradeName.BoxThrowImpulseStrength1: BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1), EUpgradeName.BoxThrowImpulseStrength1) * 0.01f); break;

@@ -683,7 +683,7 @@
               "ParentsUpgradeNames": [
                 "AlienComboMaxMultiplier1"
               ],
-              "Icon": "ui/aliencombomultiplierboxreduction1.png",
+              "Icon": "ui/aliencombomultiplierboxreduction.png",
               "X": -200,
               "Y": -400
             },
@@ -704,7 +704,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRuby1"
               ],
-              "Icon": null,
+              "Icon": "ui/dashcooldownredutionperbox.png",
               "X": 100,
               "Y": -700
             },
@@ -724,7 +724,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnDiamond1"
               ],
-              "Icon": null,
+              "Icon": "ui/aliencomboformovementspeed.png",
               "X": 100,
               "Y": -600
             },
@@ -744,7 +744,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnDiamond1"
               ],
-              "Icon": null,
+              "Icon": "ui/boxthrowslowdownplayer.png",
               "X": -100,
               "Y": -600
             },
@@ -763,7 +763,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnMetal1"
               ],
-              "Icon": "ui/movementspeed1.png",
+              "Icon": "ui/movementspeed2.png",
               "X": -100,
               "Y": -300
             },
@@ -783,7 +783,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnGold1"
               ],
-              "Icon": "ui/unlockdashability.png",
+              "Icon": "ui/boxthrowimpulsestrength2.png",
               "X": 100,
               "Y": -400
             },
@@ -804,7 +804,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnGold1"
               ],
-              "Icon": "ui/unlockdashability.png",
+              "Icon": "ui/swordpower2.png",
               "X": 100,
               "Y": -500
             },
@@ -823,7 +823,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnDiamond1"
               ],
-              "Icon": "ui/boxgrabrange1.png",
+              "Icon": "ui/boxgrabrange2.png",
               "X": -100,
               "Y": -500
             },
@@ -844,7 +844,7 @@
               "ParentsUpgradeNames": [
                 "BoxGrabRange2"
               ],
-              "Icon": "ui/unlockdashability.png",
+              "Icon": "ui/lessmoneyloss2.png",
               "X": -200,
               "Y": -500
             },
@@ -864,7 +864,7 @@
               "ParentsUpgradeNames": [
                 "DashCooldownReductionPerBox1"
               ],
-              "Icon": "ui/dashimpulsestrength1.png",
+              "Icon": "ui/dashimpulsestrength2.png",
               "X": 200,
               "Y": -700
             },
@@ -884,7 +884,7 @@
               "ParentsUpgradeNames": [
                 "DashCooldownReductionPerBox1"
               ],
-              "Icon": "ui/dashcooldown.png",
+              "Icon": "ui/dashcooldown2.png",
               "X": 200,
               "Y": -800
             },
@@ -903,7 +903,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRuby1"
               ],
-              "Icon": "ui/aliencombomultiplier1.png",
+              "Icon": "ui/aliencombomaxmultiplier2.png",
               "X": -100,
               "Y": -700
             },
@@ -925,7 +925,7 @@
               "ParentsUpgradeNames": [
                 "AlienComboMaxMultiplier2"
               ],
-              "Icon": null,
+              "Icon": "ui/aliencomboformovementspeed2.png",
               "X": -200,
               "Y": -700
             },
@@ -944,7 +944,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnEmerald1"
               ],
-              "Icon": "ui/movementspeed1.png",
+              "Icon": "ui/movementspeed3.png",
               "X": 100,
               "Y": -800
             },
@@ -965,7 +965,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnEmerald1"
               ],
-              "Icon": "ui/unlockdashability.png",
+              "Icon": "ui/boxthrowimpulsestrength3.png",
               "X": -100,
               "Y": -800
             },
@@ -986,7 +986,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnAmethyst1"
               ],
-              "Icon": "ui/unlockdashability.png",
+              "Icon": "ui/dashcooldownredutionperbox2.png",
               "X": 100,
               "Y": -900
             },
@@ -1008,7 +1008,7 @@
               "ParentsUpgradeNames": [
                 "ChanceToSpawnAmethyst1"
               ],
-              "Icon": "ui/unlockdashability.png",
+              "Icon": "ui/boxthrowslowdownplayer2.png",
               "X": -100,
               "Y": -900
             }
@@ -25834,14 +25834,14 @@
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       },
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
-        }
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
+        }
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
         }
       }
     }
