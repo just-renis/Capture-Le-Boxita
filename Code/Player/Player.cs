@@ -18,7 +18,7 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private float DefaultDashImpulseStrength { get; set; } = 2000f;
-	[Property] private float SlowDownDuration { get; set; } = 5f;
+	[Property] private float SlowDownDuration { get; set; } = 1f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
 	[Property] private ModelRenderer Mesh { get; set; }
@@ -53,7 +53,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private float BoxThrowImpulseStrength;
 	private float AlienBoxComboMultiplier;
 	private float AlienBoxComboMaxMultiplier;
-	private float DashReductionCooldownPerBox;
+	private float DashCooldownReductionPerBox;
 	private float SlowDownPercentage;
 	private TimeSince TimeSinceSlowDownApplied;
 	private TimeSince TimeSinceLastDash;
@@ -92,6 +92,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsDashAvailable() { return DashCooldown <= TimeSinceLastDash; }
+	public bool GetIsDashPurchased() { return Data.GetUpgradeAmount(EUpgradeName.UnlockDashAbility) > 0; }
 	public float GetDashCooldown() { return DashCooldown - TimeSinceLastDash; }
 	public float GetDashPercentage() { return Math.Clamp(TimeSinceLastDash / DashCooldown * 100f, 0f, 100f); }
 	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
@@ -197,10 +198,7 @@ public sealed class Player : Component, Component.INetworkListener
 		Vector3 CameraOffset = NextCameraRotation.Backward * CameraDistance;
 		Camera.WorldPosition = PlayerPosition + CameraOffset;
 		Camera.WorldRotation = NextCameraRotation;
-		if (PullComp != null && !PullComp.GetIsPulled())
-		{
-			WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
-		}
+		if (PullComp != null && !PullComp.GetIsPulled()) WorldRotation = Rotation.FromYaw(CurrentCameraRotation.yaw);
 	}
 	private void ProcessMovementInput()
 	{
@@ -211,9 +209,11 @@ public sealed class Player : Component, Component.INetworkListener
 		float WishSpeed = 0f;
 		if (IsMovementHappening)
 		{
-			float MovementSpeedBoost = AlienBoxComboMultiplier * 0.1f * GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1), EUpgradeName.AlienComboForMovementSpeed1);
+			GlobalData GlobalInstance = GlobalData.Instance;
+			float AlienComboForMovementSpeed1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1), EUpgradeName.AlienComboForMovementSpeed1);
+			float AlienComboForMovementSpeed2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed2), EUpgradeName.AlienComboForMovementSpeed2);
+			float MovementSpeedBoost = AlienBoxComboMultiplier * 0.1f * (AlienComboForMovementSpeed1 + AlienComboForMovementSpeed2);
 			float MovementSpeedAfterUpgrades = MovementSpeed + DefaultMovementSpeed * MovementSpeedBoost;
-			Log.Info(MovementSpeedAfterUpgrades);
 			if (TimeSinceSlowDownApplied < SlowDownDuration) MovementSpeedAfterUpgrades *= 1f - SlowDownPercentage;
 			WishSpeed = MovementSpeedAfterUpgrades;
 		}
@@ -245,6 +245,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Input.Pressed("Score")) UiManager.ChangeUiState(EUi.UpgradesMenu);
 		if (Input.Pressed("Dash") && Data?.GetUpgradeAmount(EUpgradeName.UnlockDashAbility) == 1) Dash();
 		if (Input.EscapePressed) ProcessEscape();
+		if (Input.Pressed("Interact")) EventManager.TriggerPlayerInteractClicked();
 	}
 	private void OnPhysicsReset(int InOldValue, int NewValue) { RecreateRigidbody(); }
 	private void Dash()
@@ -298,10 +299,8 @@ public sealed class Player : Component, Component.INetworkListener
 		if (HeldObjectData.GetObject() == null) Sword.Attack();
 		else
 		{
-			Rigidbody Rigidbody = HeldObjectData.GetRigidBody();
-			if (Rigidbody == null) return;
-			Vector3 ThrowVelocity = Camera.WorldRotation.Forward * BoxThrowImpulseStrength;
-			ClearHeldObjectData(false, ThrowVelocity);
+			HeldObjectData.GetRigidBody()?.Velocity  = Camera.WorldRotation.Forward * BoxThrowImpulseStrength;
+			ClearHeldObjectData();
 		}
 	}
 	private void UpdateClientsForHost()
@@ -332,10 +331,8 @@ public sealed class Player : Component, Component.INetworkListener
 		HeldObjectRigidbody.ApplyForce(Force * HeldObjectRigidbody.PhysicsBody.Mass);
 		HeldObjectRigidbody.AngularVelocity = Vector3.Zero;
 	}
-	private void ClearHeldObjectData(bool InWasTakenFromOtherPlayer = false, Vector3 InThrownVelocity = default)
+	private void ClearHeldObjectData(bool InWasTakenFromOtherPlayer = false)
 	{
-		GameObject HeldObject = HeldObjectData.GetObject();
-		ReturnAuthorityToHost(HeldObject, InThrownVelocity);
 		if (!InWasTakenFromOtherPlayer) HeldObjectData.SetupClearOwnerIdTimer();
 		HeldObjectData = default;
 		TimerManager.ClearTimer(GrabTimerHandle);
@@ -401,16 +398,43 @@ public sealed class Player : Component, Component.INetworkListener
 		GlobalData GlobalInstance = GlobalData.Instance;
 		switch (InUpgradeName)
 		{
-			case EUpgradeName.LessMoneyLoss1: MoneyLossToAliensPercentage = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1), EUpgradeName.LessMoneyLoss1) * 0.01f; break;
+			case EUpgradeName.LessMoneyLoss1: 
+				float LessMoneyLoss1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1), EUpgradeName.LessMoneyLoss1);
+				float LessMoneyLoss2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss2), EUpgradeName.LessMoneyLoss2);
+				MoneyLossToAliensPercentage = (GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - LessMoneyLoss1 - LessMoneyLoss2) * 0.01f; break;
 			case EUpgradeName.MoreMoney1: AdditionalMoneyAmount = 1 + (int)GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MoreMoney1), EUpgradeName.MoreMoney1); break;
-			case EUpgradeName.BoxGrabRange1: GrabDistance = DefaultGrabDistance * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1), EUpgradeName.BoxGrabRange1) * 0.01f); break;
-			case EUpgradeName.MovementSpeed1: case EUpgradeName.MovementSpeed2: case EUpgradeName.MovementSpeed3: MovementSpeed = DefaultMovementSpeed * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1), EUpgradeName.MovementSpeed1) * 0.01f); break;
-			case EUpgradeName.DashCooldown1: DashCooldown = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldown1), EUpgradeName.DashCooldown1); break;
-			case EUpgradeName.DashImpulseStrength1: DashImpulseStrength = DefaultDashImpulseStrength * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1), EUpgradeName.DashImpulseStrength1) * 0.01f); break;
-			case EUpgradeName.BoxThrowImpulseStrength1: BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1), EUpgradeName.BoxThrowImpulseStrength1) * 0.01f); break;
-			case EUpgradeName.AlienComboMaxMultiplier1: AlienBoxComboMaxMultiplier = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1), EUpgradeName.AlienComboMaxMultiplier1); break;
+			case EUpgradeName.BoxGrabRange1: 
+				float BoxGrabRange1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1), EUpgradeName.BoxGrabRange1);
+				float BoxGrabRange2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange2), EUpgradeName.BoxGrabRange2);
+				GrabDistance = DefaultGrabDistance * (1f + (BoxGrabRange1 + BoxGrabRange2) * 0.01f); break;
+			case EUpgradeName.MovementSpeed1: case EUpgradeName.MovementSpeed2: case EUpgradeName.MovementSpeed3: 
+				float MovementSpeed1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1), EUpgradeName.MovementSpeed1);
+				float MovementSpeed2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed2), EUpgradeName.MovementSpeed2);
+				float MovementSpeed3 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed3), EUpgradeName.MovementSpeed3);
+				MovementSpeed = DefaultMovementSpeed * (1f + (MovementSpeed1 + MovementSpeed2 + MovementSpeed3) * 0.01f);
+				break;
+			case EUpgradeName.DashCooldown1:
+				float DashCooldown1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldown1), EUpgradeName.DashCooldown1);
+				float DashCooldown2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldown2), EUpgradeName.DashCooldown2);
+				DashCooldown = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - DashCooldown1 - DashCooldown2; break;
+			case EUpgradeName.DashImpulseStrength1: 
+				float DashImpulseStrength1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1), EUpgradeName.DashImpulseStrength1);
+				float DashImpulseStrength2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength2), EUpgradeName.DashImpulseStrength2);
+				DashImpulseStrength = DefaultDashImpulseStrength * (1f + (DashImpulseStrength1 + DashImpulseStrength2) * 0.01f); break;
+			case EUpgradeName.BoxThrowImpulseStrength1: 
+				float BoxThrowImpulseStrength1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1), EUpgradeName.BoxThrowImpulseStrength1);
+				float BoxThrowImpulseStrength2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength2), EUpgradeName.BoxThrowImpulseStrength2);
+				float BoxThrowImpulseStrength3 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength3), EUpgradeName.BoxThrowImpulseStrength3);
+				BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + (BoxThrowImpulseStrength1 + BoxThrowImpulseStrength2 + BoxThrowImpulseStrength3) * 0.01f); break;
+			case EUpgradeName.AlienComboMaxMultiplier1: 
+				float AlienBoxComboMaxMultiplier1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1), EUpgradeName.AlienComboMaxMultiplier1);
+				float AlienBoxComboMaxMultiplier2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier2), EUpgradeName.AlienComboMaxMultiplier2);
+				AlienBoxComboMaxMultiplier = AlienBoxComboMaxMultiplier1 + AlienBoxComboMaxMultiplier2; break;
 			case EUpgradeName.AlienComboMultiplierBoxReduction1: RequiredBoxesAmountForAlienBoxCombo = (int)GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - (int)GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1), EUpgradeName.AlienComboMultiplierBoxReduction1); break;
-			case EUpgradeName.DashCooldownReductionPerBox1: DashReductionCooldownPerBox = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1), EUpgradeName.DashCooldownReductionPerBox1); break;
+			case EUpgradeName.DashCooldownReductionPerBox1: 
+				float DashCooldownReductionPerBox1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1), EUpgradeName.DashCooldownReductionPerBox1);
+				float DashCooldownReductionPerBox2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox2), EUpgradeName.DashCooldownReductionPerBox2);
+				DashCooldownReductionPerBox = DashCooldownReductionPerBox1 + DashCooldownReductionPerBox2; break;
 		}
 	}
 	private void ApplyUpgradesOnJoin()
@@ -465,16 +489,6 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		EventManager.TriggerOnKill(PullComp.GetOwnerId(), true, InMoney);
 	}
-	[Rpc.Host]
-	private void ReturnAuthorityToHost(GameObject InHeldObject, Vector3 InThrownVelocity)
-	{
-		if (InHeldObject == null) return;
-		InHeldObject.Network.TakeOwnership();
-		if (InThrownVelocity != Vector3.Zero && InHeldObject.Components.TryGet(out Rigidbody Rigidbody))
-		{
-			Rigidbody.Velocity = InThrownVelocity;
-		}
-	}
 	
 	[Rpc.Broadcast]
 	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, double InMoneyMultiplier)
@@ -485,7 +499,7 @@ public sealed class Player : Component, Component.INetworkListener
 		{
 			TimeSinceLastBoxConsumed = 0f;
 			AddMoney(AdditionalMoneyAmount * (InMoneyMultiplier + AlienBoxComboMultiplier));
-			TimeSinceLastDash += DashReductionCooldownPerBox;
+			TimeSinceLastDash += DashCooldownReductionPerBox;
 			if (AlienBoxComboMultiplier >= AlienBoxComboMaxMultiplier) return;
 			if (++CurrentAlienBoxComboCountOfBoxes < RequiredBoxesAmountForAlienBoxCombo) return;
 			CurrentAlienBoxComboCountOfBoxes = 0;

@@ -26,7 +26,10 @@ public sealed class CollectibleCube : Component, IPoolObject
 	public float GetBoxSlownessPercentage()
 	{
 		if (Data == null) return 0f;
-		return GlobalData.Instance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowSlowDownPlayer1), EUpgradeName.BoxThrowSlowDownPlayer1) * 0.01f;
+		GlobalData GlobalInstance = GlobalData.Instance;
+		float BoxThrowSlowDownPlayer1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowSlowDownPlayer1), EUpgradeName.BoxThrowSlowDownPlayer1);
+		float BoxThrowSlowDownPlayer2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowSlowDownPlayer2), EUpgradeName.BoxThrowSlowDownPlayer2);
+		return (BoxThrowSlowDownPlayer1 + BoxThrowSlowDownPlayer2) * 0.01f;
 	}
 	
 	public void RequestReturnToPoolObject(float InAlienScale)

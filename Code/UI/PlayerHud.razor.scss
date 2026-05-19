@@ -185,4 +185,99 @@ PlayerHud
       }
     }
   }
+  .vote-panel {
+    position: absolute;
+    bottom: 140px;
+    left: 40px;
+    width: 320px;
+    background-color: rgba(12, 15, 18, 0.95);
+    border: 1px solid #4a545e;
+    border-top: 4px solid #4b89ff;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+    animation: slide-in 0.15s ease-out;
+    .vote-header {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      .header-title {
+        font-size: 11px;
+        font-weight: 900;
+        color: #8fa3b4;
+        letter-spacing: 1.5px;
+      }
+    }
+    .vote-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      .vote-question {
+        font-size: 15px;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1.3;
+        margin: 0;
+      }
+      .vote-results {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        .result-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          .key-hint {
+            font-size: 11px;
+            font-weight: 900;
+            color: #a4b2c1;
+            width: 55px;
+          }
+          .bar-bg {
+            flex-grow: 1;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.06);
+            border-radius: 1px;
+            overflow: hidden;
+            .bar-fill {
+              height: 100%;
+              transition: width 0.2s ease-out;
+
+              &.yes {
+                background-color: #4b89ff;
+              }
+              &.no {
+                background-color: #ff5555;
+              }
+            }
+          }
+          .count-val {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            width: 20px;
+            text-align: right;
+          }
+        }
+      }
+    }
+
+    .vote-footer {
+      padding: 6px 14px 10px 14px;
+
+      .timer-text {
+        font-size: 11px;
+        color: #6a7885;
+        font-weight: 500;
+      }
+    }
+  }
+
+  @keyframes slide-in {
+    0% { transform: translateX(-30px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
 }

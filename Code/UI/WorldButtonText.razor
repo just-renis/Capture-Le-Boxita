@@ -1,0 +1,18 @@
+@inherits PanelComponent
+
+<root>
+	@if (IsVisible)
+	{
+		<div class="prompt-container">@Text</div>
+	}
+</root>
+
+@code
+{
+	private bool IsVisible;
+	[Property] private string Text { get; set; } = "Press E to Interact";
+
+	public void SetIsVisible(bool InState) { IsVisible = InState; }
+
+	protected override int BuildHash() => System.HashCode.Combine(Text, IsVisible);
+}

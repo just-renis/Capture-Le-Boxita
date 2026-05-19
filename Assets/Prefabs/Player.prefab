@@ -49,7 +49,7 @@
         "Flags": 0,
         "CameraDistance": 200,
         "CameraHeight": 50,
-        "DefaultBoxThrowImpulseStrength": 600,
+        "DefaultBoxThrowImpulseStrength": 800,
         "DefaultDashImpulseStrength": 2000,
         "DefaultGrabDistance": 600,
         "DefaultMovementSpeed": 2500,
@@ -90,6 +90,7 @@
           "component_type": "BoxCollider"
         },
         "Sensitivity": 0.2,
+        "SlowDownDuration": 5,
         "Sword": {
           "_type": "component",
           "component_id": "aa6ef62d-fece-4223-a702-587672172ddd",

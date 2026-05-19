@@ -217,17 +217,20 @@
 	}
 	private float GetUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
-		if (Data == null) return 0;
+		if (Data == null) return 0f;
+		GlobalData GlobalInstance = GlobalData.Instance;
+		float CalculateValue(EUpgradeName Name) => Data.GetUpgradeAmount(Name) * GlobalInstance.GetUpgradeValue(Name);
 		switch (InUpgradeValue)
 		{
-			case EUpgradeValue.MoneyAdded: return 1 + Data.GetUpgradeAmount(EUpgradeName.MoreMoney1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MoreMoney1);
-			case EUpgradeValue.MovementSpeed: return 100 + Data.GetUpgradeAmount(EUpgradeName.MovementSpeed1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.MovementSpeed1);
-			case EUpgradeValue.BoxGrabRange: return 100 + Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxGrabRange1);
-			case EUpgradeValue.SwordPower: return 100 + Data.GetUpgradeAmount(EUpgradeName.SwordPower1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.SwordPower1);
-			case EUpgradeValue.MoneyLoss: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.LessMoneyLoss1);
-			case EUpgradeValue.DashCooldown: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - Data.GetUpgradeAmount(EUpgradeName.DashCooldown1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldown1);
-			case EUpgradeValue.DashImpulseStrength: return 100 + Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashImpulseStrength1);
-			case EUpgradeValue.BoxThrowStrength: return 100 + Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowImpulseStrength1);
+			case EUpgradeValue.MoneyAdded: return 1 + CalculateValue(EUpgradeName.MoreMoney1);
+			case EUpgradeValue.BoxGrabRange: return 100 + CalculateValue(EUpgradeName.BoxGrabRange1) + CalculateValue(EUpgradeName.BoxGrabRange2);
+			case EUpgradeValue.SwordPower: return 100 + CalculateValue(EUpgradeName.SwordPower1) + CalculateValue(EUpgradeName.SwordPower2);
+			case EUpgradeValue.DashImpulseStrength: return 100 + CalculateValue(EUpgradeName.DashImpulseStrength1) + CalculateValue(EUpgradeName.DashImpulseStrength2);
+			case EUpgradeValue.BoxThrowStrength: return 100 + CalculateValue(EUpgradeName.BoxThrowImpulseStrength1) + CalculateValue(EUpgradeName.BoxThrowImpulseStrength2) + CalculateValue(EUpgradeName.BoxThrowImpulseStrength3);
+			case EUpgradeValue.MovementSpeed: return 100 + CalculateValue(EUpgradeName.MovementSpeed1) + CalculateValue(EUpgradeName.MovementSpeed2) + CalculateValue(EUpgradeName.MovementSpeed3);
+			case EUpgradeValue.MoneyLoss: return GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - CalculateValue(EUpgradeName.LessMoneyLoss1) - CalculateValue(EUpgradeName.LessMoneyLoss2);
+			case EUpgradeValue.DashCooldown: return GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - CalculateValue(EUpgradeName.DashCooldown1)- CalculateValue(EUpgradeName.DashCooldown2);
+			case EUpgradeValue.AlienComboMultiplierBoxReduction: return GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - CalculateValue(EUpgradeName.AlienComboMultiplierBoxReduction1);
 			case EUpgradeValue.ChanceToSpawnWood: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnWood1, EUpgradeName.ChanceToSpawnRock1);
 			case EUpgradeValue.ChanceToSpawnRock: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnRock1, EUpgradeName.ChanceToSpawnMetal1);
 			case EUpgradeValue.ChanceToSpawnMetal: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnMetal1, EUpgradeName.ChanceToSpawnGold1);
@@ -236,13 +239,12 @@
 			case EUpgradeValue.ChanceToSpawnRuby: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnRuby1, EUpgradeName.ChanceToSpawnEmerald1);
 			case EUpgradeValue.ChanceToSpawnEmerald: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnEmerald1, EUpgradeName.ChanceToSpawnAmethyst1);
 			case EUpgradeValue.ChanceToSpawnAmethyst: return CalculateBoxSpawnChance(EUpgradeName.ChanceToSpawnAmethyst1, EUpgradeName.ChanceToSpawnObsidian1);
-			case EUpgradeValue.ChanceToSpawnObsidian: return Data.GetUpgradeAmount(EUpgradeName.ChanceToSpawnObsidian1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.ChanceToSpawnObsidian1);
-			case EUpgradeValue.AlienComboMaxMultiplier: return Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMaxMultiplier1);
-			case EUpgradeValue.AlienComboMultiplierBoxReduction: return GlobalData.Instance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboMultiplierBoxReduction1);
-			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return Data.GetUpgradeAmount(EUpgradeName.BiggerAlienMoreMoneyMultiplier1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
-			case EUpgradeValue.DashCooldownReductionPerBox: return Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.DashCooldownReductionPerBox1);
-			case EUpgradeValue.AlienComboForMovementSpeed: return Data.GetUpgradeAmount(EUpgradeName.AlienComboForMovementSpeed1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.AlienComboForMovementSpeed1);
-			case EUpgradeValue.BoxThrowSlowDownPlayer: return Data.GetUpgradeAmount(EUpgradeName.BoxThrowSlowDownPlayer1) * GlobalData.Instance.GetUpgradeValue(EUpgradeName.BoxThrowSlowDownPlayer1);
+			case EUpgradeValue.ChanceToSpawnObsidian: return CalculateValue(EUpgradeName.ChanceToSpawnObsidian1);
+			case EUpgradeValue.AlienComboMaxMultiplier: return CalculateValue(EUpgradeName.AlienComboMaxMultiplier1) + CalculateValue(EUpgradeName.AlienComboMaxMultiplier2);
+			case EUpgradeValue.BiggerAlienMoreMoneyMultiplier: return CalculateValue(EUpgradeName.BiggerAlienMoreMoneyMultiplier1);
+			case EUpgradeValue.DashCooldownReductionPerBox: return CalculateValue(EUpgradeName.DashCooldownReductionPerBox1) + CalculateValue(EUpgradeName.DashCooldownReductionPerBox2);
+			case EUpgradeValue.AlienComboForMovementSpeed: return CalculateValue(EUpgradeName.AlienComboForMovementSpeed1) + CalculateValue(EUpgradeName.AlienComboForMovementSpeed2);
+			case EUpgradeValue.BoxThrowSlowDownPlayer: return CalculateValue(EUpgradeName.BoxThrowSlowDownPlayer1) + CalculateValue(EUpgradeName.BoxThrowSlowDownPlayer2);
 			default: return 0;
 		}
 	}

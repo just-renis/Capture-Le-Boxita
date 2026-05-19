@@ -81,14 +81,9 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public void SetIsPulled(bool State)
 	{
 		IsPulled = State;
-		if (IsPulled) Rigidbody?.Gravity = false;
-		else
-		{
-			AlienShipRef = null;
-			if (Rigidbody == null) return;
-			Rigidbody.Gravity = true;
-			Rigidbody.Velocity = 0f;
-		}
+		if (IsPulled) return;
+		AlienShipRef = null;
+		Rigidbody?.Velocity = 0f;
 	}
 	public void SetRigidbody(Rigidbody InRigidbody) { Rigidbody = InRigidbody; }
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------

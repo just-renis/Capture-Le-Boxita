@@ -5,6 +5,7 @@ namespace Sandbox.Managers;
 
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
+	public static event Action OnPlayerInteractClicked;
 	public static event Action<bool> OnStuckPopupStateChanged;
 	public static event Action<bool> OnPlayerNameShowTagChanged;
 	public static event Action<float> OnAlienBoxComboChanged;
@@ -19,6 +20,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static event Func<PlayerData> OnPlayerDataRequired;
 	public static event Func<Player.Player> OnRequestPlayerRef;
 	
+	public static void TriggerPlayerInteractClicked()
+	{
+		OnPlayerInteractClicked?.Invoke();
+	}
 	public static void TriggerStuckPopupStateChange(bool InState)
 	{
 		OnStuckPopupStateChanged?.Invoke(InState);

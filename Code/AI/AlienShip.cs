@@ -246,5 +246,9 @@ public sealed class AlienShip : Component, IPoolObject
 	[Rpc.Broadcast]
 	private void ChangeBeamVfxState(bool InState) { BeamVfx?.Enabled = InState; }
 	[Rpc.Broadcast]
-	private void SetPullOnObject(PullableComponent InPullable, bool InState) { InPullable?.SetIsPulled(InState); }
+	private void SetPullOnObject(PullableComponent InPullable, bool InState)
+	{
+		InPullable?.SetIsPulled(InState);
+		if (InPullable.GetOwnerId() != Guid.Empty) Log.Info("APPLY PULL");
+	}
 }

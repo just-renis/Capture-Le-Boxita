@@ -10,6 +10,7 @@ public enum TriggerShape
 
 public class CustomTrigger : Component
 {
+	[Property] public bool OnlyTriggerForHost { get; set; } = true;
 	[Property] public TriggerShape Shape { get; set; } = TriggerShape.Box;
 	[Property, Group("IsSetByTags")] public bool TriggerByTags { get; set; }
 	[Property, Group("IsSetByTags")] 
@@ -59,7 +60,7 @@ public class CustomTrigger : Component
 
 	private void RunTraceCheck()
 	{
-		if (!Networking.IsHost) return;
+		if (OnlyTriggerForHost && !Networking.IsHost) return;
 		// ----------------------------------------------------DEBUG-----------------------------------------------------
 		Vector3 HalfHeight = WorldRotation.Up * (CapsuleHeight * 0.5f);
 		Vector3 Top = WorldPosition + HalfHeight;

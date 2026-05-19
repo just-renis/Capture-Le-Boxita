@@ -11,7 +11,7 @@
     "Enabled": true,
     "NetworkMode": 1,
     "NetworkFlags": 0,
-    "NetworkOrphaned": 3,
+    "NetworkOrphaned": 1,
     "NetworkTransmit": true,
     "OwnerTransfer": 0,
     "Components": [
@@ -142,7 +142,6 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "OverrideMassCenter": false,
-        "PreciseContacts": false,
         "RigidbodyFlags": 0,
         "SleepThreshold": 2,
         "StartAsleep": false

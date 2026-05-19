@@ -11,19 +11,52 @@
 			<div class="corner bottom-left"></div>
 			<div class="corner bottom-right"></div>
 		</div>
-		<div class="ability-container">
-			<div class="ability-box @(PlayerRef.GetIsDashAvailable() ? "ready" : "on-cooldown")">
-				@if (PlayerRef.GetIsDashAvailable())
-				{
-					<span class="ability-text">DASH</span>
-				}
-				else
-				{
-					<div class="cooldown-overlay" style="height: @(PlayerRef.GetDashPercentage())%;"></div>
-					<span class="cooldown-text">@PlayerRef.GetDashCooldown().ToString("F1")</span>
-				}
+		@if (IsVoteActive)
+		{
+			<div class="vote-panel">
+				<div class="vote-header">
+					<span class="header-title">SERVER VOTE IN PROGRESS</span>
+				</div>
+				<div class="vote-body">
+					<p class="vote-question">Reset all Aliens and Cubes?</p>
+					<div class="vote-results">
+						<div class="result-row">
+							<span class="key-hint">[Y] YES</span>
+							<div class="bar-bg">
+								<div class="bar-fill yes" style="width: @(TotalVotes > 0 ? (YesCount / (float)TotalVotes * 100f) : 0f)%;"></div>
+							</div>
+							<span class="count-val">@YesCount</span>
+						</div>
+						<div class="result-row">
+							<span class="key-hint">[N] NO</span>
+							<div class="bar-bg">
+								<div class="bar-fill no" style="width: @(TotalVotes > 0 ? (NoCount / (float)TotalVotes * 100f) : 0f)%;"></div>
+							</div>
+							<span class="count-val">@NoCount</span>
+						</div>
+					</div>
+				</div>
+			@*<div class="vote-footer">
+					<span class="timer-text">Time remaining: @Math.Ceiling(Math.Max(0, VoteDuration - TimeSinceVoteStart))s</span>
+				</div>*@
 			</div>
-		</div>
+		}
+		@if (PlayerRef.GetIsDashPurchased())
+		{
+			<div class="ability-container">
+				<div class="ability-box @(PlayerRef.GetIsDashAvailable() ? "ready" : "on-cooldown")">
+					@if (PlayerRef.GetIsDashAvailable())
+					{
+						<span class="ability-text">DASH</span>
+					}
+					else
+					{
+						<div class="cooldown-overlay" style="height: @(PlayerRef.GetDashPercentage())%;"></div>
+						<span class="cooldown-text">@PlayerRef.GetDashCooldown().ToString("F1")</span>
+					}
+				</div>
+			</div>
+		}
 		<div class="Money">
 			<div class="icon"><i>payments</i></div>
 			<div class="amount-container">
@@ -66,10 +99,18 @@
 	private double Money;
 	private Player.Player PlayerRef;
 	
+	private bool IsVoteActive;
+	private int YesCount;
+	private int NoCount;
+	private bool HasVoted;
+	private float VoteDuration = 20f; 
+	private RealTimeSince TimeSinceVoteStart;
+	private int TotalVotes => YesCount + NoCount;
+	
 	protected override int BuildHash()
 	{
 		if (PlayerRef == null) return -1;
-		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable, PlayerRef.GetIsDashAvailable(), PlayerRef.GetDashCooldown());
+		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable, PlayerRef.GetIsDashAvailable(), PlayerRef.GetDashCooldown(), PlayerRef.GetIsDashPurchased());
 	}
 	
 	protected override void OnStart()
@@ -77,6 +118,8 @@
 		EventManager.OnMoneyChanged += SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged += StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged += SetAlienBoxCombo;
+		//EventManager.OnRegenVoteStarted += StartVoteWindow;
+	//	EventManager.OnVoteUpdated += UpdateVoteCounts;
 		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
 	}
 	protected override void OnDestroy()
@@ -84,9 +127,48 @@
 		EventManager.OnMoneyChanged -= SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged -= StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged -= SetAlienBoxCombo;
+	//	EventManager.OnRegenVoteStarted -= StartVoteWindow;
+	//	EventManager.OnVoteUpdated -= UpdateVoteCounts;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
 	}
-	
+	protected override void OnUpdate()
+	{
+		if (!IsVoteActive) return;
+		if (TimeSinceVoteStart > VoteDuration)
+		{
+			IsVoteActive = false;
+			return;
+		}
+		if (!HasVoted)
+		{
+			if (Input.Pressed("slot1"))
+			{
+				SubmitLocalVote(true);
+			}
+			else if (Input.Pressed("slot2"))
+			{
+				SubmitLocalVote(false);
+			}
+		}
+	}
+	private void StartVoteWindow()
+	{
+		YesCount = 1;
+		NoCount = 0;
+		HasVoted = false;
+		TimeSinceVoteStart = 0;
+		IsVoteActive = true;
+	}
+	private void UpdateVoteCounts(int InCurrentYes, int InCurrentNo)
+	{
+		YesCount = InCurrentYes;
+		NoCount = InCurrentNo;
+	}
+	private void SubmitLocalVote(bool InVoteOption)
+	{
+		HasVoted = true;
+		//EventManager.TriggerSendVoteSelection(InVoteOption);
+	}
 	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
 	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
 	private void SetAlienBoxCombo(float InAlienBoxComboMultiplier)

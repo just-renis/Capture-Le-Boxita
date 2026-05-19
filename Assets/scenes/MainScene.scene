@@ -108,38 +108,6 @@
             {
               "_type": "gameobject",
               "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
-            },
-            {
-              "_type": "gameobject",
-              "go": "e6c0d654-5d5b-421d-9410-ee3330554a36"
-            },
-            {
-              "_type": "gameobject",
-              "go": "8fadc09b-72bc-4154-bf02-104cea4dbb28"
-            },
-            {
-              "_type": "gameobject",
-              "go": "45ca7a13-cc7c-4297-9200-c029ae46a726"
-            },
-            {
-              "_type": "gameobject",
-              "go": "60e2501e-1d8a-42d8-8a96-e1568b2c359c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "427a6cdd-e21c-4e00-9c66-dbabadb85845"
-            },
-            {
-              "_type": "gameobject",
-              "go": "c93f43ed-c21c-4174-9cf9-30ca8a2ef62c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "8e375944-419f-485e-b4a2-e30220db684c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
             }
           ]
         }
@@ -734,7 +702,7 @@
               "DefaultAttribute": "None",
               "MaxAmount": 4,
               "Name": "Box Hit Slows Down Player",
-              "Description": "Box hit on player reduces his movement speed by {0}% and double reduction for dash distance.",
+              "Description": "Box hit on player reduces his movement speed by {0}% and double % reduction for dash distance. Lasts 1 second, refreshes on new hit.",
               "Costs": [
                 800,
                 1700,
@@ -996,7 +964,7 @@
               "DefaultAttribute": "None",
               "MaxAmount": 6,
               "Name": "Box Hit Slows Down Player",
-              "Description": "Box hit on player reduces his movement speed by {0}% and double reduction for dash distance.",
+              "Description": "Box hit on player reduces his movement speed by {0}% and double % reduction for dash distance. Lasts 1 second, refreshes on new hit.",
               "Costs": [
                 4500,
                 6000,
@@ -1063,7 +1031,9 @@
             "MovementSpeed3": 3,
             "BoxThrowImpulseStrength3": 5,
             "DashCooldownReductionPerBox2": 5,
-            "BoxThrowSlowDownPlayer2": 6
+            "BoxThrowSlowDownPlayer2": 6,
+            "MovementSpeed2": 3,
+            "BoxThrowImpulseStrength2": 4
           },
           "UpgradesValues": {
             "MoreMoney1": 1,
@@ -1099,7 +1069,7 @@
             "AlienComboMaxMultiplier2": 0.5,
             "AlienComboForMovementSpeed2": 0.1,
             "MovementSpeed3": 7,
-            "BoxThrowImpulseStrength3": 15,
+            "BoxThrowImpulseStrength3": 14,
             "DashCooldownReductionPerBox2": 0.1,
             "BoxThrowSlowDownPlayer2": 3
           }
@@ -1153,39 +1123,7 @@
           "SpawnPoints": [
             {
               "_type": "gameobject",
-              "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
-            },
-            {
-              "_type": "gameobject",
-              "go": "e6c0d654-5d5b-421d-9410-ee3330554a36"
-            },
-            {
-              "_type": "gameobject",
-              "go": "8fadc09b-72bc-4154-bf02-104cea4dbb28"
-            },
-            {
-              "_type": "gameobject",
-              "go": "45ca7a13-cc7c-4297-9200-c029ae46a726"
-            },
-            {
-              "_type": "gameobject",
-              "go": "60e2501e-1d8a-42d8-8a96-e1568b2c359c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "427a6cdd-e21c-4e00-9c66-dbabadb85845"
-            },
-            {
-              "_type": "gameobject",
-              "go": "c93f43ed-c21c-4174-9cf9-30ca8a2ef62c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "8e375944-419f-485e-b4a2-e30220db684c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
+              "go": "3ce3cdf3-a2df-4148-9297-22a5553a11d3"
             }
           ],
           "StartServer": true
@@ -1223,6 +1161,38 @@
       "__PrefabIdToInstanceId": {
         "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "12383a2e-23a8-40d0-b204-0f95e967961d",
         "0f93a686-207a-4820-8e27-e7c1154e98a2": "33e24e06-3d8a-4193-a788-fc7d748a7d07"
+      }
+    },
+    {
+      "__guid": "3ce3cdf3-a2df-4148-9297-22a5553a11d3",
+      "__version": 2,
+      "__Prefab": "prefabs/spawnpoint.prefab",
+      "__PrefabInstancePatch": {
+        "AddedObjects": [],
+        "RemovedObjects": [],
+        "PropertyOverrides": [
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
+            },
+            "Property": "Name",
+            "Value": "FAKESPAWNPOINT"
+          },
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
+            },
+            "Property": "Position",
+            "Value": "6160.66455,6020.90039,1050.5896"
+          }
+        ],
+        "MovedObjects": []
+      },
+      "__PrefabIdToInstanceId": {
+        "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "3ce3cdf3-a2df-4148-9297-22a5553a11d3",
+        "0f93a686-207a-4820-8e27-e7c1154e98a2": "3e493c97-f1b5-4b15-9f6c-079ff5234db7"
       }
     },
     {
@@ -25432,6 +25402,14 @@
             },
             "Property": "Position",
             "Value": "6514.90918,6601.05273,1526.86914"
+          },
+          {
+            "Target": {
+              "Type": "Component",
+              "IdValue": "41f4ee7d-d4a8-468e-9bf4-dc9b20a1b4f0"
+            },
+            "Property": "OnlyTriggerForHost",
+            "Value": true
           }
         ],
         "MovedObjects": []
@@ -25809,6 +25787,200 @@
         }
       ],
       "Children": []
+    },
+    {
+      "__guid": "fff6c61a-2848-4639-ae9a-8a53df59b322",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Board",
+      "Position": "7483.8667,6192.92529,1362.70569",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,20,10",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "f5875401-3aaa-44df-8ae6-262d98457f21",
+          "__enabled": true,
+          "Flags": 0,
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "LodOverride": null,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Materials": null,
+          "Model": "models/dev/box.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "Off",
+          "Tint": "1,1,1,1"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "0c71476c-e8d0-432e-a4dc-a366a9165c13",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "BoardButton",
+      "Position": "7465.74316,6402.93945,1180.85181",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "5dd9c093-4087-40f8-aad2-1d5c3d3bfaaa",
+          "__enabled": true,
+          "Flags": 0,
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "LodOverride": null,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Materials": null,
+          "Model": "models/dev/box.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "Off",
+          "Tint": "0.92093,0.16705,0.16705,0.9"
+        },
+        {
+          "__type": "WorldButton",
+          "__guid": "1879b8c8-c50d-4781-b7f0-c9b9f02192d8",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Trigger": {
+            "_type": "component",
+            "component_id": "c73ecff5-d8db-4012-bc5d-0f883c25b1fd",
+            "go": "0c71476c-e8d0-432e-a4dc-a366a9165c13",
+            "component_type": "CustomTrigger"
+          },
+          "UiText": {
+            "_type": "component",
+            "component_id": "a700bd1a-fc4d-4c1e-831e-e9ddca44831c",
+            "go": "db5eb68f-d041-4cdf-aa62-92b176037479",
+            "component_type": "WorldButtonText"
+          }
+        },
+        {
+          "__type": "Sandbox.Components.CustomTrigger",
+          "__guid": "c73ecff5-d8db-4012-bc5d-0f883c25b1fd",
+          "__enabled": true,
+          "Flags": 0,
+          "CapsuleHeight": 100,
+          "CapsuleRadius": 50,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnlyTriggerForHost": false,
+          "Shape": "Box",
+          "Size": "500,500,500",
+          "TriggerByTags": true,
+          "TriggerTags": [
+            "player"
+          ]
+        }
+      ],
+      "Children": [
+        {
+          "__guid": "db5eb68f-d041-4cdf-aa62-92b176037479",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "InteractableText",
+          "Position": "-16.3339844,0,45.3325195",
+          "Rotation": "0,0,1,-4.37113883E-08",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.WorldPanel",
+              "__guid": "55e84c84-11d5-423a-a6f8-89a5dd7b1cd5",
+              "__enabled": true,
+              "Flags": 0,
+              "HorizontalAlign": "Center",
+              "InteractionRange": 1000,
+              "LookAtCamera": false,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "PanelSize": "1920,1080",
+              "RenderOptions": {
+                "GameLayer": true,
+                "OverlayLayer": false,
+                "BloomLayer": false,
+                "AfterUILayer": false
+              },
+              "RenderScale": 1,
+              "VerticalAlign": "Center"
+            },
+            {
+              "__type": "Sandbox.UI.WorldButtonText",
+              "__guid": "a700bd1a-fc4d-4c1e-831e-e9ddca44831c",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "Text": "Press E to Interact"
+            }
+          ],
+          "Children": []
+        }
+      ]
     }
   ],
   "SceneProperties": {
@@ -25834,14 +26006,14 @@
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       },
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
-        }
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
+        }
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
         }
       }
     }
