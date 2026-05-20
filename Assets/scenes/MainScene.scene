@@ -156,7 +156,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 30,
+              "MaxAmountActive": 20,
               "Objects": [],
               "ActiveCount": 0
             }
@@ -25402,14 +25402,6 @@
             },
             "Property": "Position",
             "Value": "6514.90918,6601.05273,1526.86914"
-          },
-          {
-            "Target": {
-              "Type": "Component",
-              "IdValue": "41f4ee7d-d4a8-468e-9bf4-dc9b20a1b4f0"
-            },
-            "Property": "OnlyTriggerForHost",
-            "Value": true
           }
         ],
         "MovedObjects": []
@@ -26006,14 +25998,14 @@
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       },
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
-        }
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
+        }
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
         }
       }
     }

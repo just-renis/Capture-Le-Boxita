@@ -7,21 +7,21 @@ namespace Sandbox.Managers;
 public sealed class PoolingManager : Component
 {
 	public static PoolingManager Instance { get; private set; }
-	[Sync, Property] private NetDictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
+	[Property] private Dictionary<EPoolObject, ObjectPoolData> Pool { get; set; } = new();
 
 	public bool CanSpawnObject(EPoolObject InObjectName)
 	{
-		ObjectPoolData PoolData = Pool[InObjectName];
+		if (!Pool.TryGetValue(InObjectName, out ObjectPoolData PoolData)) return false;
 		return PoolData.ActiveCount < PoolData.MaxAmountActive;
 	}
 	public GameObject SpawnObjectFromPool(EPoolObject InObjectName, Vector3 InLocation, Rotation InRotation = default)
 	{
 		ObjectPoolData PoolData = Pool[InObjectName];
-		if (PoolData.Objects.Count == 0) AllocatePoolObject(InObjectName);
-		int LastIndex = PoolData.Objects.Count - 1;
-		Guid ObjectGuid = PoolData.Objects[LastIndex];
-		PoolData.Objects.RemoveAt(LastIndex);
-		GameObject PoolObject = Scene.Directory.FindByGuid(ObjectGuid);
+		if (PoolData.InactiveObjects.Count == 0) AllocatePoolObject(InObjectName);
+		int LastIndex = PoolData.InactiveObjects.Count - 1;
+		GameObject PoolObject = PoolData.InactiveObjects[LastIndex];
+		PoolData.InactiveObjects.RemoveAt(LastIndex);
+		PoolData.ActiveObjects.Add(PoolObject);
 		PoolObject.WorldPosition = InLocation;
 		PoolObject.WorldRotation = InRotation;
 		PoolObject.Enabled = true;
@@ -32,10 +32,21 @@ public sealed class PoolingManager : Component
 	
 	public void ReturnObjectToPool(EPoolObject InObjectName, GameObject InGameObject)
 	{
+		if (InGameObject == null) return;
 		ObjectPoolData PoolData = Pool[InObjectName];
 		InGameObject.Enabled = false;
-		PoolData.Objects.Add(InGameObject.Id);
+		PoolData.ActiveObjects.Remove(InGameObject);
+		PoolData.InactiveObjects.Add(InGameObject);
 		PoolData.ActiveCount--;
+	}
+	public void ResetPoolType(EPoolObject InObjectName)
+	{
+		if (!Pool.TryGetValue(InObjectName, out ObjectPoolData PoolData)) return;
+		foreach (GameObject Obj in PoolData.ActiveObjects) Obj?.Destroy();
+		PoolData.ActiveObjects.Clear();
+		foreach (GameObject Obj in PoolData.InactiveObjects) Obj?.Destroy();
+		PoolData.InactiveObjects.Clear();
+		PoolData.ActiveCount = 0;
 	}
 	
 	protected override void OnAwake()
@@ -55,7 +66,7 @@ public sealed class PoolingManager : Component
 	private void AllocatePoolObject(EPoolObject InObjectName)
 	{
 		GameObject PooledObject = Pool[InObjectName].Prefab.Clone();
-		Pool[InObjectName].Objects.Add(PooledObject.Id);
+		Pool[InObjectName].InactiveObjects.Add(PooledObject);
 		PooledObject.NetworkSpawn();
 	}
 }

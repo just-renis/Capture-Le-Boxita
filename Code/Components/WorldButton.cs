@@ -22,10 +22,10 @@ public sealed class WorldButton : Component
 		Trigger.OnEnter -= TriggerEntered;
 		Trigger.OnExit -= TriggerExited;
 	}
-
+	
 	private void OnClicked()
 	{
-		if (InInteractionRange) Log.Info( $"Button {GameObject.Name} was clicked by NIGGA!" );
+		if (InInteractionRange) EventManager.TriggerVotingStart();
 	}
 	private void TriggerEntered(GameObject InGameObject)
 	{

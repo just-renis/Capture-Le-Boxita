@@ -6,14 +6,19 @@ namespace Sandbox.Managers;
 public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	public static event Action OnPlayerInteractClicked;
+	public static event Action OnVotingStarted;
+	public static event Action OnResetWorld;
+	public static event Action OnVotingFinished;
 	public static event Action<bool> OnStuckPopupStateChanged;
 	public static event Action<bool> OnPlayerNameShowTagChanged;
+	public static event Action<bool> OnPlayerVoteSubmitted;
 	public static event Action<float> OnAlienBoxComboChanged;
 	public static event Action<double> OnMoneyChanged;
 	public static event Action<string> OnPlayerNameChanged;
 	public static event Action<EUpgradeName> OnUpgradePurchased;
 	public static event Action<EUi, bool> OnUiStateChanged;
 	public static event Action<Guid, bool, double> OnKill;
+	public static event Func<bool> OnRequestIsVotingAvailable;
 	public static event Func<Vector3> OnRequestPlayerLocation;
 	public static event Func<Vector3> OnTeleportToSpawnLocation;
 	public static event Func<Vector3> OnTeleportToSafeZoneLocation;
@@ -24,6 +29,18 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	{
 		OnPlayerInteractClicked?.Invoke();
 	}
+	public static void TriggerVotingStart()
+	{
+		OnVotingStarted?.Invoke();
+	}
+	public static void TriggerWorldReset()
+	{
+		OnResetWorld?.Invoke();
+	}
+	public static void TriggerVotingFinished()
+	{
+		OnVotingFinished?.Invoke();
+	}
 	public static void TriggerStuckPopupStateChange(bool InState)
 	{
 		OnStuckPopupStateChanged?.Invoke(InState);
@@ -31,6 +48,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerPlayerNameShowTagChange(bool InState)
 	{
 		OnPlayerNameShowTagChanged?.Invoke(InState);
+	}
+	public static void TriggerPlayerVoteSubmit(bool InState)
+	{
+		OnPlayerVoteSubmitted?.Invoke(InState);
 	}
 	public static void TriggerAlienBoxComboChange(float InCombo)
 	{
@@ -55,6 +76,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerOnKill(Guid InKillerPlayerId, bool InIsPlayerKill, double InMoneyAmount)
 	{
 		OnKill?.Invoke(InKillerPlayerId, InIsPlayerKill, InMoneyAmount);
+	}
+	public static bool TriggerGetIsVotingAvailable()
+	{
+		return OnRequestIsVotingAvailable?.Invoke() ?? false;
 	}
 	public static Vector3 TriggerGetPlayerLocation()
 	{

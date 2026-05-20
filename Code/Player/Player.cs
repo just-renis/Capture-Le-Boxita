@@ -246,6 +246,8 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Input.Pressed("Dash") && Data?.GetUpgradeAmount(EUpgradeName.UnlockDashAbility) == 1) Dash();
 		if (Input.EscapePressed) ProcessEscape();
 		if (Input.Pressed("Interact")) EventManager.TriggerPlayerInteractClicked();
+		if (Input.Pressed("VoteYes")) EventManager.TriggerPlayerVoteSubmit(true);
+		else if (Input.Pressed("VoteNo")) EventManager.TriggerPlayerVoteSubmit(false);
 	}
 	private void OnPhysicsReset(int InOldValue, int NewValue) { RecreateRigidbody(); }
 	private void Dash()

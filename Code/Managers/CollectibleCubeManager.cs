@@ -13,6 +13,11 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 	public void Init()
 	{
 		PoolingManager = PoolingManager.Instance;
+		EventManager.OnResetWorld += ResetWorld;
+	}
+	public void OnDestroy()
+	{
+		EventManager.OnResetWorld -= ResetWorld;
 	}
 	public void OnUpdate()
 	{
@@ -47,5 +52,13 @@ public sealed class CollectibleCubeManager(Scene Scene) : GameObjectSystem(Scene
 		AlienShipSpawnTimer = 0f;
 		float RandomX = Random.Shared.Int(0, 1) == 0 ? Random.Shared.Float(-4200f, 200f) : Random.Shared.Float(800f, 5200f);
 		PoolingManager.SpawnObjectFromPool(EPoolObject.AlienShip, new Vector3(RandomX, Random.Shared.Float(-5500f, 4500f), 8000f));
+	}
+	private void ResetWorld()
+	{
+		if (!Networking.IsHost) return;
+		CubeSpawnTimer = 0f;
+		AlienShipSpawnTimer = 0f;
+		PoolingManager.ResetPoolType(EPoolObject.CollectibleCube);
+		PoolingManager.ResetPoolType(EPoolObject.AlienShip);
 	}
 }

@@ -23,22 +23,19 @@
 						<div class="result-row">
 							<span class="key-hint">[Y] YES</span>
 							<div class="bar-bg">
-								<div class="bar-fill yes" style="width: @(TotalVotes > 0 ? (YesCount / (float)TotalVotes * 100f) : 0f)%;"></div>
+								<div class="bar-fill yes" style="width: @(TotalVotes > 0 ? YesCount / (float)TotalVotes * 100f : 0f)%;"></div>
 							</div>
 							<span class="count-val">@YesCount</span>
 						</div>
 						<div class="result-row">
 							<span class="key-hint">[N] NO</span>
 							<div class="bar-bg">
-								<div class="bar-fill no" style="width: @(TotalVotes > 0 ? (NoCount / (float)TotalVotes * 100f) : 0f)%;"></div>
+								<div class="bar-fill no" style="width: @(TotalVotes > 0 ? NoCount / (float)TotalVotes * 100f : 0f)%;"></div>
 							</div>
 							<span class="count-val">@NoCount</span>
 						</div>
 					</div>
 				</div>
-			@*<div class="vote-footer">
-					<span class="timer-text">Time remaining: @Math.Ceiling(Math.Max(0, VoteDuration - TimeSinceVoteStart))s</span>
-				</div>*@
 			</div>
 		}
 		@if (PlayerRef.GetIsDashPurchased())
@@ -103,14 +100,25 @@
 	private int YesCount;
 	private int NoCount;
 	private bool HasVoted;
-	private float VoteDuration = 20f; 
+	private const float VoteDuration = 20f;
 	private RealTimeSince TimeSinceVoteStart;
 	private int TotalVotes => YesCount + NoCount;
 	
 	protected override int BuildHash()
 	{
 		if (PlayerRef == null) return -1;
-		return System.HashCode.Combine(Money, IsStuckPopupEnabled, AlienBoxComboMultiplier, IsAlienBoxComboMultiplierAvailable, PlayerRef.GetIsDashAvailable(), PlayerRef.GetDashCooldown(), PlayerRef.GetIsDashPurchased());
+		System.HashCode Hc = new();
+		Hc.Add(Money);
+		Hc.Add(IsStuckPopupEnabled);
+		Hc.Add(AlienBoxComboMultiplier);
+		Hc.Add(IsAlienBoxComboMultiplierAvailable);
+		Hc.Add(PlayerRef.GetIsDashAvailable());
+		Hc.Add(PlayerRef.GetDashCooldown());
+		Hc.Add(PlayerRef.GetIsDashPurchased());
+		Hc.Add(IsVoteActive);
+		Hc.Add(YesCount);
+		Hc.Add(NoCount);
+		return Hc.ToHashCode();
 	}
 	
 	protected override void OnStart()
@@ -118,8 +126,8 @@
 		EventManager.OnMoneyChanged += SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged += StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged += SetAlienBoxCombo;
-		//EventManager.OnRegenVoteStarted += StartVoteWindow;
-	//	EventManager.OnVoteUpdated += UpdateVoteCounts;
+		EventManager.OnVotingStarted += StartVoteWindow;
+		EventManager.OnPlayerVoteSubmitted += SubmitLocalVote;
 		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
 	}
 	protected override void OnDestroy()
@@ -127,47 +135,36 @@
 		EventManager.OnMoneyChanged -= SetMoneyAmount;
 		EventManager.OnStuckPopupStateChanged -= StuckPopupStateChange;
 		EventManager.OnAlienBoxComboChanged -= SetAlienBoxCombo;
-	//	EventManager.OnRegenVoteStarted -= StartVoteWindow;
-	//	EventManager.OnVoteUpdated -= UpdateVoteCounts;
+		EventManager.OnVotingStarted -= StartVoteWindow;
+		EventManager.OnPlayerVoteSubmitted -= SubmitLocalVote;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
 	}
 	protected override void OnUpdate()
 	{
 		if (!IsVoteActive) return;
-		if (TimeSinceVoteStart > VoteDuration)
-		{
-			IsVoteActive = false;
-			return;
-		}
-		if (!HasVoted)
-		{
-			if (Input.Pressed("slot1"))
-			{
-				SubmitLocalVote(true);
-			}
-			else if (Input.Pressed("slot2"))
-			{
-				SubmitLocalVote(false);
-			}
-		}
+		if (TimeSinceVoteStart <= VoteDuration) return;
+		HasVoted = false;
+		IsVoteActive = false;
+		if (Networking.IsHost) ResolveFinalVote();
 	}
+	
 	private void StartVoteWindow()
 	{
-		YesCount = 1;
-		NoCount = 0;
-		HasVoted = false;
-		TimeSinceVoteStart = 0;
-		IsVoteActive = true;
+		if (!EventManager.TriggerGetIsVotingAvailable() || IsVoteActive) return;
+		BroadcastVotingStart();
+		HasVoted = true;
 	}
-	private void UpdateVoteCounts(int InCurrentYes, int InCurrentNo)
+	private void ResolveFinalVote()
 	{
-		YesCount = InCurrentYes;
-		NoCount = InCurrentNo;
+		EventManager.TriggerVotingFinished();
+		if (YesCount <= NoCount) return;
+		EventManager.TriggerWorldReset();
 	}
 	private void SubmitLocalVote(bool InVoteOption)
 	{
+		if (HasVoted || !IsVoteActive) return;
 		HasVoted = true;
-		//EventManager.TriggerSendVoteSelection(InVoteOption);
+		HostProcessPlayerVote(InVoteOption);
 	}
 	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
 	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
@@ -181,5 +178,28 @@
 		PlayerRef = EventManager.TriggerGetPlayerRef();
 		if (PlayerRef == null) return;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
+	}
+	
+	[Rpc.Host]
+	private void HostProcessPlayerVote(bool InVoteOption)
+	{
+		if (InVoteOption) YesCount++;
+		else NoCount++;
+		BroadcastUpdateVotes(YesCount, NoCount);
+	}
+	
+	[Rpc.Broadcast]
+	private void BroadcastVotingStart()
+	{
+		YesCount = 1;
+		NoCount = 0;
+		TimeSinceVoteStart = 0;
+		IsVoteActive = true;
+	}
+	[Rpc.Broadcast]
+	private void BroadcastUpdateVotes(int InCurrentYes, int InCurrentNo)
+	{
+		YesCount = InCurrentYes;
+		NoCount = InCurrentNo;
 	}
 }
