@@ -1,0 +1,37 @@
+@using Sandbox.Managers
+@using System;
+@inherits PanelComponent
+
+<root>
+	<div class="VotingCooldownText">
+		<label>@FormattedTime</label>
+	</div>
+</root>
+
+@code
+{
+	private float VotingCooldown;
+	private string FormattedTime
+	{
+		get
+		{
+			if (VotingCooldown <= 0f) return "AVAILABLE";
+			float Seconds = VotingCooldown < 0 ? 0 : VotingCooldown;
+			TimeSpan Time = TimeSpan.FromSeconds((int)Seconds);
+			return $"{(int)Time.TotalMinutes:00}:{Time.Seconds:00}";
+		}
+	}
+
+	protected override int BuildHash() => HashCode.Combine(FormattedTime);
+
+	protected override void OnStart()
+	{
+		EventManager.OnVotingCooldownUpdate += UpdateVotingCooldown;
+	}
+	protected override void OnDestroy()
+	{
+		EventManager.OnVotingCooldownUpdate -= UpdateVotingCooldown;
+	}
+
+	private void UpdateVotingCooldown(float InCooldown) { VotingCooldown = InCooldown; }
+}

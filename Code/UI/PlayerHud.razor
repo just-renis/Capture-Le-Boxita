@@ -11,30 +11,37 @@
 			<div class="corner bottom-left"></div>
 			<div class="corner bottom-right"></div>
 		</div>
-		@if (IsVoteActive)
-		{
-			<div class="vote-panel">
-				<div class="vote-header">
-					<span class="header-title">SERVER VOTE IN PROGRESS</span>
-				</div>
-				<div class="vote-body">
-					<p class="vote-question">Reset all Aliens and Cubes?</p>
-					<div class="vote-results">
-						<div class="result-row">
-							<span class="key-hint">[Y] YES</span>
-							<div class="bar-bg">
-								<div class="bar-fill yes" style="width: @(TotalVotes > 0 ? YesCount / (float)TotalVotes * 100f : 0f)%;"></div>
-							</div>
-							<span class="count-val">@YesCount</span>
+		<div class="vote-panel @(IsVoteActive ? "visible" : "")">
+			<div class="vote-header">
+				<span class="header-title">SERVER VOTE IN PROGRESS</span>
+			</div>
+			<div class="vote-body">
+				<p class="vote-question">Reset all Aliens and Cubes?</p>
+				<div class="vote-results">
+					<div class="result-row">
+						<span class="key-hint">[Y] YES</span>
+						<div class="bar-bg">
+							<div class="bar-fill yes" style="width: @(TotalVotes > 0 ? YesCount / (float)TotalVotes * 100f : 0f)%;"></div>
 						</div>
-						<div class="result-row">
-							<span class="key-hint">[N] NO</span>
-							<div class="bar-bg">
-								<div class="bar-fill no" style="width: @(TotalVotes > 0 ? NoCount / (float)TotalVotes * 100f : 0f)%;"></div>
-							</div>
-							<span class="count-val">@NoCount</span>
-						</div>
+						<span class="count-val">@YesCount</span>
 					</div>
+					<div class="result-row">
+						<span class="key-hint">[N] NO</span>
+						<div class="bar-bg">
+							<div class="bar-fill no" style="width: @(TotalVotes > 0 ? NoCount / (float)TotalVotes * 100f : 0f)%;"></div>
+						</div>
+						<span class="count-val">@NoCount</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		}
+		@if (IsConnectionBad)
+		{
+			<div class="WifiWarning">
+				<div class="IconWrapper">
+					<label class="WifiIcon">wifi</label>
+					<div class="RedSlash"></div>
 				</div>
 			</div>
 		}
@@ -92,6 +99,7 @@
 	private bool IsStuckPopupEnabled;
 	private bool IsAlienBoxComboMultiplierAvailable;
 	private int RequestPlayerRefHandle;
+	private int CheckLatencyHandle;
 	private float AlienBoxComboMultiplier;
 	private double Money;
 	private Player.Player PlayerRef;
@@ -103,6 +111,9 @@
 	private const float VoteDuration = 20f;
 	private RealTimeSince TimeSinceVoteStart;
 	private int TotalVotes => YesCount + NoCount;
+	
+	private bool IsConnectionBad;
+	private const int HighPingThreshold = 180;
 	
 	protected override int BuildHash()
 	{
@@ -118,6 +129,7 @@
 		Hc.Add(IsVoteActive);
 		Hc.Add(YesCount);
 		Hc.Add(NoCount);
+		Hc.Add(IsConnectionBad);
 		return Hc.ToHashCode();
 	}
 	
@@ -129,6 +141,7 @@
 		EventManager.OnVotingStarted += StartVoteWindow;
 		EventManager.OnPlayerVoteSubmitted += SubmitLocalVote;
 		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
+		CheckLatencyHandle = TimerManager.AddTimer(CheckLatencyHandle, 1f, true, CheckLatency);
 	}
 	protected override void OnDestroy()
 	{
@@ -147,7 +160,12 @@
 		IsVoteActive = false;
 		if (Networking.IsHost) ResolveFinalVote();
 	}
-	
+
+	private void CheckLatency()
+	{
+		if (Connection.Local == null) return;
+		IsConnectionBad = Connection.Local.Ping > HighPingThreshold;
+	}
 	private void StartVoteWindow()
 	{
 		if (!EventManager.TriggerGetIsVotingAvailable() || IsVoteActive) return;

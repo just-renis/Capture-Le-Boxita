@@ -13,6 +13,7 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static event Action<bool> OnPlayerNameShowTagChanged;
 	public static event Action<bool> OnPlayerVoteSubmitted;
 	public static event Action<float> OnAlienBoxComboChanged;
+	public static event Action<float> OnVotingCooldownUpdate;
 	public static event Action<double> OnMoneyChanged;
 	public static event Action<string> OnPlayerNameChanged;
 	public static event Action<EUpgradeName> OnUpgradePurchased;
@@ -56,6 +57,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerAlienBoxComboChange(float InCombo)
 	{
 		OnAlienBoxComboChanged?.Invoke(InCombo);
+	}
+	public static void TriggerVotingCooldownUpdate(float InCooldown)
+	{
+		OnVotingCooldownUpdate?.Invoke(InCooldown);
 	}
 	public static void TriggerMoneyChange(double InMoney)
 	{

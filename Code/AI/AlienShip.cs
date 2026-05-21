@@ -29,7 +29,7 @@ public sealed class AlienShip : Component, IPoolObject
 	private Vector2 Direction;
 	private BoxCollider Collider;
 	private CustomTrigger BeamCollider;
-	private readonly HashSet<PullableComponent> ImmovableBeamObjects = [];
+	private readonly List<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 	private readonly Dictionary<Guid, float> RecentlyTeleported = [];
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
@@ -80,11 +80,12 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void CheckIsInAirObjects()
 	{
-		List<PullableComponent> ToRemove = ImmovableBeamObjects.Where(Pullable => Pullable.IsInAir()).ToList();
-		foreach (PullableComponent Pullable in ToRemove)
+		for (int i = ImmovableBeamObjects.Count - 1; i >= 0; i--)
 		{
+			PullableComponent Pullable = ImmovableBeamObjects[i];
+			if (!Pullable.IsInAir()) continue;
 			SetPullOnObject(Pullable, true);
-			ImmovableBeamObjects.Remove(Pullable);
+			ImmovableBeamObjects.RemoveAt(i);
 		}
 	}
 	private void ChangeDirection()

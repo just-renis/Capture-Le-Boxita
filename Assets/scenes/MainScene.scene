@@ -148,7 +148,8 @@
                 "prefab": "prefabs/collectiblecube.prefab"
               },
               "MaxAmountActive": 500,
-              "Objects": [],
+              "InactiveObjects": [],
+              "ActiveObjects": [],
               "ActiveCount": 0
             },
             "AlienShip": {
@@ -157,7 +158,8 @@
                 "prefab": "prefabs/alien.prefab"
               },
               "MaxAmountActive": 20,
-              "Objects": [],
+              "InactiveObjects": [],
+              "ActiveObjects": [],
               "ActiveCount": 0
             }
           }
@@ -25824,7 +25826,63 @@
           "Tint": "1,1,1,1"
         }
       ],
-      "Children": []
+      "Children": [
+        {
+          "__guid": "618b2151-8ef0-4546-bd09-b80dd3deb2b9",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "CooldownText",
+          "Position": "-32.6103516,-7.34169912,-10.5482788",
+          "Rotation": "0,0,1,-4.37113883E-08",
+          "Scale": "1,0.0500000007,0.100000001",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.WorldPanel",
+              "__guid": "1f6fcf8f-a2b4-4cfb-b5ff-2a7746e4a719",
+              "__enabled": true,
+              "Flags": 0,
+              "HorizontalAlign": "Center",
+              "InteractionRange": 1000,
+              "LookAtCamera": false,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "PanelSize": "6000,2000",
+              "RenderOptions": {
+                "GameLayer": true,
+                "OverlayLayer": false,
+                "BloomLayer": false,
+                "AfterUILayer": false
+              },
+              "RenderScale": 1,
+              "VerticalAlign": "Center"
+            },
+            {
+              "__type": "Sandbox.UI.VotingCooldownText",
+              "__guid": "4b77d54b-3042-4c50-ba6b-cbbbe99fe757",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
+        }
+      ]
     },
     {
       "__guid": "0c71476c-e8d0-432e-a4dc-a366a9165c13",
@@ -25995,9 +26053,6 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []

@@ -257,7 +257,7 @@
 	private string GetFormattedUpgradeValue(EUpgradeValue InUpgradeValue)
 	{
 		float Value = GetUpgradeValue(InUpgradeValue);
-		string Formatted = Value.ToString("G");
+		string Formatted = Value.ToString("0.##");
 		switch (InUpgradeValue)
 		{
 			case EUpgradeValue.MoneyAdded: case EUpgradeValue.AlienComboMultiplierBoxReduction: return Formatted;

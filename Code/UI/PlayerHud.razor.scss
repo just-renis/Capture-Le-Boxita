@@ -6,6 +6,7 @@ PlayerHud
   right: 0;
   bottom: 0;
   font-family: Poppins;
+  // -----------------------------------------------------------------MONEY--------------------------------------------------------------
   > .Money
   {
     position: absolute;
@@ -34,6 +35,7 @@ PlayerHud
       text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
     }
   }
+  // -----------------------------------------------------------------UNSTUCK--------------------------------------------------------------
   > .Unstuck
   {
     position: absolute;
@@ -48,6 +50,7 @@ PlayerHud
     font-weight: bold;
     text-shadow: 2px 2px 2px black;
   }
+  // -----------------------------------------------------------------CROSSHAIR--------------------------------------------------------------
   > .crosshair-container 
   {
     position: absolute;
@@ -68,6 +71,7 @@ PlayerHud
     > .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; }
     > .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; }
   }
+  // -----------------------------------------------------------------ALIEN BOX COMBO--------------------------------------------------------------
   > .AlienBoxComboMultiplier 
   {
     position: absolute;
@@ -84,6 +88,7 @@ PlayerHud
     color: white;
     z-index: 100;
   }
+  // -----------------------------------------------------------------TIPS--------------------------------------------------------------
   footer {
     position: absolute;
     bottom: 16px;
@@ -119,6 +124,7 @@ PlayerHud
       }
     }
   }
+  // -----------------------------------------------------------------DASH ICON--------------------------------------------------------------
   > .ability-container
   {
     position: absolute;
@@ -185,12 +191,13 @@ PlayerHud
       }
     }
   }
-  .vote-panel 
+  // -----------------------------------------------------------------VOTING--------------------------------------------------------------
+  .vote-panel
   {
     position: absolute;
     height: 200px;
     bottom: 220px;
-    left: 40px;
+    right: 40px;
     width: 320px;
     background-color: rgba(12, 15, 18, 0.95);
     border: 1px solid #4a545e;
@@ -199,13 +206,20 @@ PlayerHud
     border-radius: 2px;
     flex-direction: column;
     font-family: 'Roboto', sans-serif;
-    animation: slide-in 0.15s ease-out;
-    .vote-header 
+    opacity: 0;
+    transform: translateX(360px);
+    transition: transform 0.25s ease-out, opacity 0.22s ease-out;
+    &.visible
+    {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .vote-header
     {
       background-color: rgba(0, 0, 0, 0.5);
       padding: 8px 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      .header-title 
+      .header-title
       {
         font-size: 16px;
         font-weight: 900;
@@ -213,27 +227,27 @@ PlayerHud
         letter-spacing: 1.5px;
       }
     }
-    .vote-body 
+    .vote-body
     {
       padding: 14px;
       flex-direction: column;
       gap: 12px;
-      .vote-question 
+      .vote-question
       {
         font-size: 21px;
         font-weight: 700;
         color: #ffffff;
         margin: 0;
       }
-      .vote-results 
+      .vote-results
       {
         flex-direction: column;
         gap: 8px;
-        .result-row 
+        .result-row
         {
           align-items: center;
           gap: 10px;
-          .key-hint 
+          .key-hint
           {
             font-size: 17px;
             font-weight: 900;
@@ -241,14 +255,14 @@ PlayerHud
             width: 80px;
             flex-shrink: 0;
           }
-          .bar-bg 
+          .bar-bg
           {
             flex-grow: 1;
             height: 10px;
             background-color: rgba(255, 255, 255, 0.06);
             border-radius: 1px;
             overflow: hidden;
-            .bar-fill 
+            .bar-fill
             {
               height: 100%;
               transition: width 0.2s ease-out;
@@ -256,7 +270,7 @@ PlayerHud
               &.no { background-color: #ff5555; }
             }
           }
-          .count-val 
+          .count-val
           {
             font-size: 18px;
             font-weight: 700;
@@ -268,9 +282,43 @@ PlayerHud
       }
     }
   }
-  @keyframes slide-in 
+  // -----------------------------------------------------------------WIFI LATENCY--------------------------------------------------------------
+  .WifiWarning
   {
-    0% { transform: translateX(-30px); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    padding: 16px;
+    justify-content: center;
+    align-items: center;
+    animation: slide-in 0.3s ease-out forwards, pulse-glow 1.5s infinite ease-in-out;
+  }
+  .IconWrapper
+  {
+    width: 64px;
+    height: 64px;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+  }
+  .WifiIcon
+  {
+    font-family: Material Icons;
+    font-size: 75px;
+    color: #00ffff;
+    text-align: center;
+  }
+  .RedSlash
+  {
+    position: absolute;
+    width: 86px;
+    height: 6px;
+    background-color: #ff3333;
+    border-radius: 3px;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.8);
   }
 }

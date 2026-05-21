@@ -62,7 +62,7 @@ public class CustomTrigger : Component
 	{
 		if (OnlyTriggerForHost && !Networking.IsHost) return;
 		// ----------------------------------------------------DEBUG-----------------------------------------------------
-		Vector3 HalfHeight = WorldRotation.Up * (CapsuleHeight * 0.5f);
+		/*Vector3 HalfHeight = WorldRotation.Up * (CapsuleHeight * 0.5f);
 		Vector3 Top = WorldPosition + HalfHeight;
 		Vector3 Bottom = WorldPosition - HalfHeight;
 
@@ -74,7 +74,7 @@ public class CustomTrigger : Component
 		{
 			Capsule Capsule = new (Bottom, Top, CapsuleRadius);
 			DebugOverlay.Capsule(Capsule, Color.Cyan, 0.1f);
-		}
+		}*/
 		RemoveOccupants.Clear();
 		CurrentFrameOccupants.Clear();
 		SceneTrace Trace = BuildTrace();
