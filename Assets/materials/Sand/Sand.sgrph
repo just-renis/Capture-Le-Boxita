@@ -47,10 +47,10 @@
       }
     },
     {
-      "_class": "ColorConstantNode",
-      "Value": "0.71163,0.60373,0.17211,1",
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "92bee0fc-b950-40b9-a546-aed0607dc59c",
       "Identifier": "1",
-      "Position": "-276,-156",
+      "Position": "-228,-144",
       "HandleOffsets": {}
     },
     {
@@ -393,7 +393,7 @@
         "Name": "Wave Normal",
         "IsAttribute": false,
         "DefaultColor": "0,0,0,0",
-        "DefaultTexture": "materials/sand/14131-normal.jpg",
+        "DefaultTexture": "materials/sand/sand_wave.jpg",
         "Extension": "Normal",
         "CustomExtension": null,
         "ShowExtension": true,
@@ -401,7 +401,7 @@
         "ColorSpace": "Linear",
         "ImageFormat": "DXT1",
         "SrgbRead": false,
-        "Priority": 0,
+        "Priority": 3,
         "PrimaryGroup": {
           "Name": null,
           "Priority": 0
@@ -420,7 +420,7 @@
         "Name": "Grain Normal",
         "IsAttribute": false,
         "DefaultColor": "0,0,0,0",
-        "DefaultTexture": "materials/sand/sand1_n.jpg",
+        "DefaultTexture": "materials/sand/sand_grain.jpg",
         "Extension": "Normal",
         "CustomExtension": null,
         "ShowExtension": true,
@@ -428,7 +428,7 @@
         "ColorSpace": "Linear",
         "ImageFormat": "DXT1",
         "SrgbRead": false,
-        "Priority": 0,
+        "Priority": 2,
         "PrimaryGroup": {
           "Name": null,
           "Priority": 0
@@ -449,10 +449,10 @@
       "UI": {
         "Type": "Slider",
         "Step": 1,
-        "Priority": 1,
+        "Priority": 5,
         "PrimaryGroup": {
           "Name": null,
-          "Priority": 0
+          "Priority": 1
         },
         "SecondaryGroup": {
           "Name": null,
@@ -471,7 +471,7 @@
       "UI": {
         "Type": "Slider",
         "Step": 1,
-        "Priority": 0,
+        "Priority": 4,
         "PrimaryGroup": {
           "Name": null,
           "Priority": 0
@@ -511,7 +511,7 @@
       "_class": "FloatParameter",
       "Min": 0,
       "Max": 500,
-      "Value": 182,
+      "Value": 189,
       "UI": {
         "Type": "Slider",
         "Step": 1,
@@ -528,6 +528,24 @@
       "IsAttribute": false,
       "Identifier": "c5e0ef36-3a24-41c7-98fe-4bf664e00c20",
       "Name": "Sparkle Amount"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0.71373,0.60392,0.17255,1",
+      "UI": {
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "92bee0fc-b950-40b9-a546-aed0607dc59c",
+      "Name": "Sand Color"
     }
   ],
   "__version": 5

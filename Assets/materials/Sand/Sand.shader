@@ -82,14 +82,15 @@ PS
 	
 	SamplerState g_sSampler0 < Filter( ANISOTROPIC ); AddressU( WRAP ); AddressV( WRAP ); AddressW( WRAP ); MaxAniso( 16 ); >;
 	SamplerState g_sSampler1 < Filter( ANISOTROPIC ); AddressU( WRAP ); AddressV( WRAP ); AddressW( WRAP ); MaxAniso( 16 ); >;
-	CreateInputTexture2D( WaveNormal, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/sand/14131-normal.jpg" ) );
-	CreateInputTexture2D( GrainNormal, Linear, 8, "None", "_normal", ",0/,0/0", DefaultFile( "materials/sand/sand1_n.jpg" ) );
+	CreateInputTexture2D( WaveNormal, Linear, 8, "None", "_normal", ",0/,0/3", DefaultFile( "materials/sand/sand_wave.jpg" ) );
+	CreateInputTexture2D( GrainNormal, Linear, 8, "None", "_normal", ",0/,0/2", DefaultFile( "materials/sand/sand_grain.jpg" ) );
 	Texture2D g_tWaveNormal < Channel( RGBA, Box( WaveNormal ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
 	Texture2D g_tGrainNormal < Channel( RGBA, Box( GrainNormal ), Linear ); OutputFormat( DXT1 ); SrgbRead( False ); >;
+	float4 g_vSandColor < UiType( Color ); UiGroup( ",0/,0/1" ); Default4( 0.71, 0.60, 0.17, 1.00 ); >;
 	float g_flSparkleAngle < UiType( Slider ); UiStep( 0.2 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 3.6 ); Range1( 0, 10 ); >;
-	float g_flSparkleAmount < UiType( Slider ); UiStep( 1 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 182 ); Range1( 0, 500 ); >;
-	float g_flWaveScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/0" ); Default1( 5 ); Range1( 0, 100 ); >;
-	float g_flGrainScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/1" ); Default1( 35 ); Range1( 0, 100 ); >;
+	float g_flSparkleAmount < UiType( Slider ); UiStep( 1 ); UiGroup( "Sand sparkle,1/,0/0" ); Default1( 189 ); Range1( 0, 500 ); >;
+	float g_flWaveScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",0/,0/4" ); Default1( 5 ); Range1( 0, 100 ); >;
+	float g_flGrainScale < UiType( Slider ); UiStep( 1 ); UiGroup( ",1/,0/5" ); Default1( 35 ); Range1( 0, 100 ); >;
 		
 	RenderState( CullMode, F_RENDER_BACKFACES ? NONE : DEFAULT );
 		
@@ -114,7 +115,7 @@ PS
 		m.Emission = float3( 0, 0, 0 );
 		m.Transmission = 0;
 		
-		float4 l_0 = float4( 0.71163, 0.60373, 0.17211, 1 );
+		float4 l_0 = g_vSandColor;
 		float3 l_1 = i.vPositionWithOffsetWs.xyz + g_vHighPrecisionLightingOffsetWs.xyz;
 		float3 l_2 = l_1 * float3( 0.1, 0.1, 0.1 );
 		float l_3 = g_flSparkleAngle;
