@@ -13,3 +13,9 @@ VotingCooldownText
   font-size: 450px;
   color: white;
 }
+.hidden {
+  display: none;
+  background-color: transparent;
+  background: none;
+  opacity: 0;
+}

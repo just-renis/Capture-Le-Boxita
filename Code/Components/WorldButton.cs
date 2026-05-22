@@ -1,4 +1,5 @@
 using Sandbox.Components;
+using Sandbox.Enums;
 using Sandbox.Managers;
 using Sandbox.UI;
 
@@ -25,7 +26,9 @@ public sealed class WorldButton : Component
 	
 	private void OnClicked()
 	{
-		if (InInteractionRange) EventManager.TriggerVotingStart();
+		if (!InInteractionRange) return;
+		SoundManager.Instance?.PlayAtPosition(ESound.VotingButtonClick, GameObject.WorldPosition);
+		EventManager.TriggerVotingStart();
 	}
 	private void TriggerEntered(GameObject InGameObject)
 	{

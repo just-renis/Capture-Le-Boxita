@@ -13,6 +13,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private float BoxSlownessPercentage { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
 	private bool IsPulled;
+	private bool IsPlayer;
 	private int ClearOwnerIdHandle;
 	private int CheckOutOfBoundsHandle;
 	private const float BeamPullSpeed = 600.0f; 
@@ -22,6 +23,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private GameObject AlienShipRef;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsPulled() { return IsPulled; }
+	public bool GetIsPlayer() { return IsPlayer; }
 	public bool IsInAir()
 	{
 		if (Rigidbody == null) return false;
@@ -57,14 +59,13 @@ public class PullableComponent : Component, Component.ICollisionListener
 	public void ClearOwnerId() { LastOwnedBy = Guid.Empty; }
 	public void OnCollisionStart(Collision InCollision)
 	{
-		if (GameObject.Tags.Has("player")) return; // Player objects dont use OnCollisionStart.
+		if (GetIsPlayer()) return; // Player objects dont use OnCollisionStart.
 		GameObject CollisionObject = InCollision.Other.GameObject;
 		if (!CollisionObject.Tags.HasAny("player", "collectible")) return; // If collided object is not player or collectible return.
 		PullableComponent OtherPullableComponent = CollisionObject.GetComponent<PullableComponent>();
 		if (OtherPullableComponent == null) return;
-		bool IsPlayerHit = OtherPullableComponent.Tags.Has("player");
 		bool IsNotHittingOwner = OtherPullableComponent.Network.OwnerId != LastOwnedBy;
-		if (IsPlayerHit && IsNotHittingOwner)
+		if (OtherPullableComponent.GetIsPlayer() && IsNotHittingOwner)
 		{
 			if (OtherPullableComponent.IsOwnerHolding)
 			{
@@ -90,6 +91,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	protected override void OnStart()
 	{
 		CheckOutOfBoundsHandle = TimerManager.AddTimer(CheckOutOfBoundsHandle, 5f, true, CheckOutOfBounds);
+		IsPlayer = Tags.Has("player");
 	}
 	protected override void OnUpdate()
 	{

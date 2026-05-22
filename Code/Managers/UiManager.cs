@@ -10,11 +10,13 @@ public sealed class UiManager(Scene Scene) : GameObjectSystem(Scene)
 		bool NewRenderState = !UI_STATES[InUi];
 		UI_STATES[InUi] = NewRenderState;
 		EventManager.TriggerUiStateChange(InUi, NewRenderState);
+		SoundManager.Instance?.Play2D(ESound.OpenCloseUi);
 	}
 	public static void ChangeUiState(EUi InUi, bool RenderState)
 	{
 		UI_STATES[InUi] = RenderState;
 		EventManager.TriggerUiStateChange(InUi, RenderState);
+		SoundManager.Instance?.Play2D(ESound.OpenCloseUi);
 	}
 	public static void OnStart()
 	{

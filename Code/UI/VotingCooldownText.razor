@@ -2,14 +2,19 @@
 @using System;
 @inherits PanelComponent
 
-<root>
-	<div class="VotingCooldownText">
-		<label>@FormattedTime</label>
-	</div>
+<root class="@(IsVisible ? "" : "hidden")">
+	@if (IsVisible)
+	{
+		<div class="VotingCooldownText">
+			<label>@FormattedTime</label>
+		</div>
+	}
 </root>
 
 @code
 {
+	private bool IsVisible;
+	private int CullingDistanceHandle;
 	private float VotingCooldown;
 	private string FormattedTime
 	{
@@ -22,16 +27,22 @@
 		}
 	}
 
-	protected override int BuildHash() => HashCode.Combine(FormattedTime);
+	protected override int BuildHash() => HashCode.Combine(FormattedTime, IsVisible);
 
 	protected override void OnStart()
 	{
+		CullingDistanceHandle = TimerManager.AddTimer(CullingDistanceHandle, 1f, true, CheckIfInCullingDistance);
 		EventManager.OnVotingCooldownUpdate += UpdateVotingCooldown;
 	}
 	protected override void OnDestroy()
 	{
 		EventManager.OnVotingCooldownUpdate -= UpdateVotingCooldown;
+		TimerManager.ClearTimer(CullingDistanceHandle);
 	}
 
 	private void UpdateVotingCooldown(float InCooldown) { VotingCooldown = InCooldown; }
+	private void CheckIfInCullingDistance()
+	{
+		IsVisible = Vector3.DistanceBetweenSquared(WorldPosition, EventManager.TriggerGetPlayerLocation()) < 5000000f;
+	}
 }

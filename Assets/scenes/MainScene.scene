@@ -108,8 +108,51 @@
             {
               "_type": "gameobject",
               "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
+            },
+            {
+              "_type": "gameobject",
+              "go": "e6c0d654-5d5b-421d-9410-ee3330554a36"
+            },
+            {
+              "_type": "gameobject",
+              "go": "8fadc09b-72bc-4154-bf02-104cea4dbb28"
+            },
+            {
+              "_type": "gameobject",
+              "go": "45ca7a13-cc7c-4297-9200-c029ae46a726"
+            },
+            {
+              "_type": "gameobject",
+              "go": "60e2501e-1d8a-42d8-8a96-e1568b2c359c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "427a6cdd-e21c-4e00-9c66-dbabadb85845"
+            },
+            {
+              "_type": "gameobject",
+              "go": "c93f43ed-c21c-4174-9cf9-30ca8a2ef62c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "8e375944-419f-485e-b4a2-e30220db684c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
             }
-          ]
+          ],
+          "Sounds": {
+            "SwordSlash": "audio/swordslash.sound",
+            "UpgradeNodeClick": "audio/upgradenodeclick.sound",
+            "BuyUpgrade": "audio/buyupgrade.sound",
+            "OpenCloseUi": "audio/opencloseui.sound",
+            "Dash": "audio/dash.sound",
+            "PlayerDeath": "audio/playerdeath.sound",
+            "SwordHit": "audio/swordhit.sound",
+            "VotingButtonClick": "audio/votingbuttonclick.sound",
+            "BoxThrow": "audio/boxthrow.sound"
+          }
         }
       ],
       "Children": []
@@ -604,7 +647,7 @@
               "DefaultAttribute": "RequiredBoxesAmountForAlienBoxCombo1",
               "MaxAmount": 2,
               "Name": "Alien Combo Max Multiplier",
-              "Description": "Every {1}th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds {0}x maximum.",
+              "Description": "Every {1}th box thrown into alien in the span of 7 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds {0}x maximum.",
               "Costs": [
                 200,
                 500
@@ -1125,7 +1168,39 @@
           "SpawnPoints": [
             {
               "_type": "gameobject",
-              "go": "3ce3cdf3-a2df-4148-9297-22a5553a11d3"
+              "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
+            },
+            {
+              "_type": "gameobject",
+              "go": "e6c0d654-5d5b-421d-9410-ee3330554a36"
+            },
+            {
+              "_type": "gameobject",
+              "go": "8fadc09b-72bc-4154-bf02-104cea4dbb28"
+            },
+            {
+              "_type": "gameobject",
+              "go": "45ca7a13-cc7c-4297-9200-c029ae46a726"
+            },
+            {
+              "_type": "gameobject",
+              "go": "60e2501e-1d8a-42d8-8a96-e1568b2c359c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "427a6cdd-e21c-4e00-9c66-dbabadb85845"
+            },
+            {
+              "_type": "gameobject",
+              "go": "c93f43ed-c21c-4174-9cf9-30ca8a2ef62c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "8e375944-419f-485e-b4a2-e30220db684c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
             }
           ],
           "StartServer": true
@@ -1163,38 +1238,6 @@
       "__PrefabIdToInstanceId": {
         "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "12383a2e-23a8-40d0-b204-0f95e967961d",
         "0f93a686-207a-4820-8e27-e7c1154e98a2": "33e24e06-3d8a-4193-a788-fc7d748a7d07"
-      }
-    },
-    {
-      "__guid": "3ce3cdf3-a2df-4148-9297-22a5553a11d3",
-      "__version": 2,
-      "__Prefab": "prefabs/spawnpoint.prefab",
-      "__PrefabInstancePatch": {
-        "AddedObjects": [],
-        "RemovedObjects": [],
-        "PropertyOverrides": [
-          {
-            "Target": {
-              "Type": "GameObject",
-              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
-            },
-            "Property": "Name",
-            "Value": "FAKESPAWNPOINT"
-          },
-          {
-            "Target": {
-              "Type": "GameObject",
-              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
-            },
-            "Property": "Position",
-            "Value": "6160.66455,6020.90039,1050.5896"
-          }
-        ],
-        "MovedObjects": []
-      },
-      "__PrefabIdToInstanceId": {
-        "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "3ce3cdf3-a2df-4148-9297-22a5553a11d3",
-        "0f93a686-207a-4820-8e27-e7c1154e98a2": "3e493c97-f1b5-4b15-9f6c-079ff5234db7"
       }
     },
     {
@@ -1671,7 +1714,7 @@
           "Flags": 0,
           "FogMode": "Enabled",
           "FogStrength": 1,
-          "LightColor": "0.91373,0.98039,1,1",
+          "LightColor": "1,0.76471,0.32941,1",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -25419,7 +25462,7 @@
       "__guid": "cbda5e53-2172-4384-b07b-ff585084f24a",
       "__version": 2,
       "Flags": 0,
-      "Name": "Smoke",
+      "Name": "BrokenUfoSmoke1",
       "Position": "7351.52344,-16.4174271,2194.06543",
       "Rotation": "0,0,0,1",
       "Scale": "10,10,10",
@@ -25519,10 +25562,15 @@
                   }
                 ]
               },
-              "CurveB": {
-                "rangex": "0,0",
-                "rangey": "0,0"
-              }
+              "CurveB": [
+                {
+                  "x": 0.5,
+                  "y": 0.5,
+                  "in": 0,
+                  "out": 0,
+                  "mode": "Mirrored"
+                }
+              ]
             },
             "Z": 0
           },
@@ -25767,7 +25815,7 @@
       "__guid": "71b19b08-8eb8-4cce-81cc-b339ae83dd0b",
       "__version": 2,
       "Flags": 0,
-      "Name": "ufo (1)",
+      "Name": "BrokenUfo2",
       "Position": "-7675.64746,-7220.5708,2517.21802",
       "Rotation": "0.157331735,-0.123217694,0.707487941,0.677882731",
       "Scale": "2,2,2",
@@ -25813,7 +25861,7 @@
       "__guid": "9fd6a972-d173-45cb-baf6-df75a43ca251",
       "__version": 2,
       "Flags": 0,
-      "Name": "Smoke (1)",
+      "Name": "BrokenUfoSmoke2",
       "Position": "-7592.92676,-7285.62939,2296.39111",
       "Rotation": "0,0,-0.724404633,0.689374983",
       "Scale": "10,10,10",
@@ -26166,7 +26214,7 @@
       "__guid": "12b61cbf-9bd1-4896-a587-50ed63c8413a",
       "__version": 2,
       "Flags": 0,
-      "Name": "ufo",
+      "Name": "BrokenUfo1",
       "Position": "7198.13525,-106.84597,2685.27954",
       "Rotation": "0.197720036,0.0290286392,0.978785872,-0.0451921262",
       "Scale": "2,2,2",
@@ -26351,7 +26399,7 @@
             "AfterUILayer": false
           },
           "RenderType": "Off",
-          "Tint": "0.92093,0.16705,0.16705,0.9"
+          "Tint": "0.92093,0.16705,0.16705,1"
         },
         {
           "__type": "WorldButton",

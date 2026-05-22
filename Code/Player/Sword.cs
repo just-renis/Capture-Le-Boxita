@@ -10,32 +10,36 @@ public sealed class Sword : Component
 	[Property] private Int64 PushForce { get; set; }
 	[Property] private float BoxPushMultiplier { get; set; } = 7f;
 	private bool IsInAttackMode;
-	private int ProcessAttackHandle;
-	private int ProcessAttackTimes;
-	private const int SwordMaxProcessTimes = 9;
+	private int ProcessForwardAttackHandle;
+	private int ProcessBackwardAttackHandle;
+	private float CurrentAttackAngle;
+	private const float TargetMaxAngle = 90f;
 	private const float SwordAttackRotationSpeed = 10f;
 	private readonly HashSet<GameObject> HitObjects = [];
 
+	public bool GetIsInAttackMode() { return IsInAttackMode; }
+
 	protected override void OnDestroy()
 	{
-		TimerManager.ClearTimer(ProcessAttackHandle);
+		TimerManager.ClearTimer(ProcessForwardAttackHandle);
+		TimerManager.ClearTimer(ProcessBackwardAttackHandle);
 	}
 
 	private void ProcessAttackForward()
 	{
+		CurrentAttackAngle += SwordAttackRotationSpeed;
 		LocalRotation *= Rotation.From(new Angles(SwordAttackRotationSpeed, 0f, 0f));
 		CheckForHit(Network.OwnerId);
-		if (++ProcessAttackTimes <= SwordMaxProcessTimes) return;
-		ProcessAttackTimes = 0;
-		TimerManager.ClearTimer(ProcessAttackHandle);
-		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackBackward);
+		if (CurrentAttackAngle < TargetMaxAngle) return;
+		TimerManager.ClearTimer(ProcessForwardAttackHandle);
+		ProcessBackwardAttackHandle = TimerManager.AddTimer(ProcessBackwardAttackHandle, 0.025f, true, ProcessAttackBackward);
 	}
 	private void ProcessAttackBackward()
 	{
+		CurrentAttackAngle -= SwordAttackRotationSpeed;
 		LocalRotation *= Rotation.From(new Angles(-SwordAttackRotationSpeed, 0f, 0f));
-		if (++ProcessAttackTimes <= SwordMaxProcessTimes) return;
-		ProcessAttackTimes = 0;
-		TimerManager.ClearTimer(ProcessAttackHandle);
+		if (CurrentAttackAngle > 0f) return;
+		TimerManager.ClearTimer(ProcessBackwardAttackHandle);
 		IsInAttackMode = false;
 	}
 	private void CheckForHit(Guid InPusherId)
@@ -59,6 +63,7 @@ public sealed class Sword : Component
 		if (TargetPullableComponent == null) return;
 		float MassForceMultiplier = TargetPullableComponent.Tags.Has("collectible") ? BoxPushMultiplier : 1f;
 		Int64 Force = (long)(PushForce + PushForce * InPushForceUpgradeAmount * 0.01f);
+		SoundManager.Instance?.PlayAtPosition(ESound.SwordHit, GameObject.WorldPosition);
 		TargetPullableComponent.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force * MassForceMultiplier);
 		TargetPullableComponent.SetOwnerId(Network.OwnerId, false);
 	}
@@ -69,6 +74,7 @@ public sealed class Sword : Component
 		if (IsInAttackMode) return;
 		HitObjects.Clear();
 		IsInAttackMode = true;
-		ProcessAttackHandle = TimerManager.AddTimer(ProcessAttackHandle, 0.025f, true, ProcessAttackForward);
+		CurrentAttackAngle = 0f;
+		ProcessForwardAttackHandle = TimerManager.AddTimer(ProcessForwardAttackHandle, 0.025f, true, ProcessAttackForward);
 	}
 }

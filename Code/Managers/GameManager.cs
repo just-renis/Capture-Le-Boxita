@@ -1,4 +1,5 @@
 using System;
+using Sandbox.Enums;
 namespace Sandbox.Managers;
 
 public sealed class GameManager : Component
@@ -7,6 +8,7 @@ public sealed class GameManager : Component
 	private const float VotingTimeOutTime = 300f;
 	private int VotingTimerUpdateHandle;
 	[Property] private List<GameObject> PlayerSpawners { get; set; }
+	[Property] private Dictionary<ESound, SoundEvent> Sounds = new();
 	[Sync] private float VotingTimeOut { get; set; } = 300f;
 
 	private CollectibleCubeManager CollectibleCubeManager;
@@ -19,6 +21,7 @@ public sealed class GameManager : Component
 		EventManager.OnRequestIsVotingAvailable += GetIsVotingAvailable;
 		VotingTimerUpdateHandle = TimerManager.AddTimer(VotingTimerUpdateHandle, 0.5f, true, UpdateVotingTimer);
 		UiManager.OnStart();
+		SoundManager.Instance?.Init(Sounds);
 	}
 	protected override void OnUpdate()
 	{
@@ -37,6 +40,7 @@ public sealed class GameManager : Component
 		if (IsHostLogicInitiated) EventManager.OnVotingFinished -= VotingFinished;
 		TimerManager.OnDestroy();
 		UiManager.OnDestroy();
+		SoundManager.Instance?.OnDestroy();
 	}
 
 	private bool GetIsVotingAvailable() { return VotingTimeOut > VotingTimeOutTime; }

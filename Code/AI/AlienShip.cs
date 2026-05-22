@@ -183,7 +183,7 @@ public sealed class AlienShip : Component, IPoolObject
 		if (InGameObject.Tags.Has("safe")) return;
 		PullableComponent Pullable = InGameObject.Root.GetComponent<PullableComponent>(true);
 		if (Pullable == null) return;
-		SetPullOnObject(Pullable, false);
+		if (Pullable.GetIsPulled()) SetPullOnObject(Pullable, false);
 		ImmovableBeamObjects.Remove(Pullable);
 		InsideBeamObjects.Remove(Pullable);
 	}
@@ -247,5 +247,10 @@ public sealed class AlienShip : Component, IPoolObject
 	[Rpc.Broadcast]
 	private void ChangeBeamVfxState(bool InState) { BeamVfx?.Enabled = InState; }
 	[Rpc.Broadcast]
-	private void SetPullOnObject(PullableComponent InPullable, bool InState) { InPullable?.SetIsPulled(InState); }
+	private void SetPullOnObject(PullableComponent InPullable, bool InState)
+	{
+		if (InPullable == null) return;
+		InPullable.SetIsPulled(InState);
+	//	if (InState) InPullable.SetAlienShipRef(GameObject.Id);
+	}
 }

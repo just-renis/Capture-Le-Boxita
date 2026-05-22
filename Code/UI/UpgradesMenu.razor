@@ -99,10 +99,10 @@
 
 				<!-- Zoom Controls -->
 				<div class="zoom-controls" @onwheel="OnMouseWheel">
-					<div class="btn" @onclick="@(() => { Scale = Math.Min(Scale + 0.2f, 3f); })"><i>add</i></div>
-					<div class="btn" @onclick="@(() => { Scale = Math.Max(Scale - 0.2f, 0.2f); })"><i>remove</i></div>
-					<div class="btn zoom-scale" @onclick="@(() => { Scale = 1f; })">@Scale.ToString("F1")x</div>
-					<div class="btn" @onclick="@(() => { CanvasX = -225f; CanvasY = 0f; Scale = 1f; })"><i>home</i></div>
+					<div class="btn" @onclick=@ZoomIn><i>add</i></div>
+					<div class="btn" @onclick=@ZoomOut><i>remove</i></div>
+					<div class="btn zoom-scale">@Scale.ToString("F1")x</div>
+					<div class="btn" @onclick=@ZoomDefault><i>home</i></div>
 				</div>
 
 				<!-- Sidebar Info -->
@@ -278,13 +278,35 @@
 		DragStartPos = Mouse.Position;
 		DragStartOffset = new Vector2(CanvasX, CanvasY);
 	}
+	private void ZoomIn()
+	{
+		Scale = Math.Min(Scale + 0.2f, 3f);
+		SoundManager.Instance?.Play2D(ESound.UpgradeNodeClick);
+	}
+	private void ZoomOut()
+	{
+		Scale = Math.Max(Scale - 0.2f, 0.2f);
+		SoundManager.Instance?.Play2D(ESound.UpgradeNodeClick);
+	}
+	private void ZoomDefault()
+	{
+		CanvasX = -225f;
+		CanvasY = 0f;
+		Scale = 1f;
+		SoundManager.Instance?.Play2D(ESound.UpgradeNodeClick);
+	}
 	private void OnMouseReleased() { IsDragging = false; }
-	private void SelectNode(EUpgradeName InUpgradeName) { SelectedUpgradeName = InUpgradeName; }
+	private void SelectNode(EUpgradeName InUpgradeName)
+	{
+		SelectedUpgradeName = InUpgradeName;
+		SoundManager.Instance?.Play2D(ESound.UpgradeNodeClick);
+	}
 	private void BuyUpgrade()
 	{
 		if (SelectedUpgradeName == EUpgradeName.None || SelectedUpgrade == null || !CanBuyMore(SelectedUpgrade) || !CanAfford(SelectedUpgrade) || !GetIsAvailable(SelectedUpgradeName)) return;
 		Data.SubtractMoney(GetCurrentCost(SelectedUpgrade));
 		Data.BuyUpgrade(SelectedUpgradeName);
+		SoundManager.Instance?.Play2D(ESound.BuyUpgrade);
 	}
 	private void CloseMenu() { UiManager.ChangeUiState(EUi.UpgradesMenu); }
 	private void UiStateChanged(EUi InUi, bool RenderState)

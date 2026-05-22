@@ -3,7 +3,6 @@ using Sandbox.Components;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
-using Sandbox.UI;
 
 namespace Sandbox.Player;
 
@@ -18,6 +17,7 @@ public sealed class Player : Component, Component.INetworkListener
 	[Property] private float CameraDistance { get; set; } = 200f;
 	[Property] private float CameraHeight { get; set; } = 50f;
 	[Property] private float DefaultDashImpulseStrength { get; set; } = 2000f;
+	[Property] private float DefaultAlienBoxComboDuration { get; set; } = 7f;
 	[Property] private float SlowDownDuration { get; set; } = 1f;
 	[Property] private Sword Sword { get; set; }
 	[Property] private BoxCollider PlayerCollider { get; set; }
@@ -257,6 +257,7 @@ public sealed class Player : Component, Component.INetworkListener
 		if (DashDir.LengthSquared < 0.1f) DashDir = WorldRotation.Forward.WithZ(0);
 		Vector3 Impulse = DashDir * DashImpulseStrength * PlayerRigidbody.PhysicsBody.Mass;
 		if (TimeSinceSlowDownApplied < SlowDownDuration) Impulse *= 1f - SlowDownPercentage * 2f;
+		SoundManager.Instance?.PlayAttached(ESound.Dash, GameObject);
 		PlayerRigidbody.ApplyImpulse(Impulse);
 		TimeSinceLastDash = 0;
 	}
@@ -298,9 +299,15 @@ public sealed class Player : Component, Component.INetworkListener
 	private void ProcessMouseLeftClickInput()
 	{
 		if (!Input.Pressed("Attack1")) return;
-		if (HeldObjectData.GetObject() == null) Sword.Attack();
+		if (HeldObjectData.GetObject() == null)
+		{
+			if (Sword.GetIsInAttackMode()) return;
+			SoundManager.Instance?.PlayAttached(ESound.SwordSlash, GameObject);
+			Sword.Attack();
+		}
 		else
 		{
+			SoundManager.Instance?.PlayAtPosition(ESound.BoxThrow, GameObject.WorldPosition);
 			HeldObjectData.GetRigidBody()?.Velocity  = Camera.WorldRotation.Forward * BoxThrowImpulseStrength;
 			ClearHeldObjectData();
 		}
@@ -455,7 +462,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void CheckIfAlienBoxMultiplierComboEnded()
 	{
-		if (AlienBoxComboMultiplier > 0 && TimeSinceLastBoxConsumed > 5f)
+		if (AlienBoxComboMultiplier > 0 && TimeSinceLastBoxConsumed > DefaultAlienBoxComboDuration)
 		{
 			CurrentAlienBoxComboCountOfBoxes = 0;
 			AlienBoxComboMultiplier = 0f;
@@ -473,6 +480,7 @@ public sealed class Player : Component, Component.INetworkListener
 	public void ReturnToSpawnLocation()
 	{
 		if (IsProxy) return;
+		SoundManager.Instance?.Play2D(ESound.PlayerDeath);
 		TeleportPlayerToSpawnLocation(EventManager.TriggerGetSpawnLocation());
 		if (PullComp == null || !PullComp.GetIsPulled()) return;
 		PullComp.SetIsPulled(false);
