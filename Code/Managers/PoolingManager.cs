@@ -12,7 +12,14 @@ public sealed class PoolingManager : Component
 	public bool CanSpawnObject(EPoolObject InObjectName)
 	{
 		if (!Pool.TryGetValue(InObjectName, out ObjectPoolData PoolData)) return false;
-		return PoolData.ActiveCount < PoolData.MaxAmountActive;
+		int CurrentLiveCount;
+		switch (InObjectName)
+		{
+			case EPoolObject.AlienShip: CurrentLiveCount = AI.AlienShip.LiveCount; break;
+			case EPoolObject.CollectibleCube: CurrentLiveCount = Collectibles.CollectibleCube.LiveCount; break;
+			default: CurrentLiveCount = PoolData.ActiveCount; break;
+		}
+		return CurrentLiveCount < PoolData.MaxAmountActive;
 	}
 	public GameObject SpawnObjectFromPool(EPoolObject InObjectName, Vector3 InLocation, Rotation InRotation = default)
 	{

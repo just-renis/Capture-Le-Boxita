@@ -12,7 +12,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	[Sync] private float AlienScaleMultiplier { get; set; }
 	[Sync] private float BoxSlownessPercentage { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
-	private bool IsPulled;
+	[Sync] private bool IsPulled { get; set; }
 	private bool IsPlayer;
 	private int ClearOwnerIdHandle;
 	private int CheckOutOfBoundsHandle;
@@ -23,7 +23,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private GameObject AlienShipRef;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsPulled() { return IsPulled; }
-	public bool GetIsPlayer() { return IsPlayer; }
 	public bool IsInAir()
 	{
 		if (Rigidbody == null) return false;
@@ -110,6 +109,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 		Rigidbody.Velocity = PullVelocity.WithZ(BeamPullSpeed);
 	}
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
+	private bool GetIsPlayer() { return IsPlayer; }
 	private float GetLastOwnerTime() { return LastOwnerTime; }
 	
 	private void SetIsOwnerHoldingState(bool InState) { IsOwnerHolding = InState; }

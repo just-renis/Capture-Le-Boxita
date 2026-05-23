@@ -14,6 +14,7 @@ public sealed class AlienShip : Component, IPoolObject
 	[Sync] private float RandomDownwardsStopZ { get; set; }
 	[Property] private GameObject BeamVfx { get; set; }
 	private bool IsLogicInitialized;
+	public static int LiveCount { get; private set; }
 	private int MoveHandle;
 	private int CheckIsInAirObjectsHandle;
 	private int FlyUpwardsHandle;
@@ -59,6 +60,8 @@ public sealed class AlienShip : Component, IPoolObject
 		TimerManager.ClearTimer(FlyUpwardsHandle);
 		TimerManager.ClearTimer(FlyDownwardsHandle);
 	}
+	protected override void OnEnabled() { LiveCount++; }
+	protected override void OnDisabled() { LiveCount--; }
 	// --------------------------------------------------------------PRIVATE METHODS--------------------------------------------------------------
 	private void SetupHostLogic()
 	{
@@ -195,7 +198,6 @@ public sealed class AlienShip : Component, IPoolObject
 		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
 		else SetPullOnObject(Pullable, true);
 		InsideBeamObjects.Add(Pullable);
-		Pullable.SetAlienShipRef(GameObject.Id);
 	}
 	private void SetupBoxCollider()
 	{
@@ -251,6 +253,6 @@ public sealed class AlienShip : Component, IPoolObject
 	{
 		if (InPullable == null) return;
 		InPullable.SetIsPulled(InState);
-	//	if (InState) InPullable.SetAlienShipRef(GameObject.Id);
+		if (InState) InPullable.SetAlienShipRef(GameObject.Id);
 	}
 }

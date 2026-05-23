@@ -10,6 +10,7 @@ public sealed class CollectibleCube : Component, IPoolObject
 {
 	[Property] private Dictionary<ECubeMaterial, Material> Materials { get; set; }
 	[Property] private ModelRenderer CubeModelRenderer { get; set; }
+	public static int LiveCount { get; private set; }
 	private int SetMaterialHandle;
 	private int CheckIfFallingOutOfWorldHandle;
 	private ECubeMaterial CubeMaterial = ECubeMaterial.Cardboard;
@@ -44,6 +45,8 @@ public sealed class CollectibleCube : Component, IPoolObject
 		PoolingManager.Instance.ReturnObjectToPool(EPoolObject.CollectibleCube, GameObject);
 	}
 	// --------------------------------------------------------------PROTECTED METHODS--------------------------------------------------------------
+	protected override void OnEnabled() { LiveCount++; }
+	protected override void OnDisabled() { LiveCount--; }
 	protected override void OnAwake()
 	{
 		PullComp = GetComponent<PullableComponent>();

@@ -200,7 +200,7 @@
                 "_type": "gameobject",
                 "prefab": "prefabs/alien.prefab"
               },
-              "MaxAmountActive": 20,
+              "MaxAmountActive": 30,
               "InactiveObjects": [],
               "ActiveObjects": [],
               "ActiveCount": 0
