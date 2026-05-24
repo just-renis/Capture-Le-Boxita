@@ -1168,7 +1168,39 @@
           "SpawnPoints": [
             {
               "_type": "gameobject",
-              "go": "c69c7c1d-15d0-4eba-b352-dd589290d38b"
+              "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
+            },
+            {
+              "_type": "gameobject",
+              "go": "e6c0d654-5d5b-421d-9410-ee3330554a36"
+            },
+            {
+              "_type": "gameobject",
+              "go": "8fadc09b-72bc-4154-bf02-104cea4dbb28"
+            },
+            {
+              "_type": "gameobject",
+              "go": "45ca7a13-cc7c-4297-9200-c029ae46a726"
+            },
+            {
+              "_type": "gameobject",
+              "go": "60e2501e-1d8a-42d8-8a96-e1568b2c359c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "427a6cdd-e21c-4e00-9c66-dbabadb85845"
+            },
+            {
+              "_type": "gameobject",
+              "go": "c93f43ed-c21c-4174-9cf9-30ca8a2ef62c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "8e375944-419f-485e-b4a2-e30220db684c"
+            },
+            {
+              "_type": "gameobject",
+              "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
             }
           ],
           "StartServer": true
@@ -1270,38 +1302,6 @@
       "__PrefabIdToInstanceId": {
         "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "8fadc09b-72bc-4154-bf02-104cea4dbb28",
         "0f93a686-207a-4820-8e27-e7c1154e98a2": "31ecc22b-f127-4787-bc6e-5f0c0d8a4795"
-      }
-    },
-    {
-      "__guid": "c69c7c1d-15d0-4eba-b352-dd589290d38b",
-      "__version": 2,
-      "__Prefab": "prefabs/spawnpoint.prefab",
-      "__PrefabInstancePatch": {
-        "AddedObjects": [],
-        "RemovedObjects": [],
-        "PropertyOverrides": [
-          {
-            "Target": {
-              "Type": "GameObject",
-              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
-            },
-            "Property": "Name",
-            "Value": "SAFESPOINT"
-          },
-          {
-            "Target": {
-              "Type": "GameObject",
-              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
-            },
-            "Property": "Position",
-            "Value": "6364.0332,6645.27686,1201.42358"
-          }
-        ],
-        "MovedObjects": []
-      },
-      "__PrefabIdToInstanceId": {
-        "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "c69c7c1d-15d0-4eba-b352-dd589290d38b",
-        "0f93a686-207a-4820-8e27-e7c1154e98a2": "7f8930e4-0b44-4b69-8869-ed01578c9195"
       }
     },
     {

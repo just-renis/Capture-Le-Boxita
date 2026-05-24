@@ -125,7 +125,7 @@
 						{
 							<div class="stat-row">
 								<span>UPGRADE COST</span>
-								<span class="@(CanAfford(SelectedUpgrade) || GetIsOwned(SelectedUpgradeName) ? "text-green" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
+								<span class="@(CanAfford(SelectedUpgrade) ? "text-green" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
 							</div>
 						}
 						<div class="stat-row">

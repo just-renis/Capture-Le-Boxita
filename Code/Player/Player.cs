@@ -3,7 +3,7 @@ using Sandbox.Components;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
-
+using Sandbox.Services;
 namespace Sandbox.Player;
 
 public sealed class Player : Component, Component.INetworkListener
@@ -507,9 +507,14 @@ public sealed class Player : Component, Component.INetworkListener
 	private void IncreaseMoney(Guid InKillerOwnerId, bool InIsPlayerKill, double InMoneyMultiplier)
 	{
 		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
-		if (InIsPlayerKill) AddMoney(InMoneyMultiplier); // When player gets killed its entire money sum not multiplier.
+		if (InIsPlayerKill)
+		{
+			Stats.Increment("kill_one_player", 1);
+			AddMoney(InMoneyMultiplier); // When player gets killed its entire money sum not multiplier.
+		}
 		else
 		{
+			Stats.Increment("thrown_boxes_to_aliens", 1);
 			TimeSinceLastBoxConsumed = 0f;
 			AddMoney(AdditionalMoneyAmount * (InMoneyMultiplier + AlienBoxComboMultiplier));
 			TimeSinceLastDash += DashCooldownReductionPerBox;
