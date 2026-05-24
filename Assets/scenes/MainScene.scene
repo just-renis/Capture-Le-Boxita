@@ -259,7 +259,7 @@
         {
           "__type": "Sandbox.UI.UpgradesMenu",
           "__guid": "2e7713f4-f662-4d73-89a0-bf19cdd61224",
-          "__enabled": false,
+          "__enabled": true,
           "Flags": 0,
           "DebugMoneyAmount": 100000,
           "OnComponentDestroy": null,
@@ -905,13 +905,12 @@
               "UpgradeName": "AlienComboMaxMultiplier2",
               "UpgradeValue": "AlienComboMaxMultiplier",
               "DefaultAttribute": "RequiredBoxesAmountForAlienBoxCombo1",
-              "MaxAmount": 3,
+              "MaxAmount": 2,
               "Name": "Alien Combo Max Multiplier",
               "Description": "Every {1}th box thrown into alien in the span of 5 seconds between boxes get additional 0.1x money multiplier up to upgraded value, each upgrade adds {0}x maximum.",
               "Costs": [
                 2000,
-                3400,
-                5000
+                3500
               ],
               "ParentsUpgradeNames": [
                 "ChanceToSpawnRuby1"
@@ -1035,7 +1034,8 @@
           "DefaultAttributes": {
             "RequiredBoxesAmountForAlienBoxCombo1": 5,
             "MoneyLossPercentageToAliens": 25,
-            "DashCooldown": 8
+            "DashCooldown": 8,
+            "AlienBoxComboMaxMultiplier": 0.5
           },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -1071,7 +1071,7 @@
             "LessMoneyLoss2": 5,
             "DashImpulseStrength2": 3,
             "DashCooldown2": 4,
-            "AlienComboMaxMultiplier2": 3,
+            "AlienComboMaxMultiplier2": 2,
             "AlienComboForMovementSpeed2": 6,
             "MovementSpeed3": 3,
             "BoxThrowImpulseStrength3": 5,
@@ -1122,7 +1122,7 @@
         {
           "__type": "Sandbox.UI.SettingsMenu",
           "__guid": "7d8af88c-9b62-43fd-8ba6-1c51c9b82cba",
-          "__enabled": false,
+          "__enabled": true,
           "Flags": 0,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -1168,39 +1168,7 @@
           "SpawnPoints": [
             {
               "_type": "gameobject",
-              "go": "12383a2e-23a8-40d0-b204-0f95e967961d"
-            },
-            {
-              "_type": "gameobject",
-              "go": "e6c0d654-5d5b-421d-9410-ee3330554a36"
-            },
-            {
-              "_type": "gameobject",
-              "go": "8fadc09b-72bc-4154-bf02-104cea4dbb28"
-            },
-            {
-              "_type": "gameobject",
-              "go": "45ca7a13-cc7c-4297-9200-c029ae46a726"
-            },
-            {
-              "_type": "gameobject",
-              "go": "60e2501e-1d8a-42d8-8a96-e1568b2c359c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "427a6cdd-e21c-4e00-9c66-dbabadb85845"
-            },
-            {
-              "_type": "gameobject",
-              "go": "c93f43ed-c21c-4174-9cf9-30ca8a2ef62c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "8e375944-419f-485e-b4a2-e30220db684c"
-            },
-            {
-              "_type": "gameobject",
-              "go": "b7c86d35-d109-4f2f-969d-81b117f613a7"
+              "go": "c69c7c1d-15d0-4eba-b352-dd589290d38b"
             }
           ],
           "StartServer": true
@@ -1302,6 +1270,38 @@
       "__PrefabIdToInstanceId": {
         "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "8fadc09b-72bc-4154-bf02-104cea4dbb28",
         "0f93a686-207a-4820-8e27-e7c1154e98a2": "31ecc22b-f127-4787-bc6e-5f0c0d8a4795"
+      }
+    },
+    {
+      "__guid": "c69c7c1d-15d0-4eba-b352-dd589290d38b",
+      "__version": 2,
+      "__Prefab": "prefabs/spawnpoint.prefab",
+      "__PrefabInstancePatch": {
+        "AddedObjects": [],
+        "RemovedObjects": [],
+        "PropertyOverrides": [
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
+            },
+            "Property": "Name",
+            "Value": "SAFESPOINT"
+          },
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "b967e3c8-7bcf-47f6-bb29-6f60243adc99"
+            },
+            "Property": "Position",
+            "Value": "6364.0332,6645.27686,1201.42358"
+          }
+        ],
+        "MovedObjects": []
+      },
+      "__PrefabIdToInstanceId": {
+        "b967e3c8-7bcf-47f6-bb29-6f60243adc99": "c69c7c1d-15d0-4eba-b352-dd589290d38b",
+        "0f93a686-207a-4820-8e27-e7c1154e98a2": "7f8930e4-0b44-4b69-8869-ed01578c9195"
       }
     },
     {
@@ -26257,6 +26257,117 @@
       "Children": []
     },
     {
+      "__guid": "618b2151-8ef0-4546-bd09-b80dd3deb2b9",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "CooldownText",
+      "Position": "7440,5939.9082,1188.08569",
+      "Rotation": "0,0,1,-4.37113883E-08",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.WorldPanel",
+          "__guid": "1f6fcf8f-a2b4-4cfb-b5ff-2a7746e4a719",
+          "__enabled": true,
+          "Flags": 0,
+          "HorizontalAlign": "Center",
+          "InteractionRange": 1000,
+          "LookAtCamera": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "PanelSize": "6000,2000",
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderScale": 8,
+          "VerticalAlign": "Center"
+        },
+        {
+          "__type": "Sandbox.UI.VotingCooldownText",
+          "__guid": "4b77d54b-3042-4c50-ba6b-cbbbe99fe757",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "e984dae4-401d-4418-8318-9bc7f632ec9e",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "BoardText",
+      "Position": "7440,6192.92529,1362.70569",
+      "Rotation": "0,0,1,-4.37113883E-08",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.WorldPanel",
+          "__guid": "748a7184-9264-4541-a01d-2d34f99d0f1b",
+          "__enabled": true,
+          "Flags": 0,
+          "HorizontalAlign": "Center",
+          "InteractionRange": 1000,
+          "LookAtCamera": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "PanelSize": "10000,3000",
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderScale": 8,
+          "VerticalAlign": "Center"
+        },
+        {
+          "__type": "Sandbox.UI.WorldText",
+          "__guid": "4d8e5c6c-e29e-4144-be7e-5867c842c3e8",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Text": "Reset all aliens and boxes"
+        }
+      ],
+      "Children": []
+    },
+    {
       "__guid": "fff6c61a-2848-4639-ae9a-8a53df59b322",
       "__version": 2,
       "Flags": 0,
@@ -26300,63 +26411,7 @@
           "Tint": "1,1,1,1"
         }
       ],
-      "Children": [
-        {
-          "__guid": "618b2151-8ef0-4546-bd09-b80dd3deb2b9",
-          "__version": 2,
-          "Flags": 0,
-          "Name": "CooldownText",
-          "Position": "-32.6103516,-7.34169912,-10.5482788",
-          "Rotation": "0,0,1,-4.37113883E-08",
-          "Scale": "1,0.0500000007,0.100000001",
-          "Tags": "",
-          "Enabled": true,
-          "NetworkMode": 2,
-          "NetworkFlags": 0,
-          "NetworkOrphaned": 0,
-          "NetworkTransmit": true,
-          "OwnerTransfer": 1,
-          "Components": [
-            {
-              "__type": "Sandbox.WorldPanel",
-              "__guid": "1f6fcf8f-a2b4-4cfb-b5ff-2a7746e4a719",
-              "__enabled": true,
-              "Flags": 0,
-              "HorizontalAlign": "Center",
-              "InteractionRange": 1000,
-              "LookAtCamera": false,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "PanelSize": "6000,2000",
-              "RenderOptions": {
-                "GameLayer": true,
-                "OverlayLayer": false,
-                "BloomLayer": false,
-                "AfterUILayer": false
-              },
-              "RenderScale": 1,
-              "VerticalAlign": "Center"
-            },
-            {
-              "__type": "Sandbox.UI.VotingCooldownText",
-              "__guid": "4b77d54b-3042-4c50-ba6b-cbbbe99fe757",
-              "__enabled": true,
-              "Flags": 0,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null
-            }
-          ],
-          "Children": []
-        }
-      ]
+      "Children": []
     },
     {
       "__guid": "0c71476c-e8d0-432e-a4dc-a366a9165c13",

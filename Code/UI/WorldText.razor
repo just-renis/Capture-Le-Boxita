@@ -1,0 +1,32 @@
+@using Sandbox.Managers
+@inherits PanelComponent
+
+<root class="@(IsVisible ? "" : "hidden")">
+	@if (IsVisible)
+	{
+		<label>@Text</label>
+	}
+</root>
+
+@code
+{
+	private bool IsVisible;
+	private int CullingDistanceHandle;
+	[Property] private string Text { get; set; } = "Reset all aliens and boxes";
+	
+	protected override int BuildHash() => System.HashCode.Combine(Text, IsVisible);
+
+	protected override void OnStart()
+	{
+		CullingDistanceHandle = TimerManager.AddTimer(CullingDistanceHandle, 1f, true, CheckIfInCullingDistance);
+	}
+	protected override void OnDestroy()
+	{
+		TimerManager.ClearTimer(CullingDistanceHandle);
+	}
+
+	private void CheckIfInCullingDistance()
+	{
+		IsVisible = Vector3.DistanceBetweenSquared(WorldPosition, EventManager.TriggerGetPlayerLocation()) < 5000000f;
+	}
+}

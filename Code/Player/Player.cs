@@ -240,11 +240,12 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void ProcessKeyboardInput()
 	{
+		if (Input.Pressed("Score")) UiManager.ChangeUiState(EUi.UpgradesMenu);
+		if (Input.EscapePressed) ProcessEscape();
+		if (UiManager.IsAnyUiOpen()) return;
 		ProcessMovementInput();
 		ProcessCameraLook();
-		if (Input.Pressed("Score")) UiManager.ChangeUiState(EUi.UpgradesMenu);
 		if (Input.Pressed("Dash") && Data?.GetUpgradeAmount(EUpgradeName.UnlockDashAbility) == 1) Dash();
-		if (Input.EscapePressed) ProcessEscape();
 		if (Input.Pressed("Interact")) EventManager.TriggerPlayerInteractClicked();
 		if (Input.Pressed("VoteYes")) EventManager.TriggerPlayerVoteSubmit(true);
 		else if (Input.Pressed("VoteNo")) EventManager.TriggerPlayerVoteSubmit(false);
@@ -268,6 +269,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	private void ProcessMouseInput()
 	{
+		if (UiManager.IsAnyUiOpen()) return;
 		ProcessMouseRightClickInput();
 		ProcessMouseLeftClickInput();
 		ProcessUnstuckInput();
@@ -407,12 +409,12 @@ public sealed class Player : Component, Component.INetworkListener
 		GlobalData GlobalInstance = GlobalData.Instance;
 		switch (InUpgradeName)
 		{
-			case EUpgradeName.LessMoneyLoss1: 
+			case EUpgradeName.LessMoneyLoss1: case EUpgradeName.LessMoneyLoss2: 
 				float LessMoneyLoss1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss1), EUpgradeName.LessMoneyLoss1);
 				float LessMoneyLoss2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.LessMoneyLoss2), EUpgradeName.LessMoneyLoss2);
 				MoneyLossToAliensPercentage = (GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.MoneyLossPercentageToAliens) - LessMoneyLoss1 - LessMoneyLoss2) * 0.01f; break;
 			case EUpgradeName.MoreMoney1: AdditionalMoneyAmount = 1 + (int)GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MoreMoney1), EUpgradeName.MoreMoney1); break;
-			case EUpgradeName.BoxGrabRange1: 
+			case EUpgradeName.BoxGrabRange1: case EUpgradeName.BoxGrabRange2:
 				float BoxGrabRange1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange1), EUpgradeName.BoxGrabRange1);
 				float BoxGrabRange2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxGrabRange2), EUpgradeName.BoxGrabRange2);
 				GrabDistance = DefaultGrabDistance * (1f + (BoxGrabRange1 + BoxGrabRange2) * 0.01f); break;
@@ -422,25 +424,25 @@ public sealed class Player : Component, Component.INetworkListener
 				float MovementSpeed3 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.MovementSpeed3), EUpgradeName.MovementSpeed3);
 				MovementSpeed = DefaultMovementSpeed * (1f + (MovementSpeed1 + MovementSpeed2 + MovementSpeed3) * 0.01f);
 				break;
-			case EUpgradeName.DashCooldown1:
+			case EUpgradeName.DashCooldown1: case EUpgradeName.DashCooldown2:
 				float DashCooldown1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldown1), EUpgradeName.DashCooldown1);
 				float DashCooldown2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldown2), EUpgradeName.DashCooldown2);
-				DashCooldown = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - DashCooldown1 - DashCooldown2; break;
-			case EUpgradeName.DashImpulseStrength1: 
+				DashCooldown = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.DashCooldown) - (DashCooldown1 + DashCooldown2); break;
+			case EUpgradeName.DashImpulseStrength1: case EUpgradeName.DashImpulseStrength2:
 				float DashImpulseStrength1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength1), EUpgradeName.DashImpulseStrength1);
 				float DashImpulseStrength2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashImpulseStrength2), EUpgradeName.DashImpulseStrength2);
 				DashImpulseStrength = DefaultDashImpulseStrength * (1f + (DashImpulseStrength1 + DashImpulseStrength2) * 0.01f); break;
-			case EUpgradeName.BoxThrowImpulseStrength1: 
+			case EUpgradeName.BoxThrowImpulseStrength1: case EUpgradeName.BoxThrowImpulseStrength2: case EUpgradeName.BoxThrowImpulseStrength3:
 				float BoxThrowImpulseStrength1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength1), EUpgradeName.BoxThrowImpulseStrength1);
 				float BoxThrowImpulseStrength2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength2), EUpgradeName.BoxThrowImpulseStrength2);
 				float BoxThrowImpulseStrength3 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.BoxThrowImpulseStrength3), EUpgradeName.BoxThrowImpulseStrength3);
 				BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength * (1f + (BoxThrowImpulseStrength1 + BoxThrowImpulseStrength2 + BoxThrowImpulseStrength3) * 0.01f); break;
-			case EUpgradeName.AlienComboMaxMultiplier1: 
+			case EUpgradeName.AlienComboMaxMultiplier1: case EUpgradeName.AlienComboMaxMultiplier2:
 				float AlienBoxComboMaxMultiplier1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier1), EUpgradeName.AlienComboMaxMultiplier1);
 				float AlienBoxComboMaxMultiplier2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMaxMultiplier2), EUpgradeName.AlienComboMaxMultiplier2);
-				AlienBoxComboMaxMultiplier = AlienBoxComboMaxMultiplier1 + AlienBoxComboMaxMultiplier2; break;
+				AlienBoxComboMaxMultiplier = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.AlienBoxComboMaxMultiplier) + AlienBoxComboMaxMultiplier1 + AlienBoxComboMaxMultiplier2; break;
 			case EUpgradeName.AlienComboMultiplierBoxReduction1: RequiredBoxesAmountForAlienBoxCombo = (int)GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1) - (int)GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.AlienComboMultiplierBoxReduction1), EUpgradeName.AlienComboMultiplierBoxReduction1); break;
-			case EUpgradeName.DashCooldownReductionPerBox1: 
+			case EUpgradeName.DashCooldownReductionPerBox1: case EUpgradeName.DashCooldownReductionPerBox2:
 				float DashCooldownReductionPerBox1 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox1), EUpgradeName.DashCooldownReductionPerBox1);
 				float DashCooldownReductionPerBox2 = GlobalInstance.GetProcessedUpgradeValue(Data.GetUpgradeAmount(EUpgradeName.DashCooldownReductionPerBox2), EUpgradeName.DashCooldownReductionPerBox2);
 				DashCooldownReductionPerBox = DashCooldownReductionPerBox1 + DashCooldownReductionPerBox2; break;
@@ -456,6 +458,7 @@ public sealed class Player : Component, Component.INetworkListener
 		MovementSpeed = DefaultMovementSpeed;
 		BoxThrowImpulseStrength = DefaultBoxThrowImpulseStrength;
 		RequiredBoxesAmountForAlienBoxCombo = (int)GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.RequiredBoxesAmountForAlienBoxCombo1);
+		AlienBoxComboMaxMultiplier = GlobalInstance.GetDefaultAttributeValue(EDefaultAttribute.AlienBoxComboMaxMultiplier);
 		Dictionary<EUpgradeName, int> OwnedUpgrades = Data?.GetOwnedUpgrades();
 		if (OwnedUpgrades == null) return;
 		foreach (KeyValuePair<EUpgradeName, int> Upgrade in OwnedUpgrades) UpgradePurchased(Upgrade.Key);

@@ -3,8 +3,8 @@
 @using Sandbox.Managers
 @inherits PanelComponent
 
-<root>
-	@if (GetPlayerData() != null)
+<root class="@(IsOpen ? "" : "hidden")">
+	@if (IsOpen && GetPlayerData() != null)
 	{
 		<div class="menu-box">
 			<div class="x-close" onclick="@CloseMenu">X</div>
@@ -31,13 +31,14 @@
 
 @code
 {
+	private bool IsOpen;
 	private PlayerData Data; 
 
 	protected override int BuildHash()
 	{
 		PlayerData CurrentData = GetPlayerData();
 		if (CurrentData == null) return -1;
-		return System.HashCode.Combine(CurrentData.GetName(), CurrentData.GetShowNameTag());
+		return System.HashCode.Combine(CurrentData.GetName(), CurrentData.GetShowNameTag(), IsOpen);
 	}
 	protected override void OnAwake()
 	{
@@ -57,8 +58,8 @@
 	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
 		if (InUi != EUi.SettingsMenu) return;
-		Enabled = RenderState;
-		Panel?.Style.PointerEvents = Enabled ? PointerEvents.All : PointerEvents.None;
+		IsOpen = RenderState;
+		Panel?.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
 	}
 	private void ToggleNameTag()
 	{

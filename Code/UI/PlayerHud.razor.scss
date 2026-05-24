@@ -35,6 +35,38 @@ PlayerHud
       text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
     }
   }
+  // -----------------------------------------------------------------UPGRADES AVAILABLE--------------------------------------------------------------
+  .upgrade-indicator
+  {
+    position: absolute;
+    top: 115px;
+    left: 32px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 6px 12px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    border-left: 3px solid #00ffcc;
+    gap: 6px;
+    .glow-dot
+    {
+      width: 8px;
+      height: 8px;
+      background-color: #00ffcc;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00ffcc;
+    }
+    .upgrade-text
+    {
+      font-size: 18px;
+      font-weight: 900;
+      color: #00ffcc;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+  }
   // -----------------------------------------------------------------UNSTUCK--------------------------------------------------------------
   > .Unstuck
   {
@@ -278,6 +310,26 @@ PlayerHud
             width: 20px;
             text-align: right;
           }
+        }
+      }
+      .timer-text
+      {
+        font-size: 16px;
+        font-weight: 900;
+        color: #4b89ff;
+      }
+      .timer-bar-wrapper
+      {
+        width: 100%;
+        height: 3px;
+        background-color: rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+
+        .timer-bar-fill
+        {
+          height: 100%;
+          background-color: #4b89ff;
+          transition: width 0.1s linear;
         }
       }
     }

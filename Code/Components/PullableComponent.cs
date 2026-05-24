@@ -5,7 +5,6 @@ namespace Sandbox.Components;
 
 public class PullableComponent : Component, Component.ICollisionListener
 {
-	[Property] private bool IsInAirCheckRequired { get; set; }
 	[Sync] private bool IsOwnerHolding { get; set; }
 	[Sync] private float LastOwnerTime { get; set; }
 	[Sync] private float MoneyMultiplier { get; set; }
@@ -23,11 +22,6 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private GameObject AlienShipRef;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsPulled() { return IsPulled; }
-	public bool IsInAir()
-	{
-		if (Rigidbody == null) return false;
-		return !IsInAirCheckRequired || LastOwnedBy != Guid.Empty || MathF.Abs(Rigidbody.Velocity.z) > 0.1f;
-	}
 	public float GetMoneyMultiplier(float InAlienScale)
 	{
 		float Stacks = (float)Math.Floor(InAlienScale / 0.5f);

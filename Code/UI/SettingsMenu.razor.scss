@@ -138,4 +138,12 @@ SettingsMenu
       }
     }
   }
+  &.hidden
+  {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    backdrop-filter: blur(0px);
+    background-color: transparent;
+  }
 }

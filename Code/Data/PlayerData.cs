@@ -7,7 +7,7 @@ using System.Text;
 
 public sealed class PlayerData
 {
-	public bool ShowNameTag { get; set; } = true;
+	public bool ShowNameTag { get; set; }
 	public int CurrentVersion { get; set; } = LiveVersion;
 	public double Money { get; set; }
 	public double TotalMoneyEarned { get; set; }
@@ -16,7 +16,7 @@ public sealed class PlayerData
 	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; } = new();
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
-    private const int LiveVersion = 1;
+    private const int LiveVersion = 2;
 
     public bool GetShowNameTag() { return ShowNameTag; }
     public double GetMoney() { return Money; }
@@ -76,7 +76,7 @@ public sealed class PlayerData
     }
     public static PlayerData Load()
     {
-        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<EUpgradeName, int>(), ShowNameTag = true, Name = "I Dont Know My Name", CurrentVersion = LiveVersion };
+        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<EUpgradeName, int>(), ShowNameTag = false, Name = "I Dont Know My Name", CurrentVersion = LiveVersion };
         if (!FileSystem.Data.FileExists("save.dat")) return DefaultData;
         try
         {
@@ -126,6 +126,10 @@ public sealed class PlayerData
 	    bool NeedsSave = false;
 	    if (InData.CurrentVersion < LiveVersion)
 	    {
+		    if (InData.OwnedUpgrades.TryGetValue(EUpgradeName.AlienComboMaxMultiplier2, out int CurrentLevel))
+		    {
+				if (CurrentLevel > 2) InData.OwnedUpgrades[EUpgradeName.AlienComboMaxMultiplier2] = CurrentLevel - 1;
+		    }
 		    InData.CurrentVersion = LiveVersion;
 		    NeedsSave = true;
 	    }

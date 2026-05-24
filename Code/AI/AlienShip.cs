@@ -16,7 +16,6 @@ public sealed class AlienShip : Component, IPoolObject
 	private bool IsLogicInitialized;
 	public static int LiveCount { get; private set; }
 	private int MoveHandle;
-	private int CheckIsInAirObjectsHandle;
 	private int FlyUpwardsHandle;
 	private int FlyDownwardsHandle;
 	private int SmallFlyUpwardsHandle;
@@ -30,7 +29,6 @@ public sealed class AlienShip : Component, IPoolObject
 	private Vector2 Direction;
 	private BoxCollider Collider;
 	private CustomTrigger BeamCollider;
-	private readonly List<PullableComponent> ImmovableBeamObjects = [];
 	private readonly HashSet<PullableComponent> InsideBeamObjects = [];
 	private readonly Dictionary<Guid, float> RecentlyTeleported = [];
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
@@ -55,7 +53,6 @@ public sealed class AlienShip : Component, IPoolObject
 		BeamCollider?.OnEnter -= BeamEntered;
 		BeamCollider?.OnExit -= BeamExit;
 		TimerManager.ClearTimer(MoveHandle);
-		TimerManager.ClearTimer(CheckIsInAirObjectsHandle);
 		TimerManager.ClearTimer(SmallFlyUpwardsHandle);
 		TimerManager.ClearTimer(FlyUpwardsHandle);
 		TimerManager.ClearTimer(FlyDownwardsHandle);
@@ -70,7 +67,6 @@ public sealed class AlienShip : Component, IPoolObject
 		ChangeDirection();
 		SetupBeamCollider();
 		MoveHandle = TimerManager.AddTimer(MoveHandle, 0.05f, true, Move);
-		CheckIsInAirObjectsHandle = TimerManager.AddTimer(CheckIsInAirObjectsHandle, 0.1f, true, CheckIsInAirObjects);
 		SmallFlyUpwardsHandle = TimerManager.AddTimer(SmallFlyUpwardsHandle, 0.25f, true, SmallFlyUpProcess);
 		if (IsFlyUpProcessInProgress) FlyUpwardsHandle = TimerManager.AddTimer(FlyUpwardsHandle, FpsTime, true, FlyUpProcess);
 		if (IsFlyDownProcessInProgress) FlyDownwardsHandle = TimerManager.AddTimer(FlyDownwardsHandle, FpsTime, true, FlyDownProcess);
@@ -80,16 +76,6 @@ public sealed class AlienShip : Component, IPoolObject
 		ChangeDirectionTimer -= 0.05f;
 		if (ChangeDirectionTimer <= 0f) ChangeDirection();
 		WorldPosition += new Vector3(Direction * MoveSpeed * 0.05f);
-	}
-	private void CheckIsInAirObjects()
-	{
-		for (int i = ImmovableBeamObjects.Count - 1; i >= 0; i--)
-		{
-			PullableComponent Pullable = ImmovableBeamObjects[i];
-			if (!Pullable.IsInAir()) continue;
-			SetPullOnObject(Pullable, true);
-			ImmovableBeamObjects.RemoveAt(i);
-		}
 	}
 	private void ChangeDirection()
 	{
@@ -139,7 +125,6 @@ public sealed class AlienShip : Component, IPoolObject
 		foreach (PullableComponent Pullable in InsideBeamObjects.ToList().Where(Pullable => Pullable.IsValid()))
 		{
 			SetPullOnObject(Pullable, false);
-			ImmovableBeamObjects.Remove(Pullable);
 			InsideBeamObjects.Remove(Pullable);
 		}
 		Collider?.Enabled = false;
@@ -187,7 +172,6 @@ public sealed class AlienShip : Component, IPoolObject
 		PullableComponent Pullable = InGameObject.Root.GetComponent<PullableComponent>(true);
 		if (Pullable == null) return;
 		if (Pullable.GetIsPulled()) SetPullOnObject(Pullable, false);
-		ImmovableBeamObjects.Remove(Pullable);
 		InsideBeamObjects.Remove(Pullable);
 	}
 	private void BeamEntered(GameObject InGameObject)
@@ -195,8 +179,7 @@ public sealed class AlienShip : Component, IPoolObject
 		if (InGameObject.Tags.Has("safe")) return;
 		PullableComponent Pullable = InGameObject.Root.GetComponent<PullableComponent>();
 		if (Pullable == null) return;
-		if (!Pullable.IsInAir()) ImmovableBeamObjects.Add(Pullable);
-		else SetPullOnObject(Pullable, true);
+		SetPullOnObject(Pullable, true);
 		InsideBeamObjects.Add(Pullable);
 	}
 	private void SetupBoxCollider()

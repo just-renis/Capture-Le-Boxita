@@ -4,6 +4,8 @@ namespace Sandbox.Managers;
 public sealed class UiManager(Scene Scene) : GameObjectSystem(Scene)
 {
 	private static readonly Dictionary<EUi, bool> UI_STATES = new();
+
+	public static bool IsAnyUiOpen() { return UI_STATES.Values.Any(State => State); }
 	
 	public static void ChangeUiState(EUi InUi)
 	{

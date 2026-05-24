@@ -8,7 +8,6 @@ UpgradesMenu
   font-family: Roboto, sans-serif;
   color: white;
   background-color: #0a0a0a;
-  display: flex;
   flex-direction: column;
   z-index: 100;
 }
@@ -352,6 +351,28 @@ UpgradesMenu .stat-row
   font-size: 24px;
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 12px;
+}
+
+UpgradesMenu .text-yellow
+{
+  color: #facc15;
+}
+
+UpgradesMenu .text-red
+{
+  color: #fa1537;
+}
+
+UpgradesMenu .text-green
+{
+  color: #2cfa15;
+}
+
+.hidden
+{
+  display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 UpgradesMenu .buy-btn

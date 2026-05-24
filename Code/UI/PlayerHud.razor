@@ -1,5 +1,4 @@
 @using Sandbox;
-@using Sandbox.Enums
 @using Sandbox.Managers
 @inherits PanelComponent
 
@@ -34,6 +33,9 @@
 						<span class="count-val">@NoCount</span>
 					</div>
 				</div>
+				<div class="timer-bar-wrapper">
+					<div class="timer-bar-fill" style="width: @(System.Math.Clamp((1f - TimeSinceVoteStart / VoteDuration) * 100f, 0f, 100f))%;"></div>
+				</div>
 			</div>
 		</div>
 		@if (IsConnectionBad)
@@ -67,6 +69,13 @@
 				<span class="value">$@Money.ToString("N0")</span>
 			</div>
 		</div>
+		@if (PurchasableAmountUpgrades > 0)
+		{
+			<div class="upgrade-indicator">
+				<div class="glow-dot animate-pulse"></div>
+				<span class="upgrade-text">UPGRADE AVAILABLE: @PurchasableAmountUpgrades</span>
+			</div>
+		}
 		@if (IsStuckPopupEnabled)
 		{
 			<div class="Unstuck">
@@ -100,6 +109,7 @@
 	private bool IsAlienBoxComboMultiplierAvailable;
 	private int RequestPlayerRefHandle;
 	private int CheckLatencyHandle;
+	private int PurchasableAmountUpgrades;
 	private float AlienBoxComboMultiplier;
 	private double Money;
 	private Player.Player PlayerRef;
@@ -130,6 +140,8 @@
 		Hc.Add(YesCount);
 		Hc.Add(NoCount);
 		Hc.Add(IsConnectionBad);
+		Hc.Add(PurchasableAmountUpgrades);
+		Hc.Add(TimeSinceVoteStart);
 		return Hc.ToHashCode();
 	}
 	
@@ -140,6 +152,7 @@
 		EventManager.OnAlienBoxComboChanged += SetAlienBoxCombo;
 		EventManager.OnVotingStarted += StartVoteWindow;
 		EventManager.OnPlayerVoteSubmitted += SubmitLocalVote;
+		EventManager.OnUpgradesAvailableToBePurchased += SetPurchasableUpgradesAvailable;
 		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
 		CheckLatencyHandle = TimerManager.AddTimer(CheckLatencyHandle, 1f, true, CheckLatency);
 	}
@@ -150,6 +163,7 @@
 		EventManager.OnAlienBoxComboChanged -= SetAlienBoxCombo;
 		EventManager.OnVotingStarted -= StartVoteWindow;
 		EventManager.OnPlayerVoteSubmitted -= SubmitLocalVote;
+		EventManager.OnUpgradesAvailableToBePurchased -= SetPurchasableUpgradesAvailable;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
 	}
 	protected override void OnUpdate()
@@ -161,6 +175,9 @@
 		if (Networking.IsHost) ResolveFinalVote();
 	}
 
+	private void SetPurchasableUpgradesAvailable(int InAmount) { PurchasableAmountUpgrades = InAmount; }
+	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
+	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
 	private void CheckLatency()
 	{
 		if (Connection.Local == null) return;
@@ -184,8 +201,6 @@
 		HasVoted = true;
 		HostProcessPlayerVote(InVoteOption);
 	}
-	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
-	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
 	private void SetAlienBoxCombo(float InAlienBoxComboMultiplier)
 	{
 		AlienBoxComboMultiplier = InAlienBoxComboMultiplier + 1f;

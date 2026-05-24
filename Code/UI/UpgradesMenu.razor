@@ -5,8 +5,8 @@
 @using System;
 @using Sandbox.Data
 
-<root>
-	@if (GetPlayerData() != null)
+<root class="@(IsOpen ? "" : "hidden")">
+	@if (IsOpen && GetPlayerData() != null)
 	{
 		<div class="wrapper">
 			<!-- Header -->
@@ -118,21 +118,19 @@
 						{
 							<div class="stat-row">
 								<span>CURRENT VALUE</span>
-								<span class="text-white">@GetFormattedUpgradeValue(SelectedUpgrade.UpgradeValue)</span>
+								<span class="text-yellow">@GetFormattedUpgradeValue(SelectedUpgrade.UpgradeValue)</span>
+							</div>
+						}
+						@if (CanBuyMore(SelectedUpgrade))
+						{
+							<div class="stat-row">
+								<span>UPGRADE COST</span>
+								<span class="@(CanAfford(SelectedUpgrade) || GetIsOwned(SelectedUpgradeName) ? "text-green" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
 							</div>
 						}
 						<div class="stat-row">
-							<span>UPGRADE COST</span>
-							<span class="@(CanAfford(SelectedUpgrade) || GetIsOwned(SelectedUpgradeName) ? "text-white" : "text-red")">$@GetCurrentCost(SelectedUpgrade)</span>
-						</div>
-						<div class="stat-row">
 							<span>LEVEL</span>
-							<span class="text-white">@GetLevel(SelectedUpgradeName) / @SelectedUpgrade.MaxAmount</span>
-						</div>
-						<div class="divider"></div>
-						<div class="stat-row">
-							<span>REQUIREMENTS</span>
-							<span class="text-white">@(SelectedUpgrade.ParentsUpgradeNames.Count > 0 ? $"{SelectedUpgrade.ParentsUpgradeNames.Count} Links" : "None")</span>
+							<span class="text-yellow">@GetLevel(SelectedUpgradeName) / @SelectedUpgrade.MaxAmount</span>
 						</div>
 						<div class="buy-section">
 							@if (!CanBuyMore(SelectedUpgrade))
@@ -157,6 +155,7 @@
 {
 	[Property] private List<Upgrade> Upgrades { get; set; } = [];
 	[Property, ImageAssetPath] private string QuestionMarkIcon { get; set; }
+	private bool IsOpen;
 	private bool IsDragging;
     private EUpgradeName SelectedUpgradeName;
     private float CanvasX = -225f;
@@ -174,15 +173,21 @@
     protected override void OnAwake()
     {
 	    EventManager.OnUiStateChanged += UiStateChanged;
+	    EventManager.OnMoneyChanged += OnMoneyChanged;
+    }
+    protected override void OnStart()
+    {
+	    CalculatePurchasableUpgrades();
     }
     protected override void OnDestroy()
     {
 	    EventManager.OnUiStateChanged -= UiStateChanged;
+	    EventManager.OnMoneyChanged -= OnMoneyChanged;
     }
     protected override int BuildHash()
     {
 	    if (GetPlayerData()?.GetOwnedUpgrades() == null) return -1;
-	    return HashCode.Combine(Data.GetMoney(), SelectedUpgradeName, Scale, CanvasX, CanvasY, Data.GetOwnedUpgrades().Count, IsDragging);
+	    return HashCode.Combine(Data.GetMoney(), SelectedUpgradeName, Scale, CanvasX, CanvasY, Data.GetOwnedUpgrades().Count, IsDragging, IsOpen);
     }
     protected override void OnUpdate()
     {
@@ -271,7 +276,19 @@
 		Data ??= EventManager.TriggerGetPlayerData();
 		return Data;
 	}
-	
+
+	private void OnMoneyChanged(double InMoney) { CalculatePurchasableUpgrades(); }
+	private void CalculatePurchasableUpgrades()
+	{
+		if (GetPlayerData() == null) return;
+		int PurchasableCount = 0;
+		foreach (Upgrade Node in Upgrades)
+		{
+			if (Node == null) continue;
+			if (GetIsAvailable(Node.UpgradeName) && CanBuyMore(Node) && CanAfford(Node)) PurchasableCount++;
+		}
+		EventManager.TriggerUpgradesAvailableToBePurchased(PurchasableCount);
+	}
 	private void OnMouseDragged()
 	{
 		IsDragging = true;
@@ -307,13 +324,14 @@
 		Data.SubtractMoney(GetCurrentCost(SelectedUpgrade));
 		Data.BuyUpgrade(SelectedUpgradeName);
 		SoundManager.Instance?.Play2D(ESound.BuyUpgrade);
+		CalculatePurchasableUpgrades();
 	}
 	private void CloseMenu() { UiManager.ChangeUiState(EUi.UpgradesMenu); }
 	private void UiStateChanged(EUi InUi, bool RenderState)
 	{
 		if (InUi != EUi.UpgradesMenu) return;
-		Enabled = RenderState;
-		Panel?.Style.PointerEvents = Enabled ? PointerEvents.All : PointerEvents.None;
+		IsOpen = RenderState;
+		Panel?.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
 	}
 	private string GetDynamicDescription(Upgrade InUpgrade)
 	{
