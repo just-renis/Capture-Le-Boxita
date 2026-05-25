@@ -6,6 +6,65 @@ PlayerHud
   right: 0;
   bottom: 0;
   font-family: Poppins;
+  // -----------------------------------------------------------------QUESTS SIDEBAR-----------------------------------------------------------
+  > .quests-container
+  {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    width: 350px;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 90;
+    .quest-item
+    {
+      flex-direction: column;
+      background-color: rgba(12, 15, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-left: 4px solid #00ffcc;
+      padding: 12px;
+      border-radius: 4px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      gap: 6px;
+      .quest-meta
+      {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .quest-title
+        {
+          font-size: 16px;
+          font-weight: 700;
+          color: #e2e8f0;
+          max-width: 250px;
+          white-space: normal;
+        }
+        .quest-counter
+        {
+          font-size: 15px;
+          font-weight: 900;
+          color: #00ffcc;
+          font-family: monospace;
+        }
+      }
+      .quest-progress-bg
+      {
+        width: 100%;
+        height: 6px;
+        background-color: rgba(255, 255, 255, 0.06);
+        border-radius: 2px;
+        overflow: hidden;
+        .quest-progress-fill
+        {
+          height: 100%;
+          background-color: #00ffcc;
+          transition: width 0.25s ease-out;
+          min-width: 0;
+        }
+      }
+    }
+  }
   // -----------------------------------------------------------------MONEY--------------------------------------------------------------
   > .Money
   {
@@ -107,7 +166,7 @@ PlayerHud
   > .AlienBoxComboMultiplier 
   {
     position: absolute;
-    top: 250px;
+    top: 330px;
     right: 50px;
     flex-direction: column;
     align-items: flex-end;

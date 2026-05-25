@@ -8,15 +8,32 @@ using System.Text;
 public sealed class PlayerData
 {
 	public bool ShowNameTag { get; set; }
-	public int CurrentVersion { get; set; } = LiveVersion;
+	public int CurrentVersion { get; set; }
 	public double Money { get; set; }
 	public double TotalMoneyEarned { get; set; }
 	public string Name { get; set; }
 	public string Checksum { get; set; }
-	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; } = new();
+	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
+	public Dictionary<EQuest, int> QuestsProgress { get; set; }
+	public Dictionary<EQuest, bool> CompletedQuests { get; set; }
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
-    private const int LiveVersion = 2;
+    private const int LiveVersion = 3;
+    
+    public PlayerData()
+    {
+	    Name = "I Dont Know My Name";
+	    ShowNameTag = false;
+	    CurrentVersion = LiveVersion;
+	    OwnedUpgrades = new Dictionary<EUpgradeName, int>();
+	    QuestsProgress = new Dictionary<EQuest, int>();
+	    CompletedQuests = new Dictionary<EQuest, bool>();
+	    foreach (EQuest QuestType in Enum.GetValues<EQuest>())
+	    {
+		    QuestsProgress.TryAdd(QuestType, 0);
+		    CompletedQuests.TryAdd(QuestType, false);
+	    }
+    }
 
     public bool GetShowNameTag() { return ShowNameTag; }
     public double GetMoney() { return Money; }
@@ -24,7 +41,33 @@ public sealed class PlayerData
     public string GetName() { return Name; }
     public int GetUpgradeAmount(EUpgradeName InUpgradeName) { return OwnedUpgrades?.GetValueOrDefault(InUpgradeName, 0) ?? 0; }
     public Dictionary<EUpgradeName, int> GetOwnedUpgrades() { return OwnedUpgrades; }
+    
+    public bool IsQuestCompleted(EQuest InQuestName)
+    {
+	    if (CompletedQuests.TryGetValue(InQuestName, out bool Completed)) return Completed;
+	    CompletedQuests[InQuestName] = false;
+	    return false;
+    }
+    public int GetQuestProgress(EQuest InQuestName)
+    {
+	    if (QuestsProgress.TryGetValue(InQuestName, out int Progress)) return Progress;
+	    QuestsProgress[InQuestName] = 0;
+	    return 0;
+    }
 
+    public void AdvanceQuest(EQuest InQuestName, int InAmount, int InRequiredProgress)
+    {
+	    if (IsQuestCompleted(InQuestName)) return;
+	    int CurrentProgress = GetQuestProgress(InQuestName) + InAmount;
+	    QuestsProgress[InQuestName] = CurrentProgress;
+	    // IsDirty = true; 
+	    if (CurrentProgress >= InRequiredProgress)
+	    {
+		    QuestsProgress[InQuestName] = InRequiredProgress;
+		    CompletedQuests[InQuestName] = true;
+	    }
+	    EventManager.TriggerQuestProgressed();
+    }
     public void AddMoney(double InAmount)
     {
 	    Money += InAmount;
@@ -76,8 +119,7 @@ public sealed class PlayerData
     }
     public static PlayerData Load()
     {
-        PlayerData DefaultData = new() { OwnedUpgrades = new Dictionary<EUpgradeName, int>(), ShowNameTag = false, Name = "I Dont Know My Name", CurrentVersion = LiveVersion };
-        if (!FileSystem.Data.FileExists("save.dat")) return DefaultData;
+        if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData();
         try
         {
             string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
@@ -95,7 +137,7 @@ public sealed class PlayerData
             {
                 Log.Error("CRITICAL: Save file tampered with! Hash mismatch.");
                 FileSystem.Data.DeleteFile("save.dat");
-                return DefaultData;
+                return new PlayerData();
             }
             PlayerData ValidData = Json.Deserialize<PlayerData>(JsonData);
             Migrate(ValidData);
@@ -104,7 +146,7 @@ public sealed class PlayerData
         catch (Exception Exception)
         {
             Log.Warning($"Save Corrupted: {Exception.Message}");
-            return DefaultData;
+            return new PlayerData();
         }
     }
 
@@ -124,12 +166,26 @@ public sealed class PlayerData
     private static void Migrate(PlayerData InData)
     {
 	    bool NeedsSave = false;
-	    if (InData.CurrentVersion < LiveVersion)
+	    if (InData.CurrentVersion < 2)
 	    {
 		    if (InData.OwnedUpgrades.TryGetValue(EUpgradeName.AlienComboMaxMultiplier2, out int CurrentLevel))
 		    {
 				if (CurrentLevel > 2) InData.OwnedUpgrades[EUpgradeName.AlienComboMaxMultiplier2] = CurrentLevel - 1;
 		    }
+		    InData.CurrentVersion = 2;
+		    NeedsSave = true;
+	    }
+	    if (InData.CurrentVersion < 3)
+	    {
+		    Log.Info("ADDING QUESTS FOR OLD USERS");
+		    InData.QuestsProgress.TryAdd(EQuest.Thrower, 0);
+		    InData.QuestsProgress.TryAdd(EQuest.Winner, 0);
+		    InData.QuestsProgress.TryAdd(EQuest.Walker, 0);
+		    InData.QuestsProgress.TryAdd(EQuest.Swordsman, 0);
+		    InData.CompletedQuests.TryAdd(EQuest.Thrower, false);
+		    InData.CompletedQuests.TryAdd(EQuest.Winner, false);
+		    InData.CompletedQuests.TryAdd(EQuest.Walker, false);
+		    InData.CompletedQuests.TryAdd(EQuest.Swordsman, false);
 		    InData.CurrentVersion = LiveVersion;
 		    NeedsSave = true;
 	    }

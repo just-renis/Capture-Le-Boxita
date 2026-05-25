@@ -96,6 +96,7 @@ public sealed class Player : Component, Component.INetworkListener
 	public float GetDashCooldown() { return DashCooldown - TimeSinceLastDash; }
 	public float GetDashPercentage() { return Math.Clamp(TimeSinceLastDash / DashCooldown * 100f, 0f, 100f); }
 	public float GetCurrentCameraRotationYaw() { return CurrentCameraRotation.yaw; }
+	public PlayerData GetSaveData() { return Data; }
 	
 	public void GiveImpulseForce(Vector3 InImpulseForce)
 	{

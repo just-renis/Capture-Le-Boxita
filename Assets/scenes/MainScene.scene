@@ -249,6 +249,32 @@
           "__guid": "e2b9a0a2-e83f-4d22-b5f1-473965cc7017",
           "__enabled": true,
           "Flags": 0,
+          "AllQuestsData": [
+            {
+              "RequiredProgress": 20,
+              "RewardAmount": 50,
+              "QuestText": "Throw 20 boxes into aliens",
+              "QuestName": "Thrower"
+            },
+            {
+              "RequiredProgress": 1,
+              "RewardAmount": 125,
+              "QuestText": "Kill 1 player",
+              "QuestName": "Winner"
+            },
+            {
+              "RequiredProgress": 200,
+              "RewardAmount": 70,
+              "QuestText": "Walk 200 meters",
+              "QuestName": "Walker"
+            },
+            {
+              "RequiredProgress": 50,
+              "RewardAmount": 100,
+              "QuestText": "Hit 50 boxes with sword",
+              "QuestName": "Swordsman"
+            }
+          ],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -26582,14 +26608,14 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
-        }
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
+        }
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "11b2b20b-c2ec-4361-917f-7d9e2456f159"
         }
       }
     }

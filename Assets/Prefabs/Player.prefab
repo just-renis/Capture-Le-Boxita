@@ -49,6 +49,7 @@
         "Flags": 0,
         "CameraDistance": 200,
         "CameraHeight": 50,
+        "DefaultAlienBoxComboDuration": 7,
         "DefaultBoxThrowImpulseStrength": 800,
         "DefaultDashImpulseStrength": 2000,
         "DefaultGrabDistance": 600,
@@ -89,6 +90,32 @@
           "go": "31e9ff72-845f-4a0a-9ff5-d951bb07c897",
           "component_type": "BoxCollider"
         },
+        "Quests": [
+          {
+            "CurrentProgress": 0,
+            "RequiredProgress": 20,
+            "QuestText": "Throw 20 boxes into aliens",
+            "QuestName": "Thrower"
+          },
+          {
+            "CurrentProgress": 0,
+            "RequiredProgress": 1,
+            "QuestText": "Kill 1 player",
+            "QuestName": "Winner"
+          },
+          {
+            "CurrentProgress": 0,
+            "RequiredProgress": 200,
+            "QuestText": "Walk 200 meters",
+            "QuestName": "Walker"
+          },
+          {
+            "CurrentProgress": 0,
+            "RequiredProgress": 50,
+            "QuestText": "Hit 50 boxes with sword",
+            "QuestName": "Swordsman"
+          }
+        ],
         "Sensitivity": 0.2,
         "SlowDownDuration": 5,
         "Sword": {
@@ -103,7 +130,6 @@
         "__guid": "9cd31db8-991a-4cd6-bfef-c2cb4f9e76ca",
         "__enabled": true,
         "Flags": 0,
-        "IsInAirCheckRequired": false,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,

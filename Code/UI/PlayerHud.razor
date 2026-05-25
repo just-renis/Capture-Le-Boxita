@@ -1,4 +1,6 @@
 @using Sandbox;
+@using Sandbox.Data
+@using Sandbox.Enums
 @using Sandbox.Managers
 @inherits PanelComponent
 
@@ -10,6 +12,31 @@
 			<div class="corner top-right"></div>
 			<div class="corner bottom-left"></div>
 			<div class="corner bottom-right"></div>
+		</div>
+		<div class="quests-container">
+			@{
+				int DisplayedCount = 0; 
+				PlayerData SaveData = PlayerRef.GetSaveData();
+			}
+			@foreach (QuestData Quest in AllQuestsData)
+			{
+				if (DisplayedCount >= 3) break;
+				if (SaveData.CompletedQuests.TryGetValue(Quest.QuestName, out bool IsCompleted))
+				{
+					if (IsCompleted) continue;
+					int CurrentProgress = SaveData.QuestsProgress.GetValueOrDefault(Quest.QuestName, 0);
+					<div class="quest-item">
+						<div class="quest-meta">
+							<span class="quest-title">@Quest.QuestText</span>
+							<span class="quest-counter">@CurrentProgress / @Quest.RequiredProgress</span>
+						</div>
+						<div class="quest-progress-bg">
+							<div class="quest-progress-fill" style="width: @((float)CurrentProgress / Quest.RequiredProgress * 100f)%;"></div>
+						</div>
+					</div>
+					DisplayedCount++;
+				}
+			}
 		</div>
 		<div class="vote-panel @(IsVoteActive ? "visible" : "")">
 			<div class="vote-header">
@@ -105,11 +132,13 @@
 
 @code
 {
+	[Property] private List<QuestData> AllQuestsData { get; set; }
 	private bool IsStuckPopupEnabled;
 	private bool IsAlienBoxComboMultiplierAvailable;
 	private int RequestPlayerRefHandle;
 	private int CheckLatencyHandle;
 	private int PurchasableAmountUpgrades;
+	private int QuestStateVersion = 0;
 	private float AlienBoxComboMultiplier;
 	private double Money;
 	private Player.Player PlayerRef;
@@ -142,6 +171,7 @@
 		Hc.Add(IsConnectionBad);
 		Hc.Add(PurchasableAmountUpgrades);
 		Hc.Add(TimeSinceVoteStart);
+		Hc.Add(QuestStateVersion);
 		return Hc.ToHashCode();
 	}
 	
@@ -153,6 +183,7 @@
 		EventManager.OnVotingStarted += StartVoteWindow;
 		EventManager.OnPlayerVoteSubmitted += SubmitLocalVote;
 		EventManager.OnUpgradesAvailableToBePurchased += SetPurchasableUpgradesAvailable;
+		EventManager.OnQuestProgressed += OnQuestUiRefreshRequested;
 		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
 		CheckLatencyHandle = TimerManager.AddTimer(CheckLatencyHandle, 1f, true, CheckLatency);
 	}
@@ -164,6 +195,7 @@
 		EventManager.OnVotingStarted -= StartVoteWindow;
 		EventManager.OnPlayerVoteSubmitted -= SubmitLocalVote;
 		EventManager.OnUpgradesAvailableToBePurchased -= SetPurchasableUpgradesAvailable;
+		EventManager.OnQuestProgressed -= OnQuestUiRefreshRequested;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
 	}
 	protected override void OnUpdate()
@@ -178,6 +210,7 @@
 	private void SetPurchasableUpgradesAvailable(int InAmount) { PurchasableAmountUpgrades = InAmount; }
 	private void StuckPopupStateChange(bool InState) { IsStuckPopupEnabled = InState; }
 	private void SetMoneyAmount(double InMoney) { Money = InMoney; }
+	private void OnQuestUiRefreshRequested() { QuestStateVersion++; }
 	private void CheckLatency()
 	{
 		if (Connection.Local == null) return;
