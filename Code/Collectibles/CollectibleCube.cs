@@ -39,6 +39,13 @@ public sealed class CollectibleCube : Component, IPoolObject
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
 		GameObject.Network.TakeOwnership();
 		PullComp.SetIsPulled(false);
+		if (PullComp.GetWasThrown())
+		{
+			float ThrowDistanceUnits = Vector3.DistanceBetween(PullComp.GetLastOwnerThrownPosition().WithZ(0), WorldPosition.WithZ(0));
+			float ThrowDistanceMeters = ThrowDistanceUnits * 0.0254f;
+			if (ThrowDistanceMeters >= 30f) EventManager.TriggerBoxDistanceThrownQuestProgressed(PullComp.GetOwnerId());
+			PullComp.SetWasThrown(false);
+		}
 		EventManager.TriggerOnKill(PullComp.GetOwnerId(), false, PullComp.GetMoneyMultiplier(InAlienScale));
 		PullComp.ClearOwnerId();
 		Rigidbody.Velocity = 0f;

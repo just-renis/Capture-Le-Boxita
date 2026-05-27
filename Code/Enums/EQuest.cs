@@ -5,5 +5,7 @@ public enum EQuest
 	Thrower,
 	Winner,
 	Walker,
-	Swordsman
+	Swordsman,
+	EliteThrower,
+	Maxer
 }

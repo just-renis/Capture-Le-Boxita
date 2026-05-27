@@ -3,7 +3,6 @@ using Sandbox.Components;
 using Sandbox.Data;
 using Sandbox.Enums;
 using Sandbox.Managers;
-using Sandbox.Services;
 namespace Sandbox.Player;
 
 public sealed class Player : Component, Component.INetworkListener
@@ -55,6 +54,7 @@ public sealed class Player : Component, Component.INetworkListener
 	private float AlienBoxComboMaxMultiplier;
 	private float DashCooldownReductionPerBox;
 	private float SlowDownPercentage;
+	private float MetersWalked;
 	private TimeSince TimeSinceSlowDownApplied;
 	private TimeSince TimeSinceLastDash;
 	private TimeSince TimeSinceLastBoxConsumed;
@@ -87,6 +87,7 @@ public sealed class Player : Component, Component.INetworkListener
 		public float GetHoldDistance() { return HoldDistance; }
 		public GameObject GetObject() { return Object; }
 		public Rigidbody GetRigidBody() { return RigidBody; }
+		public PullableComponent GetPullableComponent() { return PullableComp; }
 
 		public void SetupClearOwnerIdTimer() { PullableComp?.SetClearOwnerIdTimer(); }
 	}
@@ -116,6 +117,7 @@ public sealed class Player : Component, Component.INetworkListener
 	protected override void OnStart()
 	{
 		EventManager.OnKill += OnKillEventListener;
+		EventManager.OnBoxDistanceThrownQuestProgressed += OnBoxThrowDistanceQuest;
 		HostClientCollisionUpdateHandle = TimerManager.AddTimer(HostClientCollisionUpdateHandle, 1f / 60f, true, UpdateClientsForHost);
 		if (IsProxy) return;
 		EventManager.OnPlayerDataRequired += GetPlayerData;
@@ -141,6 +143,7 @@ public sealed class Player : Component, Component.INetworkListener
 	protected override void OnDestroy()
 	{
 		EventManager.OnKill -= OnKillEventListener;
+		EventManager.OnBoxDistanceThrownQuestProgressed -= OnBoxThrowDistanceQuest;
 		TimerManager.ClearTimer(GrabTimerHandle);
 		TimerManager.ClearTimer(HostClientCollisionUpdateHandle);
 		TimerManager.ClearTimer(CheckIfFallingOutOfWorldHandle);
@@ -225,23 +228,33 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		if (InIsMovementHappening)
 		{
-			float DistanceMoved = Vector3.DistanceBetweenSquared(WorldPosition, LastFramePosition);
-			if (DistanceMoved < 1f)
+			float DistanceMoved = Vector3.DistanceBetween(WorldPosition, LastFramePosition);
+			if (DistanceMoved < 0.1f)
 			{
 				StuckTimer += Time.Delta;
 				if (StuckTimer > 10f && !IsStuck) IsStuck = true;
 			}
 			else
 			{
+				CalculateMetersWalked(DistanceMoved);
 				StuckTimer = 0f;
 				IsStuck = false;
 			}
 		}
 		LastFramePosition = WorldPosition;
 	}
+	private void CalculateMetersWalked(float InDistanceMoved)
+	{
+		MetersWalked += InDistanceMoved * 0.0254f;
+		if (MetersWalked < 1f) return;
+		int WholeMetersToAward = MetersWalked.FloorToInt();
+		MetersWalked -= WholeMetersToAward;
+		Data.AdvanceQuest(EQuest.Walker, WholeMetersToAward);
+	}
 	private void ProcessKeyboardInput()
 	{
 		if (Input.Pressed("Score")) UiManager.ChangeUiState(EUi.UpgradesMenu);
+		if (Input.Pressed("OpenQuests")) UiManager.ChangeUiState(EUi.QuestMenu);
 		if (Input.EscapePressed) ProcessEscape();
 		if (UiManager.IsAnyUiOpen()) return;
 		ProcessMovementInput();
@@ -311,7 +324,8 @@ public sealed class Player : Component, Component.INetworkListener
 		else
 		{
 			SoundManager.Instance?.PlayAtPosition(ESound.BoxThrow, GameObject.WorldPosition);
-			HeldObjectData.GetRigidBody()?.Velocity  = Camera.WorldRotation.Forward * BoxThrowImpulseStrength;
+			HeldObjectData.GetPullableComponent()?.SetLastOwnerThrownPosition(GameObject.WorldPosition);
+			HeldObjectData.GetRigidBody()?.Velocity = Camera.WorldRotation.Forward * BoxThrowImpulseStrength;
 			ClearHeldObjectData();
 		}
 	}
@@ -365,6 +379,11 @@ public sealed class Player : Component, Component.INetworkListener
 	{
 		if (!Networking.IsHost) return;
 		IncreaseMoney(InKillerId, InIsPlayerKill, InMoneyMultiplier);
+	}
+	private void OnBoxThrowDistanceQuest(Guid InKillerId)
+	{
+		if (!Networking.IsHost) return;
+		ProgressBoxThrowDistanceQuest(InKillerId);
 	}
 	private void TeleportPlayerToSpawnLocation(Vector3 InPosition)
 	{
@@ -510,12 +529,12 @@ public sealed class Player : Component, Component.INetworkListener
 		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
 		if (InIsPlayerKill)
 		{
-			Stats.Increment("kill_one_player", 1);
+			Data.AdvanceQuest(EQuest.Winner, 1);
 			AddMoney(InMoneyMultiplier); // When player gets killed its entire money sum not multiplier.
 		}
 		else
 		{
-			Stats.Increment("thrown_boxes_to_aliens", 1);
+			Data.AdvanceQuest(EQuest.Thrower, 1);
 			TimeSinceLastBoxConsumed = 0f;
 			AddMoney(AdditionalMoneyAmount * (InMoneyMultiplier + AlienBoxComboMultiplier));
 			TimeSinceLastDash += DashCooldownReductionPerBox;
@@ -525,6 +544,12 @@ public sealed class Player : Component, Component.INetworkListener
 			AlienBoxComboMultiplier = MathF.Min(MathF.Round(AlienBoxComboMultiplier + 0.1f, 1), AlienBoxComboMaxMultiplier);
 			EventManager.TriggerAlienBoxComboChange(AlienBoxComboMultiplier);
 		}
+	}
+	[Rpc.Broadcast]
+	private void ProgressBoxThrowDistanceQuest(Guid InKillerOwnerId)
+	{
+		if (Network == null || IsProxy || Network.OwnerId != InKillerOwnerId) return;
+		Data.AdvanceQuest(EQuest.EliteThrower, 1);
 	}
 	[Rpc.Broadcast]
 	private void RequestMoneyTransfer(Guid TargetId)

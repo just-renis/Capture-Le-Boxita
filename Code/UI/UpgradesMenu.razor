@@ -323,6 +323,7 @@
 		if (SelectedUpgradeName == EUpgradeName.None || SelectedUpgrade == null || !CanBuyMore(SelectedUpgrade) || !CanAfford(SelectedUpgrade) || !GetIsAvailable(SelectedUpgradeName)) return;
 		Data.SubtractMoney(GetCurrentCost(SelectedUpgrade));
 		Data.BuyUpgrade(SelectedUpgradeName);
+		if (!CanBuyMore(SelectedUpgrade)) Data.AdvanceQuest(EQuest.Maxer, 1);
 		SoundManager.Instance?.Play2D(ESound.BuyUpgrade);
 		CalculatePurchasableUpgrades();
 	}

@@ -6,12 +6,14 @@ namespace Sandbox.Components;
 public class PullableComponent : Component, Component.ICollisionListener
 {
 	[Sync] private bool IsOwnerHolding { get; set; }
+	[Sync] private bool IsPulled { get; set; }
+	[Sync] private bool WasThrown { get; set; }
 	[Sync] private float LastOwnerTime { get; set; }
 	[Sync] private float MoneyMultiplier { get; set; }
 	[Sync] private float AlienScaleMultiplier { get; set; }
 	[Sync] private float BoxSlownessPercentage { get; set; }
+	[Sync] private Vector3 LastOwnerThrownPosition { get; set; }
 	[Sync] private Guid LastOwnedBy { get; set; }
-	[Sync] private bool IsPulled { get; set; }
 	private bool IsPlayer;
 	private int ClearOwnerIdHandle;
 	private int CheckOutOfBoundsHandle;
@@ -22,11 +24,13 @@ public class PullableComponent : Component, Component.ICollisionListener
 	private GameObject AlienShipRef;
 	// --------------------------------------------------------------PUBLIC METHODS--------------------------------------------------------------
 	public bool GetIsPulled() { return IsPulled; }
+	public bool GetWasThrown() { return WasThrown; }
 	public float GetMoneyMultiplier(float InAlienScale)
 	{
 		float Stacks = (float)Math.Floor(InAlienScale / 0.5f);
 		return MoneyMultiplier + MoneyMultiplier * Stacks * AlienScaleMultiplier;
 	}
+	public Vector3 GetLastOwnerThrownPosition() { return LastOwnerThrownPosition; }
 	public Guid GetOwnerId() { return LastOwnedBy; }
 	
 	public void SetOwnerId(Guid InId, bool IsGrabbedByPlayer)
@@ -44,12 +48,22 @@ public class PullableComponent : Component, Component.ICollisionListener
 		if (!IsGrabbedByPlayer) SetClearOwnerIdTimerInternally();
 		else TimerManager.ClearTimer(ClearOwnerIdHandle);
 	}
+	public void SetLastOwnerThrownPosition(Vector3 InOwnerPosition)
+	{
+		SetWasThrown(true);
+		LastOwnerThrownPosition = InOwnerPosition;
+	}
+	public void SetWasThrown(bool InState) { WasThrown = InState; }
 	public void SetClearOwnerIdTimer()
 	{
 		SetIsOwnerHoldingState(false);
 		ClearOwnerIdHandle = TimerManager.AddTimer(ClearOwnerIdHandle, ClearTime, false, ClearOwnerId);
 	}
-	public void ClearOwnerId() { LastOwnedBy = Guid.Empty; }
+	public void ClearOwnerId()
+	{
+		LastOwnedBy = Guid.Empty;
+		SetWasThrown(false);
+	}
 	public void OnCollisionStart(Collision InCollision)
 	{
 		if (GetIsPlayer()) return; // Player objects dont use OnCollisionStart.

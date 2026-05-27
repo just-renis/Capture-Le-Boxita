@@ -61,7 +61,9 @@ public sealed class Sword : Component
 		if (!Network.IsOwner || !IsInAttackMode || Target.Tags.Has("safe")) return;
 		PullableComponent TargetPullableComponent = Target.GetComponent<PullableComponent>();
 		if (TargetPullableComponent == null) return;
-		float MassForceMultiplier = TargetPullableComponent.Tags.Has("collectible") ? BoxPushMultiplier : 1f;
+		bool IsPlayerHit = TargetPullableComponent.Tags.Has("player");
+		if (!IsPlayerHit) EventManager.TriggerGetPlayerData()?.AdvanceQuest(EQuest.Swordsman, 1);
+		float MassForceMultiplier = IsPlayerHit ? 1f : BoxPushMultiplier;
 		Int64 Force = (long)(PushForce + PushForce * InPushForceUpgradeAmount * 0.01f);
 		SoundManager.Instance?.PlayAtPosition(ESound.SwordHit, GameObject.WorldPosition);
 		TargetPullableComponent.ReceivePush(InPusherId, GameObject.Parent.WorldRotation.Forward * Force * MassForceMultiplier);

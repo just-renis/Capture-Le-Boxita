@@ -18,20 +18,19 @@
 				int DisplayedCount = 0; 
 				PlayerData SaveData = PlayerRef.GetSaveData();
 			}
-			@foreach (QuestData Quest in AllQuestsData)
+			@foreach (KeyValuePair<EQuest, QuestData> Quest in GlobalData.Instance.AllQuestsData)
 			{
 				if (DisplayedCount >= 3) break;
-				if (SaveData.CompletedQuests.TryGetValue(Quest.QuestName, out bool IsCompleted))
+				if (!SaveData.IsQuestCompleted(Quest.Key))
 				{
-					if (IsCompleted) continue;
-					int CurrentProgress = SaveData.QuestsProgress.GetValueOrDefault(Quest.QuestName, 0);
+					int CurrentProgress = SaveData.GetQuestProgress(Quest.Key);
 					<div class="quest-item">
 						<div class="quest-meta">
-							<span class="quest-title">@Quest.QuestText</span>
-							<span class="quest-counter">@CurrentProgress / @Quest.RequiredProgress</span>
+							<span class="quest-title">@Quest.Value.QuestText</span>
+							<span class="quest-counter">@CurrentProgress / @Quest.Value.RequiredProgress</span>
 						</div>
 						<div class="quest-progress-bg">
-							<div class="quest-progress-fill" style="width: @((float)CurrentProgress / Quest.RequiredProgress * 100f)%;"></div>
+							<div class="quest-progress-fill" style="width: @((float)CurrentProgress / @Quest.Value.RequiredProgress * 100f)%;"></div>
 						</div>
 					</div>
 					DisplayedCount++;
@@ -132,13 +131,12 @@
 
 @code
 {
-	[Property] private List<QuestData> AllQuestsData { get; set; }
 	private bool IsStuckPopupEnabled;
 	private bool IsAlienBoxComboMultiplierAvailable;
 	private int RequestPlayerRefHandle;
 	private int CheckLatencyHandle;
 	private int PurchasableAmountUpgrades;
-	private int QuestStateVersion = 0;
+	private int QuestStateVersion;
 	private float AlienBoxComboMultiplier;
 	private double Money;
 	private Player.Player PlayerRef;

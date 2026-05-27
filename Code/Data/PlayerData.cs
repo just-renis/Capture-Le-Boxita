@@ -1,12 +1,20 @@
 using System.Security.Cryptography;
 using Sandbox.Enums;
 using Sandbox.Managers;
+using Sandbox.Services;
 namespace Sandbox.Data;
 using System;
 using System.Text;
 
 public sealed class PlayerData
 {
+	public sealed class QuestState
+	{
+		public bool Completed { get; set; }
+		public bool Claimed { get; set; }
+		public int Progress { get; set; }
+	}
+	
 	public bool ShowNameTag { get; set; }
 	public int CurrentVersion { get; set; }
 	public double Money { get; set; }
@@ -14,8 +22,7 @@ public sealed class PlayerData
 	public string Name { get; set; }
 	public string Checksum { get; set; }
 	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
-	public Dictionary<EQuest, int> QuestsProgress { get; set; }
-	public Dictionary<EQuest, bool> CompletedQuests { get; set; }
+	public Dictionary<EQuest, QuestState> QuestsData { get; set; }
 
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
     private const int LiveVersion = 3;
@@ -26,13 +33,8 @@ public sealed class PlayerData
 	    ShowNameTag = false;
 	    CurrentVersion = LiveVersion;
 	    OwnedUpgrades = new Dictionary<EUpgradeName, int>();
-	    QuestsProgress = new Dictionary<EQuest, int>();
-	    CompletedQuests = new Dictionary<EQuest, bool>();
-	    foreach (EQuest QuestType in Enum.GetValues<EQuest>())
-	    {
-		    QuestsProgress.TryAdd(QuestType, 0);
-		    CompletedQuests.TryAdd(QuestType, false);
-	    }
+	    QuestsData = new Dictionary<EQuest, QuestState>();
+	    foreach (EQuest QuestName in Enum.GetValues<EQuest>()) QuestsData.Add(QuestName, new QuestState());
     }
 
     public bool GetShowNameTag() { return ShowNameTag; }
@@ -44,29 +46,37 @@ public sealed class PlayerData
     
     public bool IsQuestCompleted(EQuest InQuestName)
     {
-	    if (CompletedQuests.TryGetValue(InQuestName, out bool Completed)) return Completed;
-	    CompletedQuests[InQuestName] = false;
-	    return false;
+	    return QuestsData.TryGetValue(InQuestName, out QuestState QuestState) && QuestState.Completed;
+    }
+    public bool IsQuestClaimed(EQuest InQuestName)
+    {
+	    return QuestsData.TryGetValue(InQuestName, out QuestState QuestState) && QuestState.Claimed;
     }
     public int GetQuestProgress(EQuest InQuestName)
     {
-	    if (QuestsProgress.TryGetValue(InQuestName, out int Progress)) return Progress;
-	    QuestsProgress[InQuestName] = 0;
-	    return 0;
+	    return QuestsData.TryGetValue(InQuestName, out QuestState QuestState) ? QuestState.Progress : 0;
     }
 
-    public void AdvanceQuest(EQuest InQuestName, int InAmount, int InRequiredProgress)
+    public void AdvanceQuest(EQuest InQuestName, int InAmount)
     {
+	    Stats.Increment(GetAchievementName(InQuestName), InAmount);
 	    if (IsQuestCompleted(InQuestName)) return;
+	    int RequiredProgress = GlobalData.Instance.GetQuestRequirement(InQuestName);
 	    int CurrentProgress = GetQuestProgress(InQuestName) + InAmount;
-	    QuestsProgress[InQuestName] = CurrentProgress;
-	    // IsDirty = true; 
-	    if (CurrentProgress >= InRequiredProgress)
+	    QuestsData[InQuestName].Progress = CurrentProgress;
+	    if (CurrentProgress >= RequiredProgress)
 	    {
-		    QuestsProgress[InQuestName] = InRequiredProgress;
-		    CompletedQuests[InQuestName] = true;
+		    QuestsData[InQuestName].Progress = RequiredProgress;
+		    QuestsData[InQuestName].Completed = true;
 	    }
 	    EventManager.TriggerQuestProgressed();
+	    Save(this);
+    }
+    public void ClaimQuest(EQuest InQuestName, float InQuestReward)
+    {
+	    if (IsQuestClaimed(InQuestName)) return;
+	    QuestsData[InQuestName].Claimed = true;
+		AddMoney(InQuestReward);
     }
     public void AddMoney(double InAmount)
     {
@@ -150,6 +160,19 @@ public sealed class PlayerData
         }
     }
 
+    private string GetAchievementName(EQuest InQuestName)
+    {
+	    switch (InQuestName)
+	    {
+		    case EQuest.Thrower: return "thrown_boxes_to_aliens";
+		    case EQuest.Winner: return "kill_one_player";
+		    case EQuest.Walker:
+		    case EQuest.Swordsman:
+		    case EQuest.EliteThrower:
+		    case EQuest.Maxer:
+		    default: return "";
+	    }
+    }
     private static string XorInput(string InInput, string InKey)
     {
         StringBuilder Output = new();
@@ -178,15 +201,16 @@ public sealed class PlayerData
 	    if (InData.CurrentVersion < 3)
 	    {
 		    Log.Info("ADDING QUESTS FOR OLD USERS");
-		    InData.QuestsProgress.TryAdd(EQuest.Thrower, 0);
-		    InData.QuestsProgress.TryAdd(EQuest.Winner, 0);
-		    InData.QuestsProgress.TryAdd(EQuest.Walker, 0);
-		    InData.QuestsProgress.TryAdd(EQuest.Swordsman, 0);
-		    InData.CompletedQuests.TryAdd(EQuest.Thrower, false);
-		    InData.CompletedQuests.TryAdd(EQuest.Winner, false);
-		    InData.CompletedQuests.TryAdd(EQuest.Walker, false);
-		    InData.CompletedQuests.TryAdd(EQuest.Swordsman, false);
-		    InData.CurrentVersion = LiveVersion;
+		    InData.QuestsData = new Dictionary<EQuest, QuestState>
+		    {
+			    { EQuest.Thrower, new QuestState() },
+			    { EQuest.Winner, new QuestState() },
+			    { EQuest.Walker, new QuestState() },
+			    { EQuest.Swordsman, new QuestState() },
+			    { EQuest.EliteThrower, new QuestState() },
+			    { EQuest.Maxer, new QuestState() }
+		    };
+		    InData.CurrentVersion = 3;
 		    NeedsSave = true;
 	    }
 	    if (NeedsSave) Save(InData);
