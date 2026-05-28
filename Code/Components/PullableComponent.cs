@@ -68,7 +68,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	{
 		if (GetIsPlayer()) return; // Player objects dont use OnCollisionStart.
 		GameObject CollisionObject = InCollision.Other.GameObject;
-		if (!CollisionObject.Tags.HasAny("player", "collectible")) return; // If collided object is not player or collectible return.
+		if (!CollisionObject.Tags.Has("player") && !CollisionObject.Tags.Has("collectible")) return; // If collided object is not player or collectible return.
 		PullableComponent OtherPullableComponent = CollisionObject.GetComponent<PullableComponent>();
 		if (OtherPullableComponent == null) return;
 		bool IsNotHittingOwner = OtherPullableComponent.Network.OwnerId != LastOwnedBy;
@@ -102,7 +102,7 @@ public class PullableComponent : Component, Component.ICollisionListener
 	}
 	protected override void OnUpdate()
 	{
-		if (!IsOwnerHolding) LastOwnerTime -= Time.Delta;
+		if (!IsOwnerHolding && LastOwnerTime > 0f) LastOwnerTime -= Time.Delta;
 	}
 	protected override void OnDestroy()
 	{

@@ -24,8 +24,9 @@ public sealed class PlayerData
 	public Dictionary<EUpgradeName, int> OwnedUpgrades { get; set; }
 	public Dictionary<EQuest, QuestState> QuestsData { get; set; }
 
+	private bool IsPendingForSave;
+	private const int LiveVersion = 3;
     private static readonly string SECRET_KEY = "CRAZY_SECRET_KEY69";
-    private const int LiveVersion = 3;
     
     public PlayerData()
     {
@@ -37,13 +38,13 @@ public sealed class PlayerData
 	    foreach (EQuest QuestName in Enum.GetValues<EQuest>()) QuestsData.Add(QuestName, new QuestState());
     }
 
+    public bool GetIsPendingForSave() { return IsPendingForSave; }
     public bool GetShowNameTag() { return ShowNameTag; }
     public double GetMoney() { return Money; }
     public double GetTotalMoneyEarned() { return TotalMoneyEarned; }
     public string GetName() { return Name; }
     public int GetUpgradeAmount(EUpgradeName InUpgradeName) { return OwnedUpgrades?.GetValueOrDefault(InUpgradeName, 0) ?? 0; }
     public Dictionary<EUpgradeName, int> GetOwnedUpgrades() { return OwnedUpgrades; }
-    
     public bool IsQuestCompleted(EQuest InQuestName)
     {
 	    return QuestsData.TryGetValue(InQuestName, out QuestState QuestState) && QuestState.Completed;
@@ -109,9 +110,10 @@ public sealed class PlayerData
 	    Save(this);
 	    EventManager.TriggerPlayerNameShowTagChange(ShowNameTag);
     }
-    
-    public static void Save(PlayerData InData)
+    public static void Save(PlayerData InData) { InData.IsPendingForSave = true; }
+    public static void ApplySave(PlayerData InData)
     {
+	    InData.IsPendingForSave = false;
         InData.Checksum = "";
         string RawJson = Json.Serialize(InData);
         string Hash = CreateMd5(RawJson + SECRET_KEY);
@@ -126,66 +128,68 @@ public sealed class PlayerData
         string Base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(ContentToHide));
         string Obfuscated = XorInput(Base64, SECRET_KEY);
         FileSystem.Data.WriteAllText("save.dat", Obfuscated);
+        EventManager.TriggerAutoSaveFinished();
     }
-    public static PlayerData Load()
-    {
-        if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData();
-        try
-        {
-            string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
-            string Base64 = XorInput(Obfuscated, SECRET_KEY);
-            string Decrypted = Encoding.UTF8.GetString(Convert.FromBase64String(Base64));
-            if (!int.TryParse(Decrypted[..2], out int NoiseLength)) throw new Exception("Header Corrupt");
-            string JsonData = Decrypted[(2 + NoiseLength)..];
-            Dictionary<string, object> RawDataMap = Json.Deserialize<Dictionary<string, object>>(JsonData);
-            if (RawDataMap == null || !RawDataMap.TryGetValue("Checksum", out object OutValue)) throw new Exception("Invalid Save Structure");
-            string StoredChecksum = OutValue?.ToString();
-            RawDataMap["Checksum"] = "";
-            string VerificationJson = Json.Serialize(RawDataMap);
-            string CalculatedHash = CreateMd5(VerificationJson + SECRET_KEY);
-            if (StoredChecksum != CalculatedHash)
-            {
-                Log.Error("CRITICAL: Save file tampered with! Hash mismatch.");
-                FileSystem.Data.DeleteFile("save.dat");
-                return new PlayerData();
-            }
-            PlayerData ValidData = Json.Deserialize<PlayerData>(JsonData);
-            Migrate(ValidData);
-            return ValidData;
-        }
-        catch (Exception Exception)
-        {
-            Log.Warning($"Save Corrupted: {Exception.Message}");
-            return new PlayerData();
-        }
-    }
-
+    
     private string GetAchievementName(EQuest InQuestName)
     {
 	    switch (InQuestName)
 	    {
 		    case EQuest.Thrower: return "thrown_boxes_to_aliens";
 		    case EQuest.Winner: return "kill_one_player";
-		    case EQuest.Walker:
-		    case EQuest.Swordsman:
-		    case EQuest.EliteThrower:
-		    case EQuest.Maxer:
+		    case EQuest.Walker: return "walk_meters";
+		    case EQuest.Swordsman: return "sword_hit_boxes";
+		    case EQuest.EliteThrower: return "distance_thrower";
+		    case EQuest.Maxer: return "max_few_upgrades";
 		    default: return "";
 	    }
     }
     private static string XorInput(string InInput, string InKey)
     {
-        StringBuilder Output = new();
-        for (int Index = 0; Index < InInput.Length; Index++) Output.Append((char)(InInput[Index] ^ InKey[Index % InKey.Length]));
-        return Output.ToString();
+	    StringBuilder Output = new();
+	    for (int Index = 0; Index < InInput.Length; Index++) Output.Append((char)(InInput[Index] ^ InKey[Index % InKey.Length]));
+	    return Output.ToString();
     }
     private static string CreateMd5(string InInput)
     {
-        using MD5 Md5 = MD5.Create();
-        byte[] InputBytes = Encoding.ASCII.GetBytes(InInput);
-        byte[] HashBytes = Md5.ComputeHash(InputBytes);
-        return Convert.ToHexString(HashBytes);
+	    using MD5 Md5 = MD5.Create();
+	    byte[] InputBytes = Encoding.ASCII.GetBytes(InInput);
+	    byte[] HashBytes = Md5.ComputeHash(InputBytes);
+	    return Convert.ToHexString(HashBytes);
     }
+    public static PlayerData Load()
+    {
+	    if (!FileSystem.Data.FileExists("save.dat")) return new PlayerData();
+	    try
+	    {
+		    string Obfuscated = FileSystem.Data.ReadAllText("save.dat");
+		    string Base64 = XorInput(Obfuscated, SECRET_KEY);
+		    string Decrypted = Encoding.UTF8.GetString(Convert.FromBase64String(Base64));
+		    if (!int.TryParse(Decrypted[..2], out int NoiseLength)) throw new Exception("Header Corrupt");
+		    string JsonData = Decrypted[(2 + NoiseLength)..];
+		    Dictionary<string, object> RawDataMap = Json.Deserialize<Dictionary<string, object>>(JsonData);
+		    if (RawDataMap == null || !RawDataMap.TryGetValue("Checksum", out object OutValue)) throw new Exception("Invalid Save Structure");
+		    string StoredChecksum = OutValue?.ToString();
+		    RawDataMap["Checksum"] = "";
+		    string VerificationJson = Json.Serialize(RawDataMap);
+		    string CalculatedHash = CreateMd5(VerificationJson + SECRET_KEY);
+		    if (StoredChecksum != CalculatedHash)
+		    {
+			    Log.Error("CRITICAL: Save file tampered with! Hash mismatch.");
+			    FileSystem.Data.DeleteFile("save.dat");
+			    return new PlayerData();
+		    }
+		    PlayerData ValidData = Json.Deserialize<PlayerData>(JsonData);
+		    Migrate(ValidData);
+		    return ValidData;
+	    }
+	    catch (Exception Exception)
+	    {
+		    Log.Warning($"Save Corrupted: {Exception.Message}");
+		    return new PlayerData();
+	    }
+    }
+    
     private static void Migrate(PlayerData InData)
     {
 	    bool NeedsSave = false;
@@ -200,7 +204,6 @@ public sealed class PlayerData
 	    }
 	    if (InData.CurrentVersion < 3)
 	    {
-		    Log.Info("ADDING QUESTS FOR OLD USERS");
 		    InData.QuestsData = new Dictionary<EQuest, QuestState>
 		    {
 			    { EQuest.Thrower, new QuestState() },

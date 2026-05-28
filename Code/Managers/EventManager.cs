@@ -10,6 +10,7 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static event Action OnResetWorld;
 	public static event Action OnVotingFinished;
 	public static event Action OnQuestProgressed;
+	public static event Action OnAutoSaveFinished;
 	public static event Action<bool> OnStuckPopupStateChanged;
 	public static event Action<bool> OnPlayerNameShowTagChanged;
 	public static event Action<bool> OnPlayerVoteSubmitted;
@@ -48,6 +49,10 @@ public sealed class EventManager(Scene Scene) : GameObjectSystem(Scene)
 	public static void TriggerQuestProgressed()
 	{
 		OnQuestProgressed?.Invoke();
+	}
+	public static void TriggerAutoSaveFinished()
+	{
+		OnAutoSaveFinished?.Invoke();
 	}
 	public static void TriggerStuckPopupStateChange(bool InState)
 	{

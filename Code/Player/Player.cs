@@ -142,6 +142,7 @@ public sealed class Player : Component, Component.INetworkListener
 	}
 	protected override void OnDestroy()
 	{
+		if (Data != null && Data.GetIsPendingForSave()) PlayerData.ApplySave(Data);
 		EventManager.OnKill -= OnKillEventListener;
 		EventManager.OnBoxDistanceThrownQuestProgressed -= OnBoxThrowDistanceQuest;
 		TimerManager.ClearTimer(GrabTimerHandle);

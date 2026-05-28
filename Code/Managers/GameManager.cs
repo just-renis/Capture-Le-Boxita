@@ -1,4 +1,5 @@
 using System;
+using Sandbox.Data;
 using Sandbox.Enums;
 namespace Sandbox.Managers;
 
@@ -6,7 +7,9 @@ public sealed class GameManager : Component
 {
 	private bool IsHostLogicInitiated;
 	private const float VotingTimeOutTime = 300f;
+	private const float SaveInterval = 20f;
 	private int VotingTimerUpdateHandle;
+	private int AutoSavingHandle;
 	[Property] private List<GameObject> PlayerSpawners { get; set; }
 	[Property] private Dictionary<ESound, SoundEvent> Sounds = new();
 	[Sync] private float VotingTimeOut { get; set; } = 300f;
@@ -20,6 +23,7 @@ public sealed class GameManager : Component
 		EventManager.OnTeleportToSpawnLocation += GetSpawnerLocation;
 		EventManager.OnRequestIsVotingAvailable += GetIsVotingAvailable;
 		VotingTimerUpdateHandle = TimerManager.AddTimer(VotingTimerUpdateHandle, 0.5f, true, UpdateVotingTimer);
+		AutoSavingHandle = TimerManager.AddTimer(AutoSavingHandle, SaveInterval, true, AutoSave);
 		UiManager.OnStart();
 		SoundManager.Instance?.Init(Sounds);
 	}
@@ -37,6 +41,7 @@ public sealed class GameManager : Component
 		EventManager.OnRequestIsVotingAvailable -= GetIsVotingAvailable;
 		CollectibleCubeManager?.OnDestroy();
 		TimerManager.ClearTimer(VotingTimerUpdateHandle);
+		TimerManager.ClearTimer(AutoSavingHandle);
 		if (IsHostLogicInitiated) EventManager.OnVotingFinished -= VotingFinished;
 		TimerManager.OnDestroy();
 		UiManager.OnDestroy();
@@ -52,6 +57,13 @@ public sealed class GameManager : Component
 	private void UpdateVotingTimer()
 	{
 		EventManager.TriggerVotingCooldownUpdate(VotingTimeOutTime - VotingTimeOut);
+	}
+	private void AutoSave()
+	{
+		PlayerData ActiveData = EventManager.TriggerGetPlayerData();
+		if (ActiveData == null) return;
+		if (!ActiveData.GetIsPendingForSave()) return;
+		PlayerData.ApplySave(ActiveData);
 	}
 	private void SetupHostLogic()
 	{

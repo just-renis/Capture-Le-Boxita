@@ -162,7 +162,7 @@
           "AllQuestsData": {
             "Thrower": {
               "RequiredProgress": 20,
-              "RewardAmount": 75,
+              "RewardAmount": 100,
               "QuestText": "Throw 20 boxes into aliens"
             },
             "Winner": {
@@ -182,12 +182,12 @@
             },
             "EliteThrower": {
               "RequiredProgress": 15,
-              "RewardAmount": 700,
+              "RewardAmount": 1200,
               "QuestText": "Throw 15 boxes into aliens from 50m"
             },
             "Maxer": {
               "RequiredProgress": 5,
-              "RewardAmount": 500,
+              "RewardAmount": 750,
               "QuestText": "Max out 5 upgrades"
             }
           },

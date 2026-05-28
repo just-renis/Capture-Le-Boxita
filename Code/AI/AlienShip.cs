@@ -122,11 +122,11 @@ public sealed class AlienShip : Component, IPoolObject
 	}
 	private void FlyAway()
 	{
-		foreach (PullableComponent Pullable in InsideBeamObjects.ToList().Where(Pullable => Pullable.IsValid()))
+		foreach (PullableComponent Pullable in InsideBeamObjects)
 		{
-			SetPullOnObject(Pullable, false);
-			InsideBeamObjects.Remove(Pullable);
+			if (Pullable.IsValid()) SetPullOnObject(Pullable, false);
 		}
+		InsideBeamObjects.Clear();
 		Collider?.Enabled = false;
 		BeamCollider?.SetTraceState(false);
 		ChangeBeamVfxState(false);

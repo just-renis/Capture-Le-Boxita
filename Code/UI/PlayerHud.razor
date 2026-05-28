@@ -37,6 +37,15 @@
 				}
 			}
 		</div>
+		<div class="autosave-popup @(IsAutoSaveActive ? "visible" : "")">
+			<div class="save-icon-wrapper">
+				<i class="save-icon">sync</i>
+			</div>
+			<div class="save-content">
+				<span class="save-title">AUTO SAVE</span>
+				<span class="save-desc">Progress saved successfully</span>
+			</div>
+		</div>
 		<div class="vote-panel @(IsVoteActive ? "visible" : "")">
 			<div class="vote-header">
 				<span class="header-title">SERVER VOTE IN PROGRESS</span>
@@ -117,13 +126,15 @@
 		}
 		<footer>
 			<div class="tips">
-				<span class="tip"><b>LMB</b> ATTACK</span>
+				<span class="tip"><b>LMB</b> Attack</span>
 				<span class="divider">|</span>
-				<span class="tip"><b>RMB</b> PICK UP BOX</span>
+				<span class="tip"><b>RMB</b> Pick up box</span>
 				<span class="divider">|</span>
 				<span class="tip"><b>TAB</b> Open Upgrades</span>
 				<span class="divider">|</span>
 				<span class="tip"><b>ESC</b> Open Settings</span>
+				<span class="divider">|</span>
+				<span class="tip"><b>J</b> Open Quests</span>
 			</div>
 		</footer>
 	}
@@ -131,10 +142,12 @@
 
 @code
 {
+	private bool IsAutoSaveActive;
 	private bool IsStuckPopupEnabled;
 	private bool IsAlienBoxComboMultiplierAvailable;
 	private int RequestPlayerRefHandle;
 	private int CheckLatencyHandle;
+	private int AutoSavePopupHideHandle;
 	private int PurchasableAmountUpgrades;
 	private int QuestStateVersion;
 	private float AlienBoxComboMultiplier;
@@ -170,6 +183,7 @@
 		Hc.Add(PurchasableAmountUpgrades);
 		Hc.Add(TimeSinceVoteStart);
 		Hc.Add(QuestStateVersion);
+		Hc.Add(IsAutoSaveActive);
 		return Hc.ToHashCode();
 	}
 	
@@ -182,6 +196,7 @@
 		EventManager.OnPlayerVoteSubmitted += SubmitLocalVote;
 		EventManager.OnUpgradesAvailableToBePurchased += SetPurchasableUpgradesAvailable;
 		EventManager.OnQuestProgressed += OnQuestUiRefreshRequested;
+		EventManager.OnAutoSaveFinished += TriggerAutoSavePopup;
 		RequestPlayerRefHandle = TimerManager.AddTimer(RequestPlayerRefHandle, 1f / 60f, true, TryToGetPlayerRef);
 		CheckLatencyHandle = TimerManager.AddTimer(CheckLatencyHandle, 1f, true, CheckLatency);
 	}
@@ -194,7 +209,10 @@
 		EventManager.OnPlayerVoteSubmitted -= SubmitLocalVote;
 		EventManager.OnUpgradesAvailableToBePurchased -= SetPurchasableUpgradesAvailable;
 		EventManager.OnQuestProgressed -= OnQuestUiRefreshRequested;
+		EventManager.OnAutoSaveFinished -= TriggerAutoSavePopup;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
+		TimerManager.ClearTimer(CheckLatencyHandle);
+		TimerManager.ClearTimer(AutoSavePopupHideHandle);
 	}
 	protected override void OnUpdate()
 	{
@@ -214,6 +232,7 @@
 		if (Connection.Local == null) return;
 		IsConnectionBad = Connection.Local.Ping > HighPingThreshold;
 	}
+	private void AutoSaveHidePopup() { IsAutoSaveActive = false; }
 	private void StartVoteWindow()
 	{
 		if (!EventManager.TriggerGetIsVotingAvailable() || IsVoteActive) return;
@@ -242,6 +261,11 @@
 		PlayerRef = EventManager.TriggerGetPlayerRef();
 		if (PlayerRef == null) return;
 		TimerManager.ClearTimer(RequestPlayerRefHandle);
+	}
+	private void TriggerAutoSavePopup()
+	{
+		AutoSavePopupHideHandle = TimerManager.AddTimer(AutoSavePopupHideHandle, 2f, false, AutoSaveHidePopup);
+		IsAutoSaveActive = true;
 	}
 	
 	[Rpc.Host]
