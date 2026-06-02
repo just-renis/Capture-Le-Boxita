@@ -25,6 +25,7 @@ public sealed class UiManager(Scene Scene) : GameObjectSystem(Scene)
 		UI_STATES.TryAdd(EUi.UpgradesMenu, false);
 		UI_STATES.TryAdd(EUi.SettingsMenu, false);
 		UI_STATES.TryAdd(EUi.QuestMenu, false);
+		UI_STATES.TryAdd(EUi.TutorialMenu, false);
 	}
 	public static void OnDestroy()
 	{

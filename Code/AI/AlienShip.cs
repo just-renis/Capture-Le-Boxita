@@ -13,8 +13,8 @@ public sealed class AlienShip : Component, IPoolObject
 	[Sync] private int TimesToFlyUpwards { get; set; }
 	[Sync] private float RandomDownwardsStopZ { get; set; }
 	[Property] private GameObject BeamVfx { get; set; }
-	private bool IsLogicInitialized;
 	public static int LiveCount { get; private set; }
+	private bool IsLogicInitialized;
 	private int MoveHandle;
 	private int FlyUpwardsHandle;
 	private int FlyDownwardsHandle;

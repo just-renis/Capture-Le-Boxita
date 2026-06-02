@@ -247,9 +247,9 @@
               "QuestText": "Kill 1 player"
             },
             "Walker": {
-              "RequiredProgress": 1500,
-              "RewardAmount": 80,
-              "QuestText": "Walk 1,500 meters"
+              "RequiredProgress": 3500,
+              "RewardAmount": 250,
+              "QuestText": "Walk 3,500 meters"
             },
             "Swordsman": {
               "RequiredProgress": 50,
@@ -259,7 +259,7 @@
             "EliteThrower": {
               "RequiredProgress": 15,
               "RewardAmount": 1200,
-              "QuestText": "Throw 15 boxes into aliens from 50m"
+              "QuestText": "Throw 15 boxes into aliens from 30m"
             },
             "Maxer": {
               "RequiredProgress": 5,
@@ -1250,6 +1250,26 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null
+        },
+        {
+          "__type": "Sandbox.UI.TutorialMenu",
+          "__guid": "984b58d5-6185-4610-b2d3-626f336e2ca1",
+          "__enabled": true,
+          "Flags": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Steps": [
+            {
+              "Title": "First Step For Retards",
+              "MediaUrl": "Video/Test.mp4",
+              "Description": "You do this and this",
+              "IsVideo": true
+            }
+          ]
         }
       ],
       "Children": []
@@ -26864,7 +26884,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -26956,7 +26976,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27048,7 +27068,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27140,7 +27160,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27232,7 +27252,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27324,7 +27344,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27416,7 +27436,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27508,7 +27528,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27600,7 +27620,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -27692,7 +27712,7 @@
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
           "RollingResistance": null,
-          "Static": false,
+          "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
         }
@@ -28018,6 +28038,11 @@
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
+        }
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "b69d1879-25e7-43a8-9155-5f2a82ec6e4b"
         }
       }
     }

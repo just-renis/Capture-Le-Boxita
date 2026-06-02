@@ -4,5 +4,6 @@ public enum EUi
 {
 	UpgradesMenu,
 	SettingsMenu,
-	QuestMenu
+	QuestMenu,
+	TutorialMenu
 }

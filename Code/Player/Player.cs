@@ -126,6 +126,7 @@ public sealed class Player : Component, Component.INetworkListener
 		EventManager.OnPlayerNameShowTagChanged += ChangedShowNameTag;
 		EventManager.OnRequestPlayerLocation += GetPlayerLocation;
 		EventManager.OnRequestPlayerRef += GetThisRef;
+		EventManager.TriggerUiStateChange(EUi.TutorialMenu, true);
 		CheckIfFallingOutOfWorldHandle = TimerManager.AddTimer(CheckIfFallingOutOfWorldHandle, 10f, true, CheckIfFallingOutOfWorld);
 		CheckIfAlienBoxMultiplierComboEndedHandle = TimerManager.AddTimer(CheckIfAlienBoxMultiplierComboEndedHandle, 0.05f, true, CheckIfAlienBoxMultiplierComboEnded);
 		LoadSaveData();

@@ -1,0 +1,125 @@
+@using Sandbox;
+@using Sandbox.Enums
+@using Sandbox.Managers
+@inherits PanelComponent
+
+<root class="@(IsOpen ? "" : "hidden")">
+	@if (IsOpen && CurrentStep != null)
+	{
+		<div class="tutorial-window">
+			<div class="x-close" onclick="@CloseMenu"><i>close</i></div>
+			<div class="tutorial-title">@CurrentStep.Title</div>
+			<div class="media-container">
+				@if (CurrentStep.IsVideo)
+				{
+					<div class="tutorial-video-canvas"></div>
+				}
+				else
+				{
+					<img src="@CurrentStep.MediaUrl" class="tutorial-media" alt=""/>
+				}
+			</div>
+			<div class="description-container">
+				<p class="description-text">@CurrentStep.Description</p>
+			</div>
+			<div class="navigation-bar">
+				<button class="nav-button @(CurrentIndex == 0 ? "disabled" : "")" onclick="@PreviousSlide">
+					<i>arrow_back</i>
+				</button>
+				<span class="page-counter">@(CurrentIndex + 1) / @Steps.Count</span>
+				<button class="nav-button @(CurrentIndex >= Steps.Count - 1 ? "disabled" : "")" onclick="@NextSlide">
+					<i>arrow_forward</i>
+				</button>
+			</div>
+		</div>
+	}
+</root>
+
+@code
+{
+	private class TutorialStep
+    {
+        public string Title { get; set; }
+        public string MediaUrl { get; set; }
+        public string Description { get; set; }
+        public bool IsVideo { get; set; }
+    }
+
+	[Property] private List<TutorialStep> Steps { get; set; }
+	
+	private bool IsOpen;
+    private int CurrentIndex;
+    private TutorialStep CurrentStep;
+    private VideoPlayer Player;
+    private Texture VideoTexture => Player?.Texture;
+    
+    protected override int BuildHash() 
+    {
+	    return System.HashCode.Combine(CurrentIndex, IsOpen, VideoTexture);
+    }
+    
+    protected override void OnAwake()
+    {
+	    EventManager.OnUiStateChanged += UiStateChanged;
+    }
+    protected override void OnStart()
+    {
+	    SetCurrentStep();
+    }
+    protected override void OnUpdate()
+    {
+	    if (!IsOpen || CurrentStep == null || !CurrentStep.IsVideo) return;
+	    Player?.Present();
+	    if (Panel != null && VideoTexture != null)
+	    {
+		    Panel Window = Panel.Children.FirstOrDefault(x => x.HasClass("tutorial-window"));
+		    Panel MediaContainer = Window?.Children.FirstOrDefault(x => x.HasClass("media-container"));
+		    Panel CanvasPanel = MediaContainer?.Children.FirstOrDefault(x => x.HasClass("tutorial-video-canvas"));
+		    CanvasPanel?.Style.SetBackgroundImage(VideoTexture);
+	    }
+    }
+    protected override void OnDestroy()
+    {
+	    EventManager.OnUiStateChanged -= UiStateChanged;
+	    KillVideoPlayer();
+    }
+
+    private void SetCurrentStep()
+    {
+	    CurrentStep = Steps.Count > 0 ? Steps[CurrentIndex] : null;
+	    SetupVideoPlayer();
+    }
+    private void NextSlide()
+    {
+	    if (CurrentIndex >= Steps.Count - 1) return;
+	    CurrentIndex++;
+	    SetCurrentStep();
+    }
+    private void PreviousSlide()
+    {
+	    if (CurrentIndex <= 0) return;
+	    CurrentIndex--;
+	    SetCurrentStep();
+    }
+    private void CloseMenu() { UiManager.ChangeUiState(EUi.TutorialMenu); }
+    private void UiStateChanged(EUi InUi, bool RenderState)
+    {
+	    if (InUi != EUi.TutorialMenu) return;
+	    IsOpen = RenderState;
+	    Panel?.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
+    }
+    private void SetupVideoPlayer()
+    {
+	    KillVideoPlayer();
+	    if (CurrentStep == null || !CurrentStep.IsVideo || string.IsNullOrEmpty(CurrentStep.MediaUrl)) return;
+	    Player = new VideoPlayer();
+	    Player.Muted = true;
+	    Player.Play(FileSystem.Mounted, CurrentStep.MediaUrl);
+    }
+    private void KillVideoPlayer()
+    {
+	    if (Player == null) return;
+	    Player.Stop();
+	    Player = null;
+    }
+}

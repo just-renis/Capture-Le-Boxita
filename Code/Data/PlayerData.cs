@@ -16,6 +16,7 @@ public sealed class PlayerData
 	}
 	
 	public bool ShowNameTag { get; set; }
+	public bool IsTutorialFinished { get; set; }
 	public int CurrentVersion { get; set; }
 	public double Money { get; set; }
 	public double TotalMoneyEarned { get; set; }
@@ -32,6 +33,7 @@ public sealed class PlayerData
     {
 	    Name = "I Dont Know My Name";
 	    ShowNameTag = false;
+	    IsTutorialFinished = false;
 	    CurrentVersion = LiveVersion;
 	    OwnedUpgrades = new Dictionary<EUpgradeName, int>();
 	    QuestsData = new Dictionary<EQuest, QuestState>();
@@ -40,6 +42,7 @@ public sealed class PlayerData
 
     public bool GetIsPendingForSave() { return IsPendingForSave; }
     public bool GetShowNameTag() { return ShowNameTag; }
+    public bool GetIsTutorialFinished() { return IsTutorialFinished; }
     public double GetMoney() { return Money; }
     public double GetTotalMoneyEarned() { return TotalMoneyEarned; }
     public string GetName() { return Name; }
@@ -109,6 +112,11 @@ public sealed class PlayerData
 	    ShowNameTag = InState;
 	    Save(this);
 	    EventManager.TriggerPlayerNameShowTagChange(ShowNameTag);
+    }
+    public void SetTutorialFinished()
+    {
+	    IsTutorialFinished = true;
+	    Save(this);
     }
     public static void Save(PlayerData InData) { InData.IsPendingForSave = true; }
     public static void ApplySave(PlayerData InData)

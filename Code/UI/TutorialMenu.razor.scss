@@ -1,0 +1,135 @@
+TutorialMenu
+{
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
+  z-index: 800;
+  font-family: Poppins, Roboto, sans-serif;
+  > .tutorial-window
+  {
+    position: relative;
+    width: 50%;
+    min-height: 75%;
+    max-height: 90%;
+    background-color: #1a1a1a;
+    border: 2px solid #facc15;
+    border-radius: 8px;
+    flex-direction: column;
+    padding: 45px 60px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    .x-close
+    {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      &:hover { color: #facc15; }
+    }
+    .tutorial-title
+    {
+      font-size: 42px;
+      font-weight: 900;
+      color: #facc15;
+      margin-bottom: 30px;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+    .media-container
+    {
+      width: 100%;
+      flex-grow: 1;
+      background-color: #0d0d0d;
+      border: 2px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      .tutorial-media
+      {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .tutorial-video-canvas
+      {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    }
+    .description-container
+    {
+      width: 100%;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      justify-content: center;
+      align-items: center;
+      .description-text
+      {
+        font-size: 24px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.85);
+        text-align: center;
+        padding: 4px 0;
+      }
+    }
+    .navigation-bar
+    {
+      align-items: center;
+      justify-content: space-between;
+      width: 320px;
+      margin: 0 auto;
+      .nav-button
+      {
+        background: #2a2a2a;
+        border: 2px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        color: #ffffff;
+        padding: 12px 24px;
+        cursor: pointer;
+        i { font-size: 32px; }
+        &:hover
+        {
+          background-color: #333333;
+          border-color: #facc15;
+          transform: scale(1.05);
+        }
+        &:active { transform: scale(0.95); }
+        &.disabled
+        {
+          background-color: rgba(255, 255, 255, 0.02);
+          border-color: transparent;
+          color: rgba(255, 255, 255, 0.15);
+          pointer-events: none;
+        }
+      }
+      .page-counter
+      {
+        font-size: 26px;
+        font-weight: 800;
+        color: #facc15;
+      }
+    }
+  }
+  &.hidden
+  {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    backdrop-filter: blur(0px);
+    background-color: transparent;
+  }
+}
