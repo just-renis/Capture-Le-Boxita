@@ -1,0 +1,965 @@
+{
+  "IsSubgraph": false,
+  "Path": "materials/water/water.sgrph",
+  "Model": "models/dev/plane.vmdl",
+  "Title": "",
+  "Description": null,
+  "Category": "",
+  "Icon": "",
+  "AddToNodeLibrary": false,
+  "BlendMode": "Translucent",
+  "ShadingModel": "Lit",
+  "Domain": "Surface",
+  "Metadata": {},
+  "PreviewSettings": {
+    "ViewMode": "Perspective",
+    "RenderBackfaces": false,
+    "EnableShadows": true,
+    "ShowGround": false,
+    "ShowSkybox": true,
+    "BackgroundColor": "1,1,1,1",
+    "Tint": "1,1,1,1"
+  },
+  "nodes": [
+    {
+      "_class": "Result",
+      "DefaultOpacity": 1,
+      "DefaultRoughness": 0.05,
+      "DefaultMetalness": 0,
+      "DefaultAmbientOcclusion": 1,
+      "Identifier": "0",
+      "Position": "0,0",
+      "HandleOffsets": {},
+      "Albedo": {
+        "Identifier": "9",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Opacity": {
+        "Identifier": "21",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "PositionOffset": {
+        "Identifier": "26",
+        "Output": "XYZ",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "32ea5055-74d3-4b85-bddb-3cef29af51a9",
+      "Identifier": "1",
+      "Position": "-1500,648",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "7be814d2-fa1e-4cb4-baaa-5d1f85e40b14",
+      "Identifier": "2",
+      "Position": "-1236,12",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "WorldPosition",
+      "NoHighPrecisionLightingOffsets": false,
+      "Identifier": "3",
+      "Position": "-1440,216",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ReroutePlus",
+      "Comment": null,
+      "Identifier": "4",
+      "Position": "-1704,660",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Add",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "5",
+      "Position": "-1020,216",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "6",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "6",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SplitVector",
+      "Identifier": "6",
+      "Position": "-1248,216",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "3",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Texture2DParameterNode",
+      "ParameterIdentifier": "0b6c016c-e54a-4591-907b-aed8a02d7da4",
+      "Identifier": "7",
+      "Position": "-1044,-96",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SampleTexture2DNode",
+      "SamplerState": {
+        "__version": 2,
+        "Name": "",
+        "IsAttribute": false,
+        "Filter": "Anisotropic",
+        "AddressModeU": "Wrap",
+        "AddressModeV": "Wrap",
+        "AddressModeW": "Wrap",
+        "MipLodBias": 0,
+        "MaxAnisotropy": 8,
+        "BorderColor": "0,0,0,0"
+      },
+      "Identifier": "8",
+      "Position": "-852,-96",
+      "HandleOffsets": {},
+      "Texture2DInput": {
+        "Identifier": "7",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "CoordsInput": {
+        "Identifier": "11",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Blend",
+      "DefaultA": "0,0,0,1",
+      "DefaultB": "1,1,1,1",
+      "Fraction": 0.5,
+      "BlendMode": "Mix",
+      "Clamp": true,
+      "Identifier": "9",
+      "Position": "-180,36",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "38",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "36",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 0,
+      "DefaultEdge2": 0,
+      "Identifier": "10",
+      "Position": "-1260,600",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "29",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Edge1": {
+        "Identifier": "1",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "Edge2": {
+        "Identifier": "1",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "UVScrollNode",
+      "DefaultScrollSpeed": "1,1",
+      "Identifier": "11",
+      "Position": "-1044,-36",
+      "HandleOffsets": {},
+      "Coords": {
+        "Identifier": "31",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "ScrollSpeed": {
+        "Identifier": "2",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Depth",
+      "SamplingMode": "Linear",
+      "Identifier": "12",
+      "Position": "-1032,-360",
+      "HandleOffsets": {},
+      "ScreenPosition": {
+        "Identifier": "13",
+        "Output": "XY",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ScreenPosition",
+      "Mode": "Raw",
+      "Identifier": "13",
+      "Position": "-1224,-384",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Subtract",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "14",
+      "Position": "-792,-336",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "12",
+        "Output": "Out",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "13",
+        "Output": "W",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "15",
+      "Position": "-624,-336",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "14",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "16",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "e4d84f42-c242-4f9f-960f-f9fc71aa58ed",
+      "Identifier": "16",
+      "Position": "-864,-264",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Saturate",
+      "Identifier": "17",
+      "Position": "-504,-336",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "15",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "18",
+      "Position": "-336,-384",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "19",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "20",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "17",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "29200b46-1a8b-48d9-ab93-44ae7357a90c",
+      "Identifier": "19",
+      "Position": "-552,-648",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "697fadd5-2717-4055-ae20-970b0f2a0f7d",
+      "Identifier": "20",
+      "Position": "-552,-492",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "21",
+      "Position": "-336,-276",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "22",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "22",
+        "Output": "Y",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "17",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "98b736ad-aa71-4783-909b-6beaa95c971a",
+      "Identifier": "22",
+      "Position": "-588,-252",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Time",
+      "Identifier": "23",
+      "Position": "-1248,336",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Sine",
+      "Identifier": "24",
+      "Position": "-768,264",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "27",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "793f48d2-711e-4153-87f4-02563fd58ed8",
+      "Identifier": "25",
+      "Position": "-1092,528",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "CombineVector",
+      "DefaultX": 0,
+      "DefaultY": 0,
+      "DefaultZ": 0,
+      "DefaultW": 0,
+      "Identifier": "26",
+      "Position": "-468,216",
+      "HandleOffsets": {},
+      "Z": {
+        "Identifier": "28",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Add",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "27",
+      "Position": "-888,264",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "5",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "23",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Multiply",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "28",
+      "Position": "-600,264",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "24",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "33",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Distance",
+      "Identifier": "29",
+      "Position": "-1668,588",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "30",
+        "Output": "WorldPosition",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "4",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Camera",
+      "Identifier": "30",
+      "Position": "-1908,588",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "UVScaleNode",
+      "DefaultScale": "1,1",
+      "Identifier": "31",
+      "Position": "-1236,-72",
+      "HandleOffsets": {},
+      "Scale": {
+        "Identifier": "32",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "5ecf8c0f-71b6-4c8d-9b52-883b029e9804",
+      "Identifier": "32",
+      "Position": "-1440,-48",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "33",
+      "Position": "-876,552",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "25",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "25",
+        "Output": "Y",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "10",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Float2ParameterNode",
+      "ParameterIdentifier": "7a0f66cb-cbb9-4d69-ac64-7337afa1868f",
+      "Identifier": "34",
+      "Position": "-1092,432",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "SmoothStep",
+      "DefaultInput": 0,
+      "DefaultEdge1": 10,
+      "DefaultEdge2": 20,
+      "Identifier": "35",
+      "Position": "-840,396",
+      "HandleOffsets": {},
+      "Input": {
+        "Identifier": "40",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "Edge1": {
+        "Identifier": "34",
+        "Output": "X",
+        "Subgraph": null
+      },
+      "Edge2": {
+        "Identifier": "34",
+        "Output": "Y",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "Lerp",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Fraction": 0.5,
+      "Identifier": "36",
+      "Position": "-360,-36",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "18",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "37",
+        "Output": "Result",
+        "Subgraph": null
+      },
+      "C": {
+        "Identifier": "35",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "ColorParameterNode",
+      "ParameterIdentifier": "3c209f2c-9208-4de7-8d53-02b427c97b64",
+      "Identifier": "37",
+      "Position": "-588,-132",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Blend",
+      "DefaultA": "0,0,0,1",
+      "DefaultB": "0.0093,0.58721,1,1",
+      "Fraction": 0.5,
+      "BlendMode": "Mix",
+      "Clamp": true,
+      "Identifier": "38",
+      "Position": "-588,72",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "8",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    },
+    {
+      "_class": "FloatParameterNode",
+      "ParameterIdentifier": "7c187f52-57d9-4d46-900b-49767aea63e1",
+      "Identifier": "39",
+      "Position": "-1368,408",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "Subtract",
+      "DefaultA": 0,
+      "DefaultB": 1,
+      "Identifier": "40",
+      "Position": "-960,336",
+      "HandleOffsets": {},
+      "A": {
+        "Identifier": "6",
+        "Output": "Z",
+        "Subgraph": null
+      },
+      "B": {
+        "Identifier": "39",
+        "Output": "Result",
+        "Subgraph": null
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0,0.108058013",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": "Wave Texture Settings",
+          "Priority": 2
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "7be814d2-fa1e-4cb4-baaa-5d1f85e40b14",
+      "Name": "Wave Panning Speed"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "-0.0500000007,0.150000006",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "a6535880-db0f-4a0a-ab8e-adfe4cfacce5",
+      "Name": "Panning Speed 2"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "Wave Normal",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/water/wave_color.jpg",
+        "Extension": "Color",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Srgb",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": "Wave Texture Settings",
+          "Priority": 2
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "0b6c016c-e54a-4591-907b-aed8a02d7da4",
+      "Name": "Wave Normal"
+    },
+    {
+      "_class": "Texture2DParameter",
+      "Value": {
+        "Name": "Ripple Normal",
+        "IsAttribute": false,
+        "DefaultColor": "0,0,0,0",
+        "DefaultTexture": "materials/water/ripple_normal.jpg",
+        "Extension": "Color",
+        "CustomExtension": null,
+        "ShowExtension": true,
+        "Processor": "None",
+        "ColorSpace": "Srgb",
+        "ImageFormat": "DXT1",
+        "SrgbRead": false,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "Identifier": "66de589f-c583-42e9-be24-bd0e24dc2886",
+      "Name": "Ripple Normal"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": -10,
+      "Max": 10,
+      "Value": 1,
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": "Water Depth Color",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "e4d84f42-c242-4f9f-960f-f9fc71aa58ed",
+      "Name": "Depth Intensity"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0,0.93333,1,1",
+      "UI": {
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Water Depth Color",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "29200b46-1a8b-48d9-ab93-44ae7357a90c",
+      "Name": "Shallow Water Color"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "0,0.21612,0.76279,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": "Water Depth Color",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "697fadd5-2717-4055-ae20-970b0f2a0f7d",
+      "Name": "Deep Water Color"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0.200000003,0.949999988",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 3,
+        "PrimaryGroup": {
+          "Name": "Water Depth Color",
+          "Priority": 1
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "98b736ad-aa71-4783-909b-6beaa95c971a",
+      "Name": "Water Opacity"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "1,1",
+      "Value": "0,0",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "a5542f94-3092-4bbc-a147-991b14149e8b",
+      "Name": "Ripple Panning Speed"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "100,100",
+      "Value": "1,1",
+      "UI": {
+        "Type": "Slider",
+        "Step": 0,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Wave Texture Settings",
+          "Priority": 2
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "5ecf8c0f-71b6-4c8d-9b52-883b029e9804",
+      "Name": "Wave Normal Scale"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "100,100",
+      "Value": "1,1",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "3d9852e8-719e-4cf0-a845-ee7ab29ac69b",
+      "Name": "Ripple Normal Scale"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "1,1,1,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": null,
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "de4bfffb-1329-4cf5-9609-ff9404b3c619",
+      "Name": "MaterialParameter0"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "20,20",
+      "Value": "10,20",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 1,
+        "PrimaryGroup": {
+          "Name": "Wave Foam Settings",
+          "Priority": 3
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "7a0f66cb-cbb9-4d69-ac64-7337afa1868f",
+      "Name": "Wave Top Color Blend"
+    },
+    {
+      "_class": "ColorParameter",
+      "Value": "1,1,1,1",
+      "UI": {
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": "Wave Foam Settings",
+          "Priority": 3
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "3c209f2c-9208-4de7-8d53-02b427c97b64",
+      "Name": "Wave Top Color"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "5000,5000",
+      "Value": "200,2000",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 3,
+        "PrimaryGroup": {
+          "Name": "Wave Foam Settings",
+          "Priority": 3
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "32ea5055-74d3-4b85-bddb-3cef29af51a9",
+      "Name": "Wave Height Distance"
+    },
+    {
+      "_class": "Float2Parameter",
+      "Min": "0,0",
+      "Max": "50,50",
+      "Value": "0,20",
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 2,
+        "PrimaryGroup": {
+          "Name": "Wave Foam Settings",
+          "Priority": 3
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "793f48d2-711e-4153-87f4-02563fd58ed8",
+      "Name": "Wave Height"
+    },
+    {
+      "_class": "FloatParameter",
+      "Min": -50000,
+      "Max": 50000,
+      "Value": 0,
+      "UI": {
+        "Type": "Default",
+        "Step": 0,
+        "Priority": 0,
+        "PrimaryGroup": {
+          "Name": "",
+          "Priority": 0
+        },
+        "SecondaryGroup": {
+          "Name": null,
+          "Priority": 0
+        }
+      },
+      "IsAttribute": false,
+      "Identifier": "7c187f52-57d9-4d46-900b-49767aea63e1",
+      "Name": "Water Height"
+    }
+  ],
+  "__version": 5
+}
