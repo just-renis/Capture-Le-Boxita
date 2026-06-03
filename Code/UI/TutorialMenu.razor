@@ -1,13 +1,14 @@
 @using Sandbox;
+@using Sandbox.Data
 @using Sandbox.Enums
 @using Sandbox.Managers
 @inherits PanelComponent
 
 <root class="@(IsOpen ? "" : "hidden")">
-	@if (IsOpen && CurrentStep != null)
+	@if (IsOpen && CurrentStep != null && GetPlayerData() != null)
 	{
 		<div class="tutorial-window">
-			<div class="x-close" onclick="@CloseMenu"><i>close</i></div>
+			@if (GetIsTutorialFinished()) { <div class="x-close" onclick="@CloseMenu">X</div> } 
 			<div class="tutorial-title">@CurrentStep.Title</div>
 			<div class="media-container">
 				@if (CurrentStep.IsVideo)
@@ -23,11 +24,11 @@
 				<p class="description-text">@CurrentStep.Description</p>
 			</div>
 			<div class="navigation-bar">
-				<button class="nav-button @(CurrentIndex == 0 ? "disabled" : "")" onclick="@PreviousSlide">
+				<button class="nav-button @(CurrentIndex == 0 ? "disabled" : "")" onclick="@PreviousStep">
 					<i>arrow_back</i>
 				</button>
 				<span class="page-counter">@(CurrentIndex + 1) / @Steps.Count</span>
-				<button class="nav-button @(CurrentIndex >= Steps.Count - 1 ? "disabled" : "")" onclick="@NextSlide">
+				<button class="nav-button @(CurrentIndex >= Steps.Count - 1 ? "disabled" : "")" onclick="@NextStep">
 					<i>arrow_forward</i>
 				</button>
 			</div>
@@ -41,21 +42,24 @@
     {
         public string Title { get; set; }
         public string MediaUrl { get; set; }
-        public string Description { get; set; }
+        [TextArea] public string Description { get; set; }
         public bool IsVideo { get; set; }
+
+        public override string ToString() { return Title; }
     }
 
 	[Property] private List<TutorialStep> Steps { get; set; }
-	
 	private bool IsOpen;
     private int CurrentIndex;
     private TutorialStep CurrentStep;
     private VideoPlayer Player;
     private Texture VideoTexture => Player?.Texture;
+    private Panel VideoPanel;
+    private PlayerData Data;
     
     protected override int BuildHash() 
     {
-	    return System.HashCode.Combine(CurrentIndex, IsOpen, VideoTexture);
+	    return System.HashCode.Combine(CurrentIndex, IsOpen);
     }
     
     protected override void OnAwake()
@@ -68,15 +72,15 @@
     }
     protected override void OnUpdate()
     {
-	    if (!IsOpen || CurrentStep == null || !CurrentStep.IsVideo) return;
+	    if (!IsOpen || CurrentStep == null || !CurrentStep.IsVideo || Player == null || Panel == null || VideoTexture == null) return;
 	    Player?.Present();
-	    if (Panel != null && VideoTexture != null)
+	    if (VideoPanel == null)
 	    {
-		    Panel Window = Panel.Children.FirstOrDefault(x => x.HasClass("tutorial-window"));
-		    Panel MediaContainer = Window?.Children.FirstOrDefault(x => x.HasClass("media-container"));
-		    Panel CanvasPanel = MediaContainer?.Children.FirstOrDefault(x => x.HasClass("tutorial-video-canvas"));
-		    CanvasPanel?.Style.SetBackgroundImage(VideoTexture);
+		    Panel Window = Panel.Children.FirstOrDefault(X => X.HasClass("tutorial-window"));
+		    Panel MediaContainer = Window?.Children.FirstOrDefault(X => X.HasClass("media-container"));
+		    VideoPanel = MediaContainer?.Children.FirstOrDefault(X => X.HasClass("tutorial-video-canvas"));
 	    }
+	    VideoPanel?.Style.SetBackgroundImage(VideoTexture);
     }
     protected override void OnDestroy()
     {
@@ -84,34 +88,44 @@
 	    KillVideoPlayer();
     }
 
+    private bool GetIsTutorialFinished() { return Data.GetIsTutorialFinished(); }
+    private PlayerData GetPlayerData()
+    {
+	    Data ??= EventManager.TriggerGetPlayerData();
+	    return Data;
+    }
+
     private void SetCurrentStep()
     {
 	    CurrentStep = Steps.Count > 0 ? Steps[CurrentIndex] : null;
 	    SetupVideoPlayer();
     }
-    private void NextSlide()
+    private void NextStep()
     {
 	    if (CurrentIndex >= Steps.Count - 1) return;
 	    CurrentIndex++;
 	    SetCurrentStep();
+	    if (CurrentIndex == Steps.Count - 1) Data.SetTutorialFinished();
     }
-    private void PreviousSlide()
+    private void PreviousStep()
     {
 	    if (CurrentIndex <= 0) return;
 	    CurrentIndex--;
 	    SetCurrentStep();
     }
-    private void CloseMenu() { UiManager.ChangeUiState(EUi.TutorialMenu); }
+    private void CloseMenu() { UiManager.ChangeUiState(EUi.TutorialMenu, !IsOpen); }
     private void UiStateChanged(EUi InUi, bool RenderState)
     {
 	    if (InUi != EUi.TutorialMenu) return;
 	    IsOpen = RenderState;
 	    Panel?.Style.PointerEvents = IsOpen ? PointerEvents.All : PointerEvents.None;
+	    if (IsOpen) SetCurrentStep();
+	    else KillVideoPlayer();
     }
     private void SetupVideoPlayer()
     {
 	    KillVideoPlayer();
-	    if (CurrentStep == null || !CurrentStep.IsVideo || string.IsNullOrEmpty(CurrentStep.MediaUrl)) return;
+	    if (CurrentStep == null || !CurrentStep.IsVideo) return;
 	    Player = new VideoPlayer();
 	    Player.Muted = true;
 	    Player.Play(FileSystem.Mounted, CurrentStep.MediaUrl);
@@ -121,5 +135,6 @@
 	    if (Player == null) return;
 	    Player.Stop();
 	    Player = null;
+	    VideoPanel = null;
     }
 }

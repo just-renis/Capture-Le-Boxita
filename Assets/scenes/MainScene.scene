@@ -1264,10 +1264,22 @@
           "OnComponentUpdate": null,
           "Steps": [
             {
-              "Title": "First Step For Retards",
+              "Title": "Throw Boxes",
               "MediaUrl": "Video/Test.mp4",
-              "Description": "You do this and this",
+              "Description": "Grab boxes by looking at them and clicking [RMB] then throwing them with [LMB].\nWarning: Do not take boxes to close they will push you(there is hidden strategy with that).",
               "IsVideo": true
+            },
+            {
+              "Title": "Money",
+              "MediaUrl": null,
+              "Description": "You receive money from boxes being consumed by aliens, completing quests and pushing players into aliens(25% of their total money).",
+              "IsVideo": false
+            },
+            {
+              "Title": "Upgrades",
+              "MediaUrl": null,
+              "Description": "Click [TAB] to open upgrades menu, here you can buy various upgrades.",
+              "IsVideo": false
             }
           ]
         }
@@ -28035,14 +28047,14 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
-        }
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "b69d1879-25e7-43a8-9155-5f2a82ec6e4b"
+        }
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
         }
       }
     }

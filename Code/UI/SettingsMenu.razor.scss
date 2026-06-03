@@ -11,7 +11,7 @@ SettingsMenu
   > .menu-box
   {
     width: 40%;
-    height: 60%;
+    height: 75%;
     background-color: #1a1a1a;
     border: 2px solid #facc15;
     border-radius: 8px;
@@ -80,7 +80,28 @@ SettingsMenu
     .footer 
     {
       justify-content: center;
-      button.btn-quit 
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      button.btn-tutorial
+      {
+        width: 80%;
+        padding: 20px;
+        font-size: 28px;
+        font-weight: 900;
+        background-color: #facc15;
+        color: #1a1a1a;
+        border-radius: 8px;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.1s ease-out;
+
+        &:hover { transform: scale(1.02); background-color: #fde047; }
+        &:active { transform: scale(0.98); }
+      }
+      button.btn-quit
       {
         width: 80%;
         padding: 20px;
