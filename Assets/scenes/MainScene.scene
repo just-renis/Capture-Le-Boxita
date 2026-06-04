@@ -27756,6 +27756,7 @@
             "Mins": "-856.930359,-6137.39404,-158.211456",
             "Maxs": "13335.1543,6407.39746,349.892975"
           },
+          "Color": "1,1,1,1",
           "FalloffExponent": 0,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -27793,6 +27794,7 @@
             "Mins": "-2111.10645,-275.648804,-364.256958",
             "Maxs": "2122.10718,4693.26074,349.892975"
           },
+          "Color": "1,1,1,1",
           "FalloffExponent": 0.4868421,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -27830,6 +27832,7 @@
             "Mins": "-1034.51392,-6137.39404,-158.211456",
             "Maxs": "13436.6367,6407.39746,349.892975"
           },
+          "Color": "1,1,1,1",
           "FalloffExponent": 1,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,

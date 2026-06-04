@@ -103,7 +103,6 @@
         "__guid": "d5cda843-f3c3-4f74-a275-f0f8f063ab8f",
         "__enabled": true,
         "Flags": 0,
-        "IsInAirCheckRequired": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -142,7 +141,7 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "OverrideMassCenter": false,
-        "RigidbodyFlags": 0,
+        "RigidbodyFlags": "DisableCollisionSounds",
         "SleepThreshold": 2,
         "StartAsleep": false
       }
