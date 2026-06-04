@@ -1265,21 +1265,21 @@
           "Steps": [
             {
               "Title": "Throw Boxes",
-              "MediaUrl": "Video/Test.mp4",
+              "MediaUrl": "Video/ThrowBoxesTutorial.mp4",
               "Description": "Grab boxes by looking at them and clicking [RMB] then throwing them with [LMB].\nWarning: Do not take boxes to close they will push you(there is hidden strategy with that).",
               "IsVideo": true
             },
             {
               "Title": "Money",
-              "MediaUrl": null,
+              "MediaUrl": "Video/PlayerPushTutorial.mp4",
               "Description": "You receive money from boxes being consumed by aliens, completing quests and pushing players into aliens(25% of their total money).",
-              "IsVideo": false
+              "IsVideo": true
             },
             {
               "Title": "Upgrades",
-              "MediaUrl": null,
+              "MediaUrl": "Video/UpgradeTutorial.mp4",
               "Description": "Click [TAB] to open upgrades menu, here you can buy various upgrades.",
-              "IsVideo": false
+              "IsVideo": true
             }
           ]
         }
@@ -28050,14 +28050,14 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.Clutter.ClutterGridSystem": {
-        "Storage": {
-          "$blob": "b69d1879-25e7-43a8-9155-5f2a82ec6e4b"
-        }
-      },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
           "SelectionSets": []
+        }
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "b69d1879-25e7-43a8-9155-5f2a82ec6e4b"
         }
       }
     }
