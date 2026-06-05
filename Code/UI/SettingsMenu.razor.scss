@@ -10,7 +10,7 @@ SettingsMenu
   font-family: Poppins;
   > .menu-box
   {
-    width: 40%;
+    width: 50%;
     height: 75%;
     background-color: #1a1a1a;
     border: 2px solid #facc15;
@@ -77,47 +77,66 @@ SettingsMenu
         &:focus { border-color: #facc15; }
       }
     }
-    .footer 
+    .footer
     {
+      width: 100%;
       justify-content: center;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
-      button.btn-tutorial
+      gap: 35px;
+      margin-top: 30px;
+      button.btn-tutorial, button.btn-quit
       {
-        width: 80%;
+        width: 60%;
         padding: 20px;
         font-size: 28px;
         font-weight: 900;
-        background-color: #facc15;
-        color: #1a1a1a;
         border-radius: 8px;
         align-items: center;
+        text-align: center;
         justify-content: center;
         text-transform: uppercase;
         cursor: pointer;
-        transition: all 0.1s ease-out;
-
+      }
+      button.btn-tutorial
+      {
+        background-color: #facc15;
+        color: #1a1a1a;
         &:hover { transform: scale(1.02); background-color: #fde047; }
         &:active { transform: scale(0.98); }
       }
       button.btn-quit
       {
-        width: 80%;
-        padding: 20px;
-        font-size: 28px;
-        font-weight: 900;
-        background-color: #e53e3e;
+        background-color: #3558e1;
         color: white;
-        border-radius: 8px;
-        align-items: center;
-        justify-content: center;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all 0.1s ease-out;
-        &:hover { transform: scale(1.02); background-color: #ff4444; }
+        &:hover { transform: scale(1.02); background-color: #44a2ff; }
         &:active { transform: scale(0.98); }
       }
+    }
+    button.btn-small-exit
+    {
+      position: absolute;
+      left: 40px;
+      bottom: 40px;
+      padding: 12px 20px;
+      font-size: 18px;
+      font-weight: 800;
+      background-color: #e53e3e;
+      color: rgb(255, 255, 255);
+      border: 2px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.1s ease-out;
+      &:hover
+      {
+        background-color: #ff4444;
+        border-color: #e53e3e;
+        color: white;
+      }
+      &:active { transform: scale(0.95); }
     }
   }
   .section

@@ -26,6 +26,7 @@
 				<button class="btn-tutorial" onclick="@OpenTutorial">OPEN TUTORIAL MENU</button>
 				<button class="btn-quit" onclick="@OpenDefaultSboxSettings">OPEN DEFAULT S&BOX SETTINGS</button>
 			</div>
+			<button class="btn-small-exit" onclick="@ExitGame">EXIT GAME</button>
 		</div>
 	}
 </root>
@@ -71,6 +72,7 @@
 		if (InValue.Length >= 3) Data.ChangeName(InValue);
 	}
 	private void CloseMenu() { UiManager.ChangeUiState(EUi.SettingsMenu); }
+	private void ExitGame() { Game.Close(); }
 	private void OpenDefaultSboxSettings() { Game.Overlay.ShowPauseMenu(); }
 	private void OpenTutorial()
 	{
