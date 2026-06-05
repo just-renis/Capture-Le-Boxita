@@ -26666,7 +26666,7 @@
           "__version": 2,
           "Flags": 0,
           "Name": "InteractableText",
-          "Position": "-16.3333397,-1.94682598,45.3325195",
+          "Position": "-16.3325481,-1.38579035,55.7941856",
           "Rotation": "0,0,1,-4.37113883E-08",
           "Scale": "1,1,1",
           "Tags": "",
@@ -26698,7 +26698,7 @@
                 "BloomLayer": false,
                 "AfterUILayer": false
               },
-              "RenderScale": 1,
+              "RenderScale": 3,
               "VerticalAlign": "Center"
             },
             {

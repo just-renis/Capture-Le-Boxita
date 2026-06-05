@@ -1,5 +1,5 @@
 {
-  "UI": false,
+  "UI": true,
   "Volume": "1",
   "Pitch": "1",
   "Decibels": 70,
@@ -7,7 +7,10 @@
   "Sounds": [
     "audio/upgradenodeclick.vsnd"
   ],
+  "OcclusionEnabled": true,
   "Occlusion": true,
+  "ReverbEnabled": true,
+  "Reflections": true,
   "AirAbsorption": true,
   "Transmission": true,
   "OcclusionRadius": 64,
