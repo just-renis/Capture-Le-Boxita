@@ -13,6 +13,7 @@ public sealed class SoundManager : GameObjectSystem
 	{
 		if (!Sounds.TryGetValue(InSoundName, out SoundEvent SoundEvent)) return;
 		Sound.Play(SoundEvent);
+		Log.Info("PLAY UPGRADE NODE CLICK");
 	}
 	public void PlayAtPosition(ESound InSoundName, Vector3 InPosition)
 	{

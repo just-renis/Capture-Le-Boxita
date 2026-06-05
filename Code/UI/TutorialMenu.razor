@@ -53,7 +53,6 @@
     private int CurrentIndex;
     private TutorialStep CurrentStep;
     private VideoPlayer Player;
-    private Texture VideoTexture => Player?.Texture;
     private Panel VideoPanel;
     private PlayerData Data;
     
@@ -72,15 +71,15 @@
     }
     protected override void OnUpdate()
     {
-	    if (!IsOpen || CurrentStep == null || !CurrentStep.IsVideo || Player == null || Panel == null || VideoTexture == null) return;
-	    Player?.Present();
+	    if (!IsOpen || CurrentStep == null || !CurrentStep.IsVideo || Player == null || Panel == null) return;
+	    Player.Present();
 	    if (VideoPanel == null)
 	    {
 		    Panel Window = Panel.Children.FirstOrDefault(X => X.HasClass("tutorial-window"));
 		    Panel MediaContainer = Window?.Children.FirstOrDefault(X => X.HasClass("media-container"));
 		    VideoPanel = MediaContainer?.Children.FirstOrDefault(X => X.HasClass("tutorial-video-canvas"));
 	    }
-	    VideoPanel?.Style.SetBackgroundImage(VideoTexture);
+	    VideoPanel?.Style.SetBackgroundImage(Player.Texture);
     }
     protected override void OnDestroy()
     {
@@ -128,6 +127,7 @@
 	    if (CurrentStep == null || !CurrentStep.IsVideo) return;
 	    Player = new VideoPlayer();
 	    Player.Muted = true;
+	    Player.Repeat = true;
 	    Player.Play(FileSystem.Mounted, CurrentStep.MediaUrl);
     }
     private void KillVideoPlayer()
